@@ -90,14 +90,9 @@ exports.startConversation = async (req, res) => {
     });
 
     if (conversation) {
-      // If conversation exists, just return it (or add a message if initialMessageContent is provided)
-      // For now, we'll just return the existing one.
-      const messages = await Message.findAll({
-        where: { conversationId: conversation.id },
-        order: [['timestamp', 'ASC']],
-        include: [{ model: User, as: 'sender', attributes: ['id', 'name', 'avatarUrl'] }],
-      });
-      return res.status(200).json({ ...conversation.toJSON(), messages });
+      // If conversation exists, fetch it with all associations and return it
+      const fullConversation = await Conversation.findByPk(conversation.id, { include: conversationIncludeOptions });
+      return res.status(200).json(fullConversation);
     }
 
     // Create new conversation
