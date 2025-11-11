@@ -1,28 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Screen } from '../types';
 import { SERVICE_CATEGORIES } from '../constants';
 
 interface RequestServiceScreenProps {
   navigateTo: (screen: Screen) => void;
+  onPublish: (title: string, category: string, description: string) => Promise<void>;
 }
 
-const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo }) => {
+const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo, onPublish }) => {
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
+  const [description, setDescription] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    try {
+      await onPublish(title, category, description);
+      // On success, maybe navigate to a "my requests" screen or show a success message.
+      // For now, we can navigate back home.
+      navigateTo(Screen.Home);
+    } catch (err: any) {
+      setError(err.message || 'Une erreur est survenue.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="p-4 bg-gray-50 min-h-full">
       <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-6">Demander un service</h1>
       
-      <form className="space-y-6 bg-white p-4 rounded-xl shadow-md">
+      <form className="space-y-6 bg-white p-4 rounded-xl shadow-md" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title" className="text-sm font-medium text-gray-700">Titre de votre demande</label>
-          <input type="text" id="title" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Ex: Tondre ma pelouse" />
+          <input 
+            type="text" 
+            id="title" 
+            required 
+            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" 
+            placeholder="Ex: Tondre ma pelouse"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </div>
 
         <div>
             <label htmlFor="category" className="text-sm font-medium text-gray-700">Catégorie</label>
-            <select id="category" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 bg-white appearance-none">
+            <select 
+              id="category" 
+              required 
+              className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 bg-white appearance-none"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
                 <option value="">Sélectionnez une catégorie</option>
                 {SERVICE_CATEGORIES.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
                 ))}
             </select>
         </div>
@@ -35,12 +72,16 @@ const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo 
             required
             className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
             placeholder="Décrivez votre besoin en détail. Ex: J'ai un jardin de 50m², je n'ai pas de tondeuse..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           ></textarea>
         </div>
         
+        {error && <div className="text-sm text-red-600 bg-red-100 p-3 rounded-lg text-center">{error}</div>}
+
         <div className="pt-2">
-            <button type="submit" className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300">
-              Publier ma demande
+            <button type="submit" disabled={isLoading} className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300 disabled:bg-teal-300">
+              {isLoading ? 'Publication...' : 'Publier ma demande'}
             </button>
         </div>
       </form>

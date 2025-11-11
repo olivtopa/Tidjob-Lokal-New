@@ -23,6 +23,11 @@ const User = sequelize.define('User', {
   role: {
     type: DataTypes.ENUM('client', 'provider'),
     allowNull: false
+  },
+  avatarUrl: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: 'https://picsum.photos/seed/person/200' // Default placeholder
   }
 });
 

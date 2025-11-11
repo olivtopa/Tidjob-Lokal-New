@@ -177,6 +177,19 @@ const App: React.FC = () => {
     }
   }, [navigateTo]);
 
+  const handlePublishRequest = useCallback(async (title: string, category: string, description: string) => {
+    const response = await fetchWithAuth(`${API_BASE_URL}/servicerequests`, {
+      method: 'POST',
+      body: JSON.stringify({ title, category, description }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to publish service request.');
+    }
+    // Optionally, refresh the list of service requests or handle the new request data
+    console.log('Service request created:', data);
+  }, [fetchWithAuth]);
+
 
   const handleLogout = useCallback(() => {
     setCurrentUser(null);
@@ -294,7 +307,7 @@ const App: React.FC = () => {
         if (!currentUser || currentUser.role !== 'provider') { navigateTo(Screen.Login); return null; }
         return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} />;
       case Screen.RequestService:
-        return <RequestServiceScreen navigateTo={navigateTo} />;
+        return <RequestServiceScreen navigateTo={navigateTo} onPublish={handlePublishRequest} />;
       default:
         return <LandingScreen navigateTo={navigateTo} />;
     }

@@ -21,8 +21,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  avatarUrl: string;
-  role: 'user' | 'provider';
+  role: 'client' | 'provider';
+  avatarUrl?: string;
 }
 
 export interface ServiceCategory {
@@ -71,6 +71,7 @@ export interface ServiceRequest {
   title: string;
   description: string;
   category: string;
-  user: Pick<User, 'id' | 'name' | 'avatarUrl'>;
   postedAt: string;
+  user: User; // This should be client
+  client: User;
 }

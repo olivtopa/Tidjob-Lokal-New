@@ -13,8 +13,8 @@ const RequestCard: React.FC<{ request: ServiceRequest }> = ({ request }) => (
         <p className="text-gray-600 text-sm mt-1 line-clamp-2">{request.description}</p>
         <div className="flex items-center justify-between mt-4 border-t border-gray-100 pt-3">
             <div className="flex items-center">
-                <img src={request.user.avatarUrl} alt={request.user.name} className="w-8 h-8 rounded-full object-cover"/>
-                <span className="ml-2 text-sm font-medium text-gray-700">{request.user.name}</span>
+                <img src={request.client.avatarUrl} alt={request.client.name} className="w-8 h-8 rounded-full object-cover"/>
+                <span className="ml-2 text-sm font-medium text-gray-700">{request.client.name}</span>
             </div>
             <span className="text-xs text-gray-400">{request.postedAt}</span>
         </div>
