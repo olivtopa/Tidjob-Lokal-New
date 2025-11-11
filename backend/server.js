@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 });
 
 // Sync database and start server
-db.sequelize.sync().then(() => {
+db.sequelize.sync({ alter: true }).then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Server is running on http://localhost:${PORT}`);
     console.log('✅ Database synchronized.');
