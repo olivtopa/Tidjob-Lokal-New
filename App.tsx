@@ -287,7 +287,9 @@ const App: React.FC = () => {
         }),
       });
 
+      console.log('API Response Status:', response.status);
       const newConversation = await response.json();
+      console.log('API Response Body:', newConversation);
 
       if (!response.ok) {
         throw new Error(newConversation.message || 'Failed to start conversation.');
