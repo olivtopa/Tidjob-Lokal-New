@@ -102,6 +102,18 @@ const App: React.FC = () => {
     initializeAppData();
   }, [fetchWithAuth, navigateTo]);
 
+  useEffect(() => {
+    if (currentUser) {
+      console.log('User data updated in frontend:', currentUser);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (currentUser) {
+      console.log('User data updated in frontend:', currentUser);
+    }
+  }, [currentUser]);
+
   const handleLogin = useCallback(async (email: string, password: string) => {
     setError(null);
     setIsLoading(true);
@@ -138,8 +150,19 @@ const App: React.FC = () => {
 
       // Step 3: Set the user and navigate
       setCurrentUser(user);
-      // Here you would also fetch user-specific data like conversations
-      navigateTo(Screen.Home);
+
+      // Fetch service requests if the user is a provider
+      if (user.role === 'provider') {
+        const serviceRequestsRes = await fetchWithAuth(`${API_BASE_URL}/servicerequests`);
+        if (!serviceRequestsRes.ok) {
+          throw new Error(`Impossible de récupérer les demandes de service : ${serviceRequestsRes.statusText}`);
+        }
+        const requestsData = await serviceRequestsRes.json();
+        setServiceRequests(requestsData);
+        navigateTo(Screen.ProviderDashboard); // Navigate provider to their dashboard
+      } else {
+        navigateTo(Screen.Home); // Navigate client to home
+      }
 
     } catch (error: any) {
       console.error("Login process failed", error);
@@ -188,6 +211,19 @@ const App: React.FC = () => {
     }
     // Optionally, refresh the list of service requests or handle the new request data
     console.log('Service request created:', data);
+  }, [fetchWithAuth]);
+
+  const handlePublishService = useCallback(async (title: string, description: string, category: string) => {
+    const response = await fetchWithAuth(`${API_BASE_URL}/services`, {
+      method: 'POST',
+      body: JSON.stringify({ title, description, category }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to publish service.');
+    }
+    // Optionally, refresh the list of services or handle the new service data
+    console.log('Service created:', data);
   }, [fetchWithAuth]);
 
 
@@ -284,12 +320,12 @@ const App: React.FC = () => {
         return <SignUpScreen navigateTo={navigateTo} onSignUp={handleSignUp} error={error} isLoading={isLoading} />;
       case Screen.Home:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
-        if (currentUser.role !== 'user') return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} />;
-        return <HomeScreen navigateTo={navigateTo} user={currentUser} providers={providers} />;
+        if (currentUser.role === 'provider') return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} />;
+        return <HomeScreen navigateTo={navigateTo} user={currentUser} providers={providers} services={services} onSelectService={handleSelectService} />;
       case Screen.Find:
         return <FindServiceScreen services={services} navigateTo={navigateTo} onSelectService={handleSelectService} />;
       case Screen.Offer:
-        return <OfferServiceScreen navigateTo={navigateTo} />;
+        return <OfferServiceScreen navigateTo={navigateTo} onPublishService={handlePublishService} />;
       case Screen.Profile:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
         return <ProfileScreen user={currentUser} onLogout={handleLogout} navigateTo={navigateTo} />;
@@ -353,7 +389,7 @@ const App: React.FC = () => {
 
       {currentUser && (
         <footer className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 shadow-t-strong">
-          {currentUser.role === 'user' ? renderUserNav() : renderProviderNav()}
+          {currentUser.role === 'client' ? renderUserNav() : renderProviderNav()}
         </footer>
       )}
     </div>

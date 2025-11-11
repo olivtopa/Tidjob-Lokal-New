@@ -23,6 +23,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
           <img src={user.avatarUrl} alt={user.name} className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" />
           <h1 className="text-2xl font-bold text-gray-900 mt-4">{user.name}</h1>
           <p className="text-md text-gray-500">{user.email}</p>
+          <p className="text-sm text-teal-600 font-semibold mt-1">{user.role === 'client' ? 'Client' : 'Prestataire'}</p>
         </div>
       </div>
 

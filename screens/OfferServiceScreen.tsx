@@ -1,34 +1,90 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Screen } from '../types';
+import { SERVICE_CATEGORIES } from '../constants';
 
 interface OfferServiceScreenProps {
   navigateTo: (screen: Screen) => void;
+  onPublishService: (title: string, description: string, category: string) => Promise<void>;
 }
 
-const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo }) => {
-  return (
-    <div className="p-4 bg-gray-50 min-h-full flex flex-col">
-      <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-6">Mes Services</h1>
-      
-      <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-white rounded-2xl shadow-md">
-        <div className="inline-block p-4 bg-teal-100 rounded-full mb-6">
-            <div className="p-3 bg-teal-500 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-white" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                </svg>
-            </div>
-        </div>
-        <h2 className="text-xl font-bold text-gray-800">Partagez vos talents</h2>
-        <p className="text-gray-500 mt-2 mb-6">Vous n'avez pas encore de service à proposer. Ajoutez-en un pour que les clients puissent vous trouver !</p>
-        <button className="w-full max-w-xs bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300">
-          Ajouter un nouveau service
-        </button>
-      </div>
+const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onPublishService }) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-       <div className="mt-6 p-4 bg-teal-50 border border-teal-200 rounded-lg text-teal-800">
-        <h3 className="font-bold">Astuce</h3>
-        <p className="text-sm">Prenez de belles photos et rédigez une description claire pour attirer plus de clients.</p>
-      </div>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    try {
+      await onPublishService(title, description, category);
+      // On success, maybe navigate to a "my services" screen or show a success message.
+      // For now, we can navigate back to the provider dashboard.
+      navigateTo(Screen.ProviderDashboard);
+    } catch (err: any) {
+      setError(err.message || 'Une erreur est survenue lors de la publication du service.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="p-4 bg-gray-50 min-h-full">
+      <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-6">Proposer un service</h1>
+      
+      <form className="space-y-6 bg-white p-4 rounded-xl shadow-md" onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="title" className="text-sm font-medium text-gray-700">Titre du service</label>
+          <input 
+            type="text" 
+            id="title" 
+            required 
+            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" 
+            placeholder="Ex: Cours de jardinage à domicile"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+
+        <div>
+            <label htmlFor="category" className="text-sm font-medium text-gray-700">Catégorie</label>
+            <select 
+              id="category" 
+              required 
+              className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 bg-white appearance-none"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+                <option value="">Sélectionnez une catégorie</option>
+                {SERVICE_CATEGORIES.map(cat => (
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                ))}
+            </select>
+        </div>
+
+        <div>
+          <label htmlFor="description" className="text-sm font-medium text-gray-700">Description détaillée</label>
+          <textarea
+            id="description"
+            rows={5}
+            required
+            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+            placeholder="Décrivez votre service, votre expérience, vos tarifs..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
+        </div>
+        
+        {error && <div className="text-sm text-red-600 bg-red-100 p-3 rounded-lg text-center">{error}</div>}
+
+        <div className="pt-2">
+            <button type="submit" disabled={isLoading} className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300 disabled:bg-teal-300">
+              {isLoading ? 'Publication...' : 'Publier mon service'}
+            </button>
+        </div>
+      </form>
     </div>
   );
 };

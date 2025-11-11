@@ -9,14 +9,8 @@ interface LoginScreenProps {
 }
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, isLoading }) => {
-  const [role, setRole] = useState<'user' | 'provider'>('user');
-  const [email, setEmail] = useState(role === 'user' ? 'alex.doe@example.com' : 'marie.curie@example.com');
-  const [password, setPassword] = useState('password');
-
-  const handleRoleChange = (newRole: 'user' | 'provider') => {
-    setRole(newRole);
-    setEmail(newRole === 'user' ? 'alex.doe@example.com' : 'marie.curie@example.com');
-  };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
     <div className="min-h-full flex flex-col justify-center items-center p-6 bg-gray-100">
@@ -31,17 +25,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, i
             </div>
             <h1 className="text-3xl font-bold text-gray-800">Content de vous revoir !</h1>
             <p className="text-gray-500 mt-2">Connectez-vous pour continuer.</p>
-        </div>
-        
-        <div className="mb-6">
-            <div className="flex rounded-lg shadow-sm border border-gray-200">
-                <button type="button" onClick={() => handleRoleChange('user')} className={`w-full px-4 py-3 text-sm font-semibold rounded-l-lg transition-colors ${role === 'user' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
-                    Je suis un client
-                </button>
-                <button type="button" onClick={() => handleRoleChange('provider')} className={`w-full px-4 py-3 text-sm font-semibold rounded-r-lg transition-colors ${role === 'provider' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
-                    Je suis un prestataire
-                </button>
-            </div>
         </div>
         
         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onLogin(email, password); }}>

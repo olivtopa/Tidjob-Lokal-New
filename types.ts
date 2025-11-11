@@ -71,7 +71,7 @@ export interface ServiceRequest {
   title: string;
   description: string;
   category: string;
+  budget?: number;
   postedAt: string;
-  user: User; // This should be client
   client: User;
 }

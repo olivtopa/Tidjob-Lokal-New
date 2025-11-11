@@ -16,7 +16,7 @@ const RequestCard: React.FC<{ request: ServiceRequest }> = ({ request }) => (
                 <img src={request.client.avatarUrl} alt={request.client.name} className="w-8 h-8 rounded-full object-cover"/>
                 <span className="ml-2 text-sm font-medium text-gray-700">{request.client.name}</span>
             </div>
-            <span className="text-xs text-gray-400">{request.postedAt}</span>
+            <span className="text-xs text-gray-400">{request.createdAt}</span>
         </div>
         <button className="w-full mt-3 bg-teal-500 text-white font-bold py-2 px-5 rounded-lg transition-colors hover:bg-teal-600 text-sm">
             Répondre à la demande
@@ -27,7 +27,7 @@ const RequestCard: React.FC<{ request: ServiceRequest }> = ({ request }) => (
 const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ serviceRequests, navigateTo }) => {
   return (
     <div className="p-4 bg-gray-50 min-h-full">
-      <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-4">Demandes de service</h1>
+      <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-4">Mes Demandes de Service</h1>
       
       {serviceRequests.length > 0 ? (
         <div>
