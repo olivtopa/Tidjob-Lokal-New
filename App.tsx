@@ -108,11 +108,25 @@ const App: React.FC = () => {
     }
   }, [currentUser]);
 
+  // New useEffect to fetch conversations when currentUser changes
   useEffect(() => {
-    if (currentUser) {
-      console.log('User data updated in frontend:', currentUser);
-    }
-  }, [currentUser]);
+    const fetchConversations = async () => {
+      if (currentUser) {
+        try {
+          const conversationsRes = await fetchWithAuth(`${API_BASE_URL}/messages`);
+          if (!conversationsRes.ok) {
+            throw new Error(`Failed to fetch conversations: ${conversationsRes.statusText}`);
+          }
+          const conversationsData = await conversationsRes.json();
+          setConversations(conversationsData);
+        } catch (error) {
+          console.error("Error fetching conversations:", error);
+          setError(`Erreur de chargement des conversations: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      }
+    };
+    fetchConversations();
+  }, [currentUser, fetchWithAuth]);
 
   const handleLogin = useCallback(async (email: string, password: string) => {
     setError(null);
@@ -240,67 +254,95 @@ const App: React.FC = () => {
     navigateTo(Screen.ServiceDetail);
   }, [navigateTo]);
   
-  const handleSelectConversation = useCallback((conversation: Conversation) => {
+  const handleSelectConversation = useCallback(async (conversation: Conversation) => {
       setSelectedConversation(conversation);
-      setConversations(prev => prev.map(c => c.id === conversation.id ? { ...c, unread: false } : c));
-      navigateTo(Screen.Chat);
-  }, [navigateTo]);
+      // Fetch latest messages for the selected conversation
+      try {
+        const messagesRes = await fetchWithAuth(`${API_BASE_URL}/messages/${conversation.id}/messages`);
+        if (!messagesRes.ok) {
+          throw new Error(`Failed to fetch messages: ${messagesRes.statusText}`);
+        }
+        const messagesData = await messagesRes.json();
+        const updatedConversation = { ...conversation, messages: messagesData, unread: false };
+        setConversations(prev => prev.map(c => c.id === conversation.id ? updatedConversation : c));
+        setSelectedConversation(updatedConversation);
+        navigateTo(Screen.Chat);
+      } catch (error) {
+        console.error("Error fetching messages for conversation:", error);
+        setError(`Erreur de chargement des messages: ${error instanceof Error ? error.message : String(error)}`);
+      }
+  }, [fetchWithAuth, navigateTo]);
 
-  const handleStartConversation = (service: Service, initialMessage: string) => {
+  const handleStartConversation = useCallback(async (service: Service, initialMessageContent: string) => {
     if (!currentUser) return; // Guard against user being null
-    const existingConversation = conversations.find(c => c.service.id === service.id);
-    if (existingConversation) {
-      handleSelectConversation(existingConversation);
-      return;
-    }
 
-    const newConversation: Conversation = {
-      id: `conv-${Date.now()}`,
-      service,
-      provider: service.provider,
-      unread: false,
-      messages: [
-        { id: `msg-${Date.now()}`, text: initialMessage, timestamp: 'À l\'instant', senderId: currentUser.id }
-      ],
-    };
-    
-    setTimeout(() => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/messages`, {
+        method: 'POST',
+        body: JSON.stringify({
+          serviceRequestId: service.serviceRequestId, // Assuming service object now contains serviceRequestId
+          providerId: service.provider.id,
+          initialMessageContent,
+        }),
+      });
+
+      const newConversation = await response.json();
+
+      if (!response.ok) {
+        throw new Error(newConversation.message || 'Failed to start conversation.');
+      }
+
+      // If a conversation already existed, the backend returns it. Otherwise, a new one is created.
+      // We need to ensure our local state reflects this.
+      setConversations(prev => {
+        const existingIndex = prev.findIndex(c => c.id === newConversation.id);
+        if (existingIndex > -1) {
+          // Update existing conversation (e.g., with new messages if any)
+          return prev.map((c, index) => index === existingIndex ? newConversation : c);
+        } else {
+          // Add new conversation to the top
+          return [newConversation, ...prev];
+        }
+      });
+      setSelectedConversation(newConversation);
+      navigateTo(Screen.Chat);
+
+    } catch (error: any) {
+      console.error("Error starting conversation:", error);
+      setError(error.message);
+    }
+  }, [currentUser, fetchWithAuth, navigateTo]);
+  
+  const handleSendMessage = useCallback(async (conversationId: string, messageText: string) => {
+      if (!currentUser) return; // Guard against user being null
+
+      try {
+        const response = await fetchWithAuth(`${API_BASE_URL}/messages/${conversationId}/messages`, {
+          method: 'POST',
+          body: JSON.stringify({ content: messageText }),
+        });
+
+        const newMessage = await response.json();
+
+        if (!response.ok) {
+          throw new Error(newMessage.message || 'Failed to send message.');
+        }
+
+        // Update local state with the new message
         setConversations(prev => prev.map(c => {
-            if (c.id === newConversation.id) {
-                const reply: Message = {
-                    id: `msg-${Date.now() + 1}`,
-                    text: `Bonjour, merci pour votre message concernant "${service.title}". Comment puis-je vous aider ?`,
-                    timestamp: 'À l\'instant',
-                    senderId: service.provider.id,
-                };
-                return { ...c, messages: [...c.messages, reply], unread: true };
+            if (c.id === conversationId) {
+                const updatedConversation = { ...c, messages: [...c.messages, newMessage], lastMessageAt: newMessage.timestamp };
+                setSelectedConversation(updatedConversation);
+                return updatedConversation;
             }
             return c;
         }));
-    }, 2000);
 
-    setConversations(prev => [newConversation, ...prev]);
-    setSelectedConversation(newConversation);
-    navigateTo(Screen.Chat);
-  };
-  
-  const handleSendMessage = (conversationId: string, messageText: string) => {
-      if (!currentUser) return; // Guard against user being null
-      setConversations(prev => prev.map(c => {
-          if (c.id === conversationId) {
-              const newMessage: Message = {
-                  id: `msg-${Date.now()}`,
-                  text: messageText,
-                  timestamp: 'À l\'instant',
-                  senderId: currentUser.id,
-              };
-              const updatedConversation = { ...c, messages: [...c.messages, newMessage] };
-              setSelectedConversation(updatedConversation);
-              return updatedConversation;
-          }
-          return c;
-      }));
-  };
+      } catch (error: any) {
+        console.error("Error sending message:", error);
+        setError(error.message);
+      }
+  }, [currentUser, fetchWithAuth]);
 
   const renderScreen = () => {
     if (isLoading && !currentUser) {

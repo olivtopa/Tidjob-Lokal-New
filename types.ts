@@ -49,6 +49,7 @@ export interface Service {
   provider: Provider;
   category: string;
   imageUrl: string;
+  serviceRequestId?: string; // Optional, as not all services might originate from a request
 }
 
 export interface Message {
