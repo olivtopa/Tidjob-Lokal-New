@@ -6,10 +6,9 @@ const conversationIncludeOptions = [
   { model: User, as: 'client', attributes: ['id', 'name', 'avatarUrl'] },
   { model: User, as: 'provider', attributes: ['id', 'name', 'avatarUrl'] },
   { 
-    model: ServiceRequest, 
-    as: 'serviceRequest', 
-    attributes: ['id', 'title', 'description', 'category'],
-    include: [{ model: Service, as: 'service', attributes: ['id', 'title', 'category'] }]
+    model: Service, 
+    as: 'service', 
+    attributes: ['id', 'title', 'category']
   },
   { 
     model: Message, 
@@ -78,13 +77,13 @@ exports.getMessages = async (req, res) => {
 // @access  Private (Client only)
 exports.startConversation = async (req, res) => {
   try {
-    const { serviceId, providerId, initialMessageContent } = req.body;
+    const { ServiceId, providerId, initialMessageContent } = req.body;
     const clientId = req.user.id; // Client initiating the conversation
 
     // Check if a conversation already exists for this service between these two users
     let conversation = await Conversation.findOne({
       where: {
-        serviceId,
+        ServiceId,
         clientId,
         providerId,
       },
@@ -103,7 +102,7 @@ exports.startConversation = async (req, res) => {
 
     // Create new conversation
     conversation = await Conversation.create({
-      serviceId,
+      ServiceId,
       clientId,
       providerId,
       lastMessageAt: new Date(),
