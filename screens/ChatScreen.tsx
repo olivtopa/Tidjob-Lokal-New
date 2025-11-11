@@ -45,7 +45,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ conversation, currentUser, navi
         <img src={conversation.provider.avatarUrl} alt={conversation.provider.name} className="w-10 h-10 rounded-full object-cover ml-2"/>
         <div className="ml-3">
             <h1 className="text-md font-bold text-gray-900">{conversation.provider.name}</h1>
-            <p className="text-xs text-gray-500">{conversation.service.title}</p>
+            <p className="text-xs text-gray-500">{conversation.service?.title}</p>
         </div>
       </header>
 
