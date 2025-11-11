@@ -288,6 +288,7 @@ const App: React.FC = () => {
       });
 
       const newConversation = await response.json();
+      console.log('Frontend: Received new conversation object:', newConversation);
 
       if (!response.ok) {
         throw new Error(newConversation.message || 'Failed to start conversation.');
