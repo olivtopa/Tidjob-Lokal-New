@@ -14,6 +14,7 @@ const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navi
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim() === '') return;
+    console.log('ServiceDetailScreen: Starting conversation with service:', service, 'and message:', message);
     onStartConversation(service, message);
   };
 
@@ -60,7 +61,15 @@ const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navi
             className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
             placeholder={`Bonjour ${provider.name.split(' ')[0]}, je suis intéressé(e) par votre service de "${title}"...`}
           ></textarea>
-          <button type="submit" className="w-full mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300">
+          <button 
+            type="submit" 
+            disabled={message.trim() === ''}
+            className={`w-full mt-4 font-bold py-3 px-4 rounded-lg text-lg transition duration-300 ${
+              message.trim() === '' 
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                : 'bg-teal-500 hover:bg-teal-600 text-white'
+            }`}
+          >
             Envoyer le message
           </button>
         </form>

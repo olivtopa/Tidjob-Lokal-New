@@ -15,10 +15,10 @@ User.hasMany(ServiceRequest, { as: 'requestedServices', foreignKey: 'clientId' }
 ServiceRequest.belongsTo(User, { as: 'client', foreignKey: 'clientId' });
 
 // Conversation relationships
-// A conversation is between a client and a provider regarding a service request
+// A conversation is between a client and a provider regarding a service
 Conversation.belongsTo(User, { as: 'client', foreignKey: 'clientId' });
 Conversation.belongsTo(User, { as: 'provider', foreignKey: 'providerId' });
-Conversation.belongsTo(ServiceRequest, { as: 'serviceRequest', foreignKey: 'serviceRequestId' });
+Conversation.belongsTo(Service, { as: 'service', foreignKey: 'serviceId' });
 
 // Message relationships
 // A message belongs to a conversation and is sent by a user

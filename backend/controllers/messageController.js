@@ -78,13 +78,13 @@ exports.getMessages = async (req, res) => {
 // @access  Private (Client only)
 exports.startConversation = async (req, res) => {
   try {
-    const { serviceRequestId, providerId, initialMessageContent } = req.body;
+    const { serviceId, providerId, initialMessageContent } = req.body;
     const clientId = req.user.id; // Client initiating the conversation
 
-    // Check if a conversation already exists for this service request between these two users
+    // Check if a conversation already exists for this service between these two users
     let conversation = await Conversation.findOne({
       where: {
-        serviceRequestId,
+        serviceId,
         clientId,
         providerId,
       },
@@ -103,7 +103,7 @@ exports.startConversation = async (req, res) => {
 
     // Create new conversation
     conversation = await Conversation.create({
-      serviceRequestId,
+      serviceId,
       clientId,
       providerId,
       lastMessageAt: new Date(),

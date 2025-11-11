@@ -8,6 +8,15 @@ const Conversation = sequelize.define('Conversation', {
     allowNull: false,
     defaultValue: DataTypes.NOW,
   },
+  // Add ServiceId to link conversation to a service
+  ServiceId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Services', // 'Services' is the table name
+      key: 'id',
+    },
+  },
 });
 
 module.exports = Conversation;

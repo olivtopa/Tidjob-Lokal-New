@@ -274,13 +274,14 @@ const App: React.FC = () => {
   }, [fetchWithAuth, navigateTo]);
 
   const handleStartConversation = useCallback(async (service: Service, initialMessageContent: string) => {
+    console.log('App.tsx: handleStartConversation called with service:', service);
     if (!currentUser) return; // Guard against user being null
 
     try {
       const response = await fetchWithAuth(`${API_BASE_URL}/messages`, {
         method: 'POST',
         body: JSON.stringify({
-          serviceRequestId: service.serviceRequestId, // Assuming service object now contains serviceRequestId
+          serviceId: service.id,
           providerId: service.provider.id,
           initialMessageContent,
         }),
