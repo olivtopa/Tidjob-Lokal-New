@@ -80,6 +80,11 @@ exports.startConversation = async (req, res) => {
     const { ServiceId, providerId, initialMessageContent } = req.body;
     const clientId = req.user.id; // Client initiating the conversation
 
+    // Add validation
+    if (!ServiceId || !providerId) {
+      return res.status(400).json({ message: 'ServiceId and providerId are required.' });
+    }
+
     // Check if a conversation already exists for this service between these two users
     let conversation = await Conversation.findOne({
       where: {
