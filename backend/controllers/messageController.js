@@ -123,6 +123,8 @@ exports.startConversation = async (req, res) => {
       include: conversationIncludeOptions,
     });
 
+    console.log('Backend: New conversation created/fetched:', newConversation.toJSON());
+
     res.status(201).json(newConversation);
   } catch (error) {
     console.error('Error starting conversation:', error);
