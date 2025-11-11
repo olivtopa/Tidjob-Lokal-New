@@ -118,12 +118,10 @@ exports.startConversation = async (req, res) => {
       });
     }
 
-    // Fetch the newly created conversation with all associations
+    // Fetch the newly created or existing conversation with all associations
     const newConversation = await Conversation.findByPk(conversation.id, {
       include: conversationIncludeOptions,
     });
-
-    console.log('Backend: New conversation created/fetched:', newConversation.toJSON());
 
     res.status(201).json(newConversation);
   } catch (error) {
