@@ -281,7 +281,7 @@ const App: React.FC = () => {
       const response = await fetchWithAuth(`${API_BASE_URL}/messages`, {
         method: 'POST',
         body: JSON.stringify({
-          serviceId: service.id,
+          ServiceId: service.id,
           providerId: service.provider.id,
           initialMessageContent,
         }),
