@@ -10,10 +10,6 @@ services:
     buildCommand: "npm install"
     startCommand: "node server.js"
     envVars:
-      - key: DATABASE_URL
-        fromSecret:
-          name: TIDJOB_LOKAL_DB_URL
-          key: DATABASE_URL
       - key: JWT_SECRET
         generateValue: true # Render will generate a random value
 
