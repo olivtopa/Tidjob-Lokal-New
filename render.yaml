@@ -4,6 +4,7 @@
 services:
   - type: web
     name: tidjob-lokal-backend
+    plan: free
     env: node
     rootDir: backend
     buildCommand: "npm install"
@@ -18,5 +19,6 @@ services:
 
 databases:
   - name: tidjob-lokal-db
+    plan: free
     databaseName: tidjob_lokal_db
     user: tidjob_lokal_user
