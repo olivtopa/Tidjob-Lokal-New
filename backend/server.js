@@ -10,11 +10,13 @@ const authRoutes = require('./routes/authRoutes');
 const serviceRoutes = require('./routes/servicesRoutes');
 const providerRoutes = require('./routes/providersRoutes');
 const serviceRequestRoutes = require('./routes/serviceRequestRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 
 // CORS Configuration
 const allowedOrigins = [
   'http://localhost:3000', // Vite default dev port
   'http://localhost:5173', // Vite default dev port (sometimes)
+  'http://192.168.1.166:3000', // Allow local network access
   // Add your deployed frontend URL here when you have it
   // e.g., 'https://your-frontend-app.onrender.com' 
 ];
@@ -40,6 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/providers', providerRoutes);
 app.use('/api/servicerequests', serviceRequestRoutes);
+app.use('/api/messages', messageRoutes); // New: Use message routes
 
 // Basic health check route
 app.get('/', (req, res) => {
