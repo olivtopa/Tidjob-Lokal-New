@@ -100,32 +100,42 @@ const App: React.FC = () => {
     setError(null);
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      // Step 1: Authenticate and get the token
+      const loginResponse = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       
-      const data = await response.json();
+      const loginData = await loginResponse.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Erreur de connexion');
+      if (!loginResponse.ok) {
+        throw new Error(loginData.error || 'Erreur de connexion');
       }
       
-      // For now, we just reload all data. A more robust solution would
-      // fetch user-specific data.
-      // We also need to properly store and use the token.
-      console.log('Login successful, token:', data.token);
+      const token = loginData.token;
+      console.log('Login successful, token:', token);
+      
+      // Step 2: Use the token to fetch the user's profile
+      const profileResponse = await fetch(`${API_BASE_URL}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
-      // This is a placeholder for fetching user data and navigating
-      // For now, we'll just simulate the old behavior
-      const userRes = await fetch(`${API_BASE_URL}/user`); // This needs to be a protected route
-      const user = await userRes.json();
+      const user = await profileResponse.json();
+
+      if (!profileResponse.ok) {
+        throw new Error(user.error || 'Impossible de récupérer le profil utilisateur');
+      }
+
+      // Step 3: Set the user and navigate
       setCurrentUser(user);
+      // Here you would also fetch user-specific data like conversations
       navigateTo(Screen.Home);
 
     } catch (error: any) {
-      console.error("Login failed", error);
+      console.error("Login process failed", error);
       setError(error.message);
     } finally {
       setIsLoading(false);

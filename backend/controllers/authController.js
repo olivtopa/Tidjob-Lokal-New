@@ -28,4 +28,12 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signup, login };
+// @desc    Get user profile
+// @route   GET /api/auth/me
+// @access  Private
+const getMe = async (req, res) => {
+  // req.user is set by the protect middleware
+  res.status(200).json(req.user);
+};
+
+module.exports = { signup, login, getMe };
