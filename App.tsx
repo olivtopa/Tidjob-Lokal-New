@@ -16,7 +16,13 @@ import ProviderDashboardScreen from './screens/ProviderDashboardScreen';
 import RequestServiceScreen from './screens/RequestServiceScreen';
 
 import { API_BASE_URL } from './constants';
+
 import HomeIcon from './components/icons/HomeIcon';
+import SearchIcon from './components/icons/SearchIcon';
+import PlusCircleIcon from './components/icons/PlusCircleIcon';
+import UserIcon from './components/icons/UserIcon';
+import MessageSquareIcon from './components/icons/MessageSquareIcon';
+import ClipboardListIcon from './components/icons/ClipboardListIcon';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>(Screen.Landing);
@@ -31,13 +37,50 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const navigateTo = useCallback((screen: Screen) => {
+    setError(null);
+    setCurrentScreen(screen);
+  }, []);
+
+  // Helper function for authenticated fetches
+  const fetchWithAuth = useCallback(async (url: string, options?: RequestInit) => {
+    const token = localStorage.getItem('jwtToken');
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      ...options?.headers,
+    };
+    return fetch(url, { ...options, headers });
+  }, []);
+
   useEffect(() => {
-    const fetchData = async () => {
+    const initializeAppData = async () => {
       setIsLoading(true);
       try {
+        // Attempt to auto-login if token exists
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+          try {
+            const profileResponse = await fetchWithAuth(`${API_BASE_URL}/auth/me`);
+            const user = await profileResponse.json();
+
+            if (!profileResponse.ok) {
+              throw new Error(user.error || 'Impossible de récupérer le profil utilisateur');
+            }
+            setCurrentUser(user);
+            navigateTo(Screen.Home); // Navigate to home if auto-login successful
+          } catch (autoLoginError) {
+            console.error("Auto-login failed, clearing token", autoLoginError);
+            localStorage.removeItem('jwtToken'); // Clear invalid token
+            setCurrentUser(null);
+            navigateTo(Screen.Landing);
+          }
+        }
+
+        // Fetch initial public data (services and providers)
         const [servicesRes, providersRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/services`),
-          fetch(`${API_BASE_URL}/providers`)
+          fetchWithAuth(`${API_BASE_URL}/services`),
+          fetchWithAuth(`${API_BASE_URL}/providers`)
         ]);
 
         if (!servicesRes.ok || !providersRes.ok) {
@@ -50,51 +93,14 @@ const App: React.FC = () => {
         setServices(servicesData);
         setProviders(providersData);
       } catch (error) {
-        console.error("Failed to fetch initial data", error);
-        // Don't set a global error, let screens handle missing data gracefully.
+        console.error("Failed to fetch initial data or auto-login", error);
+        setError(`Erreur de chargement initial: ${error instanceof Error ? error.message : String(error)}`);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchData();
-  }, []);
-
-  const navigateTo = useCallback((screen: Screen) => {
-    setError(null);
-    setCurrentScreen(screen);
-  }, []);
-
-  const loginUser = async (role: 'user' | 'provider') => {
-    setError(null);
-    setIsLoading(true);
-    try {
-      const userRes = await fetch(role === 'user' ? `${API_BASE_URL}/user` : `${API_BASE_URL}/provider`);
-      if (!userRes.ok) throw new Error(`Impossible de récupérer le profil utilisateur : ${userRes.statusText}`);
-      const user = await userRes.json();
-
-      const convRes = await fetch(`${API_BASE_URL}/conversations`);
-      if (!convRes.ok) throw new Error(`Impossible de récupérer les conversations : ${convRes.statusText}`);
-      const allConversations = await convRes.json();
-      
-      setCurrentUser(user);
-      setConversations(allConversations);
-
-      if (role === 'provider') {
-        const reqRes = await fetch(`${API_BASE_URL}/service-requests`);
-        if (!reqRes.ok) throw new Error(`Impossible de récupérer les demandes de service : ${reqRes.statusText}`);
-        const requests = await reqRes.json();
-        setServiceRequests(requests);
-        navigateTo(Screen.ProviderDashboard);
-      } else {
-        navigateTo(Screen.Home);
-      }
-    } catch (error: any) {
-      console.error("Login failed", error);
-      setError(`La connexion a échoué. Assurez-vous que le serveur est bien démarré. (${error.message})`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    initializeAppData();
+  }, [fetchWithAuth, navigateTo]);
 
   const handleLogin = useCallback(async (email: string, password: string) => {
     setError(null);
@@ -115,6 +121,7 @@ const App: React.FC = () => {
       
       const token = loginData.token;
       console.log('Login successful, token:', token);
+      localStorage.setItem('jwtToken', token);
       
       // Step 2: Use the token to fetch the user's profile
       const profileResponse = await fetch(`${API_BASE_URL}/auth/me`, {
@@ -142,7 +149,7 @@ const App: React.FC = () => {
     }
   }, [navigateTo]);
   
-  const handleSignUp = useCallback(async (name: string, email: string, password: string, role: 'user' | 'provider') => {
+  const handleSignUp = useCallback(async (name: string, email: string, password: string, role: 'client' | 'provider') => {
     setError(null);
     setIsLoading(true);
     try {
@@ -175,6 +182,7 @@ const App: React.FC = () => {
     setCurrentUser(null);
     setConversations([]);
     setServiceRequests([]);
+    localStorage.removeItem('jwtToken'); // Remove token on logout
     navigateTo(Screen.Landing);
   }, [navigateTo]);
 
