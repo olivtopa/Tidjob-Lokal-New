@@ -11,14 +11,9 @@ services:
     startCommand: "node server.js"
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: tidjob-lokal-db
-          property: connectionString
+        fromSecret:
+          name: TIDJOB_LOKAL_DB_URL
+          key: DATABASE_URL
       - key: JWT_SECRET
         generateValue: true # Render will generate a random value
 
-databases:
-  - name: tidjob-lokal-db
-    plan: free
-    databaseName: tidjob_lokal_db
-    user: tidjob_lokal_user
