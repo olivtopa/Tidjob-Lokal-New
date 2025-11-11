@@ -15,14 +15,8 @@ import ChatScreen from './screens/ChatScreen';
 import ProviderDashboardScreen from './screens/ProviderDashboardScreen';
 import RequestServiceScreen from './screens/RequestServiceScreen';
 
+import { API_BASE_URL } from './constants';
 import HomeIcon from './components/icons/HomeIcon';
-import SearchIcon from './components/icons/SearchIcon';
-import PlusCircleIcon from './components/icons/PlusCircleIcon';
-import UserIcon from './components/icons/UserIcon';
-import MessageSquareIcon from './components/icons/MessageSquareIcon';
-import ClipboardListIcon from './components/icons/ClipboardListIcon';
-
-const API_BASE_URL = 'http://localhost:3001/api';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>(Screen.Landing);
@@ -102,12 +96,68 @@ const App: React.FC = () => {
     }
   };
 
-  const handleLogin = useCallback(async (role: 'user' | 'provider') => {
-    await loginUser(role);
+  const handleLogin = useCallback(async (email: string, password: string) => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur de connexion');
+      }
+      
+      // For now, we just reload all data. A more robust solution would
+      // fetch user-specific data.
+      // We also need to properly store and use the token.
+      console.log('Login successful, token:', data.token);
+
+      // This is a placeholder for fetching user data and navigating
+      // For now, we'll just simulate the old behavior
+      const userRes = await fetch(`${API_BASE_URL}/user`); // This needs to be a protected route
+      const user = await userRes.json();
+      setCurrentUser(user);
+      navigateTo(Screen.Home);
+
+    } catch (error: any) {
+      console.error("Login failed", error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   }, [navigateTo]);
   
-  const handleSignUp = useCallback(async (role: 'user' | 'provider') => {
-    await loginUser(role);
+  const handleSignUp = useCallback(async (name: string, email: string, password: string, role: 'user' | 'provider') => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors de l\'inscription');
+      }
+
+      // Successfully signed up, now navigate to login screen
+      // We could also pass a success message.
+      navigateTo(Screen.Login);
+
+    } catch (error: any) {
+      console.error("Sign up failed", error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   }, [navigateTo]);
 
 

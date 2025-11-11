@@ -3,13 +3,16 @@ import { Screen } from '../types';
 
 interface SignUpScreenProps {
   navigateTo: (screen: Screen) => void;
-  onSignUp: (role: 'user' | 'provider') => void;
+  onSignUp: (name: string, email: string, password: string, role: 'user' | 'provider') => void;
   error?: string | null;
   isLoading?: boolean;
 }
 
 const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error, isLoading }) => {
-  const [role, setRole] = useState<'user' | 'provider'>('user');
+  const [role, setRole] = useState<'client' | 'provider'>('client');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
     <div className="min-h-full flex flex-col justify-center items-center p-6 bg-gray-100">
@@ -26,11 +29,11 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
           <p className="text-gray-500 mt-2">Créez votre compte en quelques secondes.</p>
         </div>
         
-        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSignUp(role); }}>
+        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSignUp(name, email, password, role); }}>
            <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">Vous êtes :</label>
             <div className="flex rounded-lg shadow-sm border border-gray-200">
-                <button type="button" onClick={() => setRole('user')} className={`w-full px-4 py-3 text-sm font-semibold rounded-l-lg transition-colors ${role === 'user' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
+                <button type="button" onClick={() => setRole('client')} className={`w-full px-4 py-3 text-sm font-semibold rounded-l-lg transition-colors ${role === 'client' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
                     Un client
                 </button>
                 <button type="button" onClick={() => setRole('provider')} className={`w-full px-4 py-3 text-sm font-semibold rounded-r-lg transition-colors ${role === 'provider' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
@@ -40,15 +43,15 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
           </div>
           <div>
             <label htmlFor="name" className="text-sm font-medium text-gray-700">Nom complet</label>
-            <input type="text" id="name" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Alex Doe" />
+            <input type="text" id="name" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Alex Doe" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div>
             <label htmlFor="email" className="text-sm font-medium text-gray-700">Adresse e-mail</label>
-            <input type="email" id="email" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="vous@exemple.com" />
+            <input type="email" id="email" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="vous@exemple.com" value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div>
             <label htmlFor="password"className="text-sm font-medium text-gray-700">Mot de passe</label>
-            <input type="password" id="password" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="********" />
+            <input type="password" id="password" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="********" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           
           <div className="pt-2">

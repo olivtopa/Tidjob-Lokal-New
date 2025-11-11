@@ -3,13 +3,20 @@ import { Screen } from '../types';
 
 interface LoginScreenProps {
   navigateTo: (screen: Screen) => void;
-  onLogin: (role: 'user' | 'provider') => void;
+  onLogin: (email: string, password: string) => void;
   error?: string | null;
   isLoading?: boolean;
 }
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, isLoading }) => {
   const [role, setRole] = useState<'user' | 'provider'>('user');
+  const [email, setEmail] = useState(role === 'user' ? 'alex.doe@example.com' : 'marie.curie@example.com');
+  const [password, setPassword] = useState('password');
+
+  const handleRoleChange = (newRole: 'user' | 'provider') => {
+    setRole(newRole);
+    setEmail(newRole === 'user' ? 'alex.doe@example.com' : 'marie.curie@example.com');
+  };
 
   return (
     <div className="min-h-full flex flex-col justify-center items-center p-6 bg-gray-100">
@@ -28,23 +35,39 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, i
         
         <div className="mb-6">
             <div className="flex rounded-lg shadow-sm border border-gray-200">
-                <button type="button" onClick={() => setRole('user')} className={`w-full px-4 py-3 text-sm font-semibold rounded-l-lg transition-colors ${role === 'user' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
+                <button type="button" onClick={() => handleRoleChange('user')} className={`w-full px-4 py-3 text-sm font-semibold rounded-l-lg transition-colors ${role === 'user' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
                     Je suis un client
                 </button>
-                <button type="button" onClick={() => setRole('provider')} className={`w-full px-4 py-3 text-sm font-semibold rounded-r-lg transition-colors ${role === 'provider' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
+                <button type="button" onClick={() => handleRoleChange('provider')} className={`w-full px-4 py-3 text-sm font-semibold rounded-r-lg transition-colors ${role === 'provider' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
                     Je suis un prestataire
                 </button>
             </div>
         </div>
         
-        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onLogin(role); }}>
+        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onLogin(email, password); }}>
           <div>
             <label htmlFor="email" className="text-sm font-medium text-gray-700">Adresse e-mail</label>
-            <input type="email" id="email" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="vous@exemple.com" defaultValue={role === 'user' ? 'alex.doe@example.com' : 'marie.curie@example.com'} />
+            <input 
+              type="email" 
+              id="email" 
+              required 
+              className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" 
+              placeholder="vous@exemple.com" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
           <div>
             <label htmlFor="password"className="text-sm font-medium text-gray-700">Mot de passe</label>
-            <input type="password" id="password" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="********" defaultValue="password" />
+            <input 
+              type="password" 
+              id="password" 
+              required 
+              className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" 
+              placeholder="********" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
           
           {error && <div className="text-sm text-red-600 bg-red-100 p-3 rounded-lg text-center">{error}</div>}

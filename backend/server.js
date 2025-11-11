@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3001;
 
 const authRoutes = require('./routes/authRoutes');
 const serviceRoutes = require('./routes/servicesRoutes');
+const providerRoutes = require('./routes/providersRoutes');
 
 // Middleware
 app.use(cors());
@@ -17,6 +18,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/providers', providerRoutes);
 
 // Basic health check route
 app.get('/', (req, res) => {

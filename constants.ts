@@ -6,6 +6,8 @@ import BricolageIcon from './components/icons/BricolageIcon';
 import GardeEnfantIcon from './components/icons/GardeEnfantIcon';
 import CovoiturageIcon from './components/icons/CovoiturageIcon';
 
+export const API_BASE_URL = 'https://tidjob-lokal-backend-nzbs.onrender.com/api';
+
 export const SERVICE_CATEGORIES: ServiceCategory[] = [
   { id: 'cat-1', name: 'Jardinage', icon: GardeningIcon, imageUrl: 'https://picsum.photos/seed/garden/600/400' },
   { id: 'cat-2', name: 'Ménage', icon: CleaningIcon, imageUrl: 'https://picsum.photos/seed/cleaning/600/400' },
