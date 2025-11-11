@@ -1,0 +1,57 @@
+
+[
+  {
+    "id": "serv-1",
+    "title": "Tonte de pelouse et entretien",
+    "description": "Service complet de tonte de pelouse, désherbage et entretien de votre jardin.",
+    "price": 50,
+    "providerId": "prov-1",
+    "category": "Jardinage",
+    "imageUrl": "https://picsum.photos/seed/lawn/800/600"
+  },
+  {
+    "id": "serv-2",
+    "title": "Nettoyage de printemps résidentiel",
+    "description": "Un nettoyage en profondeur pour votre maison, fenêtres incluses.",
+    "price": 120,
+    "providerId": "prov-2",
+    "category": "Ménage",
+    "imageUrl": "https://picsum.photos/seed/cleanhome/800/600"
+  },
+  {
+    "id": "serv-3",
+    "title": "Aide au déménagement local",
+    "description": "Deux déménageurs pour vous aider à charger/décharger votre camion.",
+    "price": 80,
+    "providerId": "prov-4",
+    "category": "Déménagement",
+    "imageUrl": "https://picsum.photos/seed/movehelp/800/600"
+  },
+  {
+    "id": "serv-4",
+    "title": "Montage de meubles IKEA",
+    "description": "Montage rapide et efficace de tous types de meubles en kit.",
+    "price": 45,
+    "providerId": "prov-5",
+    "category": "Bricolage",
+    "imageUrl": "https://picsum.photos/seed/furniture/800/600"
+  },
+    {
+    "id": "serv-5",
+    "title": "Garde d'enfants en soirée",
+    "description": "Babysitting pour vos soirées, jeux et coucher assurés.",
+    "price": 15,
+    "providerId": "prov-6",
+    "category": "Garde d'enfant",
+    "imageUrl": "https://picsum.photos/seed/babysit/800/600"
+  },
+  {
+    "id": "serv-6",
+    "title": "Trajet Paris - Lille",
+    "description": "Place disponible dans ma voiture pour le trajet hebdomadaire vers Lille.",
+    "price": 25,
+    "providerId": "prov-7",
+    "category": "Covoiturage",
+    "imageUrl": "https://picsum.photos/seed/roadtrip/800/600"
+  }
+]

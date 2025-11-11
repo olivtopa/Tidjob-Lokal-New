@@ -1,0 +1,8 @@
+
+{
+  "id": "prov-user-1",
+  "name": "Marie Curie",
+  "email": "marie.curie@example.com",
+  "avatarUrl": "https://picsum.photos/seed/marie/100/100",
+  "role": "provider"
+}

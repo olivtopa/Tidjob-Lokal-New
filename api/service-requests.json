@@ -1,0 +1,27 @@
+
+[
+    {
+        "id": "req-1",
+        "title": "Besoin d'aide pour tondre ma pelouse",
+        "description": "J'ai un jardin d'environ 50m² et je cherche quelqu'un pour tondre la pelouse ce weekend. Matériel non fourni.",
+        "category": "Jardinage",
+        "user": {
+            "id": "user-2",
+            "name": "Bernard L.",
+            "avatarUrl": "https://picsum.photos/seed/bernard/100/100"
+        },
+        "postedAt": "Il y a 2h"
+    },
+    {
+        "id": "req-2",
+        "title": "Cherche aide pour monter une étagère",
+        "description": "J'ai acheté une étagère murale et j'ai besoin d'un coup de main pour la fixer correctement. J'ai les outils nécessaires.",
+        "category": "Bricolage",
+        "user": {
+            "id": "user-3",
+            "name": "Sophie Dubois",
+            "avatarUrl": "https://picsum.photos/seed/sophie/100/100"
+        },
+        "postedAt": "Hier"
+    }
+]

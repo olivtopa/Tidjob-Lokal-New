@@ -1,0 +1,22 @@
+# This file is for Render deployment configuration.
+# You should move this file to the root of your project directory.
+
+services:
+  - type: web
+    name: tidjob-lokal-backend
+    env: node
+    rootDir: backend
+    buildCommand: "npm install"
+    startCommand: "node server.js"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tidjob-lokal-db
+          property: internalConnectionString
+      - key: JWT_SECRET
+        generateValue: true # Render will generate a random value
+
+databases:
+  - name: tidjob-lokal-db
+    databaseName: tidjob_lokal_db
+    user: tidjob_lokal_user

@@ -1,0 +1,24 @@
+
+[
+  {
+    "id": "conv-1",
+    "serviceId": "serv-1",
+    "providerId": "prov-1",
+    "unread": true,
+    "messages": [
+      { "id": "msg-1-1", "text": "Bonjour, votre service de jardinage est-il disponible ce weekend ?", "timestamp": "Hier", "senderId": "user-1" },
+      { "id": "msg-1-2", "text": "Bonjour Alex ! Oui, tout à fait. Samedi matin vous irait ?", "timestamp": "Aujourd'hui", "senderId": "prov-1" }
+    ]
+  },
+  {
+    "id": "conv-2",
+    "serviceId": "serv-2",
+    "providerId": "prov-2",
+    "unread": false,
+    "messages": [
+      { "id": "msg-2-1", "text": "Bonjour, j'aurais besoin d'un grand nettoyage pour mon appartement.", "timestamp": "Il y a 2 jours", "senderId": "user-1" },
+      { "id": "msg-2-2", "text": "Pas de problème, je suis disponible. Combien de pièces ?", "timestamp": "Il y a 2 jours", "senderId": "prov-2" },
+      { "id": "msg-2-3", "text": "Il y a 3 pièces, plus la cuisine et la salle de bain.", "timestamp": "Hier", "senderId": "user-1" }
+    ]
+  }
+]
