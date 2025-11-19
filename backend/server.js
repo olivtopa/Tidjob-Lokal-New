@@ -13,31 +13,8 @@ const serviceRequestRoutes = require('./routes/serviceRequestRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 
 // CORS Configuration
-const allowedOrigins = [
-  'http://localhost:3000', // Vite default dev port
-  'http://localhost:5173', // Vite default dev port (sometimes)
-  'http://192.168.1.166:3000', // Allow local network access
-  // Add your deployed frontend URL here when you have it
-  // e.g., 'https://your-frontend-app.onrender.com' 
-];
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-
-    // Allow allowed origins and any Render deployment
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.onrender.com')) {
-      return callback(null, true);
-    }
-
-    const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-    return callback(new Error(msg), false);
-  }
-};
-
-// Middleware
-app.use(cors(corsOptions)); // Use configured CORS
+// TEMPORARY DEBUGGING: Allow all origins to rule out CORS issues
+app.use(cors());
 app.use(express.json());
 
 // Routes

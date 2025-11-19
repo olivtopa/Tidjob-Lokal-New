@@ -25,13 +25,14 @@ import MessageSquareIcon from './components/icons/MessageSquareIcon';
 import ClipboardListIcon from './components/icons/ClipboardListIcon';
 
 const App: React.FC = () => {
+  console.log('🚀 App starting. API_BASE_URL:', API_BASE_URL);
   const [currentScreen, setCurrentScreen] = useState<Screen>(Screen.Landing);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>([]);
-  
+
   const [services, setServices] = useState<Service[]>([]);
   const [providers, setProviders] = useState<Provider[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,7 +85,7 @@ const App: React.FC = () => {
         ]);
 
         if (!servicesRes.ok || !providersRes.ok) {
-            throw new Error(`Services: ${servicesRes.statusText}, Providers: ${providersRes.statusText}`);
+          throw new Error(`Services: ${servicesRes.statusText}, Providers: ${providersRes.statusText}`);
         }
 
         const servicesData = await servicesRes.json();
@@ -138,17 +139,17 @@ const App: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      
+
       const loginData = await loginResponse.json();
 
       if (!loginResponse.ok) {
         throw new Error(loginData.error || 'Erreur de connexion');
       }
-      
+
       const token = loginData.token;
       console.log('Login successful, token:', token);
       localStorage.setItem('jwtToken', token);
-      
+
       // Step 2: Use the token to fetch the user's profile
       const profileResponse = await fetch(`${API_BASE_URL}/auth/me`, {
         headers: {
@@ -185,7 +186,7 @@ const App: React.FC = () => {
       setIsLoading(false);
     }
   }, [navigateTo]);
-  
+
   const handleSignUp = useCallback(async (name: string, email: string, password: string, role: 'client' | 'provider') => {
     setError(null);
     setIsLoading(true);
@@ -253,24 +254,24 @@ const App: React.FC = () => {
     setSelectedService(service);
     navigateTo(Screen.ServiceDetail);
   }, [navigateTo]);
-  
+
   const handleSelectConversation = useCallback(async (conversation: Conversation) => {
-      setSelectedConversation(conversation);
-      // Fetch latest messages for the selected conversation
-      try {
-        const messagesRes = await fetchWithAuth(`${API_BASE_URL}/messages/${conversation.id}/messages`);
-        if (!messagesRes.ok) {
-          throw new Error(`Failed to fetch messages: ${messagesRes.statusText}`);
-        }
-        const messagesData = await messagesRes.json();
-        const updatedConversation = { ...conversation, messages: messagesData, unread: false };
-        setConversations(prev => prev.map(c => c.id === conversation.id ? updatedConversation : c));
-        setSelectedConversation(updatedConversation);
-        navigateTo(Screen.Chat);
-      } catch (error) {
-        console.error("Error fetching messages for conversation:", error);
-        setError(`Erreur de chargement des messages: ${error instanceof Error ? error.message : String(error)}`);
+    setSelectedConversation(conversation);
+    // Fetch latest messages for the selected conversation
+    try {
+      const messagesRes = await fetchWithAuth(`${API_BASE_URL}/messages/${conversation.id}/messages`);
+      if (!messagesRes.ok) {
+        throw new Error(`Failed to fetch messages: ${messagesRes.statusText}`);
       }
+      const messagesData = await messagesRes.json();
+      const updatedConversation = { ...conversation, messages: messagesData, unread: false };
+      setConversations(prev => prev.map(c => c.id === conversation.id ? updatedConversation : c));
+      setSelectedConversation(updatedConversation);
+      navigateTo(Screen.Chat);
+    } catch (error) {
+      console.error("Error fetching messages for conversation:", error);
+      setError(`Erreur de chargement des messages: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }, [fetchWithAuth, navigateTo]);
 
   const handleStartConversation = useCallback(async (service: Service, initialMessageContent: string) => {
@@ -314,36 +315,36 @@ const App: React.FC = () => {
       setError(error.message);
     }
   }, [currentUser, fetchWithAuth, navigateTo]);
-  
+
   const handleSendMessage = useCallback(async (conversationId: string, messageText: string) => {
-      if (!currentUser) return; // Guard against user being null
+    if (!currentUser) return; // Guard against user being null
 
-      try {
-        const response = await fetchWithAuth(`${API_BASE_URL}/messages/${conversationId}/messages`, {
-          method: 'POST',
-          body: JSON.stringify({ content: messageText }),
-        });
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/messages/${conversationId}/messages`, {
+        method: 'POST',
+        body: JSON.stringify({ content: messageText }),
+      });
 
-        const newMessage = await response.json();
+      const newMessage = await response.json();
 
-        if (!response.ok) {
-          throw new Error(newMessage.message || 'Failed to send message.');
-        }
-
-        // Update local state with the new message
-        setConversations(prev => prev.map(c => {
-            if (c.id === conversationId) {
-                const updatedConversation = { ...c, messages: [...c.messages, newMessage], lastMessageAt: newMessage.timestamp };
-                setSelectedConversation(updatedConversation);
-                return updatedConversation;
-            }
-            return c;
-        }));
-
-      } catch (error: any) {
-        console.error("Error sending message:", error);
-        setError(error.message);
+      if (!response.ok) {
+        throw new Error(newMessage.message || 'Failed to send message.');
       }
+
+      // Update local state with the new message
+      setConversations(prev => prev.map(c => {
+        if (c.id === conversationId) {
+          const updatedConversation = { ...c, messages: [...c.messages, newMessage], lastMessageAt: newMessage.timestamp };
+          setSelectedConversation(updatedConversation);
+          return updatedConversation;
+        }
+        return c;
+      }));
+
+    } catch (error: any) {
+      console.error("Error sending message:", error);
+      setError(error.message);
+    }
   }, [currentUser, fetchWithAuth]);
 
   const renderScreen = () => {
@@ -396,35 +397,34 @@ const App: React.FC = () => {
   const NavItem: React.FC<{ screen: Screen; icon: React.ReactNode; label: string; hasNotification?: boolean }> = ({ screen, icon, label, hasNotification }) => (
     <button
       onClick={() => navigateTo(screen)}
-      className={`relative flex flex-col items-center justify-center w-full pt-2 pb-1 transition-colors duration-200 ${
-        currentScreen === screen ? 'text-teal-500' : 'text-gray-500 hover:text-teal-600'
-      }`}
+      className={`relative flex flex-col items-center justify-center w-full pt-2 pb-1 transition-colors duration-200 ${currentScreen === screen ? 'text-teal-500' : 'text-gray-500 hover:text-teal-600'
+        }`}
     >
       {icon}
       <span className="text-xs mt-1">{label}</span>
       {hasNotification && <span className="absolute top-1 right-[calc(50%-20px)] w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>}
     </button>
   );
-  
+
   const hasUnreadMessages = conversations.some(c => c.unread);
 
   const renderUserNav = () => (
     <div className="flex justify-around items-center h-16">
-        <NavItem screen={Screen.Home} icon={<HomeIcon className="w-6 h-6" />} label="Accueil" />
-        <NavItem screen={Screen.Find} icon={<SearchIcon className="w-6 h-6" />} label="Trouver" />
-        <NavItem screen={Screen.Messages} icon={<MessageSquareIcon className="w-6 h-6" />} label="Messages" hasNotification={hasUnreadMessages} />
-        <NavItem screen={Screen.RequestService} icon={<PlusCircleIcon className="w-6 h-6" />} label="Demander" />
-        <NavItem screen={Screen.Profile} icon={<UserIcon className="w-6 h-6" />} label="Profil" />
+      <NavItem screen={Screen.Home} icon={<HomeIcon className="w-6 h-6" />} label="Accueil" />
+      <NavItem screen={Screen.Find} icon={<SearchIcon className="w-6 h-6" />} label="Trouver" />
+      <NavItem screen={Screen.Messages} icon={<MessageSquareIcon className="w-6 h-6" />} label="Messages" hasNotification={hasUnreadMessages} />
+      <NavItem screen={Screen.RequestService} icon={<PlusCircleIcon className="w-6 h-6" />} label="Demander" />
+      <NavItem screen={Screen.Profile} icon={<UserIcon className="w-6 h-6" />} label="Profil" />
     </div>
   );
 
   const renderProviderNav = () => (
-      <div className="flex justify-around items-center h-16">
-          <NavItem screen={Screen.ProviderDashboard} icon={<ClipboardListIcon className="w-6 h-6" />} label="Demandes" />
-          <NavItem screen={Screen.Offer} icon={<PlusCircleIcon className="w-6 h-6" />} label="Mes Services" />
-          <NavItem screen={Screen.Messages} icon={<MessageSquareIcon className="w-6 h-6" />} label="Messages" hasNotification={hasUnreadMessages} />
-          <NavItem screen={Screen.Profile} icon={<UserIcon className="w-6 h-6" />} label="Profil" />
-      </div>
+    <div className="flex justify-around items-center h-16">
+      <NavItem screen={Screen.ProviderDashboard} icon={<ClipboardListIcon className="w-6 h-6" />} label="Demandes" />
+      <NavItem screen={Screen.Offer} icon={<PlusCircleIcon className="w-6 h-6" />} label="Mes Services" />
+      <NavItem screen={Screen.Messages} icon={<MessageSquareIcon className="w-6 h-6" />} label="Messages" hasNotification={hasUnreadMessages} />
+      <NavItem screen={Screen.Profile} icon={<UserIcon className="w-6 h-6" />} label="Profil" />
+    </div>
   );
 
   return (
