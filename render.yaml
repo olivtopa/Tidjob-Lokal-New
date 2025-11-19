@@ -30,4 +30,4 @@ services:
         fromService:
           type: web
           name: tidjob-lokal-backend
-          property: url
+          property: host

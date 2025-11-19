@@ -6,7 +6,10 @@ import BricolageIcon from './components/icons/BricolageIcon';
 import GardeEnfantIcon from './components/icons/GardeEnfantIcon';
 import CovoiturageIcon from './components/icons/CovoiturageIcon';
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+let baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+if (!baseUrl.startsWith('http')) {
+  baseUrl = `https://${baseUrl}`;
+}
 export const API_BASE_URL = `${baseUrl}/api`;
 
 export const SERVICE_CATEGORIES: ServiceCategory[] = [
