@@ -25,7 +25,6 @@ import MessageSquareIcon from './components/icons/MessageSquareIcon';
 import ClipboardListIcon from './components/icons/ClipboardListIcon';
 
 const App: React.FC = () => {
-  console.log('🚀 App starting. API_BASE_URL:', API_BASE_URL);
   const [currentScreen, setCurrentScreen] = useState<Screen>(Screen.Landing);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
