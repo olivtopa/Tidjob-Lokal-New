@@ -6,7 +6,8 @@ import BricolageIcon from './components/icons/BricolageIcon';
 import GardeEnfantIcon from './components/icons/GardeEnfantIcon';
 import CovoiturageIcon from './components/icons/CovoiturageIcon';
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+export const API_BASE_URL = `${baseUrl}/api`;
 
 export const SERVICE_CATEGORIES: ServiceCategory[] = [
   { id: 'cat-1', name: 'Jardinage', icon: GardeningIcon, imageUrl: 'https://picsum.photos/seed/garden/600/400' },
