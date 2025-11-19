@@ -2,14 +2,30 @@
 # You should move this file to the root of your project directory.
 
 services:
+  # Backend Service
   - type: web
     name: tidjob-lokal-backend
     plan: free
     env: node
     rootDir: backend
-    buildCommand: "npm install"
-    startCommand: "node server.js"
+    buildCommand: npm install
+    startCommand: node server.js
     envVars:
       - key: JWT_SECRET
         generateValue: true # Render will generate a random value
+      - key: NODE_ENV
+        value: production
 
+  # Frontend Service
+  - type: static
+    name: tidjob-lokal-frontend
+    plan: free
+    rootDir: .
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: tidjob-lokal-backend
+          property: url
