@@ -3,7 +3,9 @@ const { Sequelize } = require('sequelize');
 const dbUrl = process.env.DATABASE_URL;
 
 if (!dbUrl) {
-  throw new Error('DATABASE_URL environment variable is not set. Please provide a valid database connection string.');
+  console.error('❌ DATABASE_URL environment variable is not set.');
+  // We don't throw here to allow server.js to start and log the error properly.
+  // Sequelize will likely fail to connect later.
 }
 
 const sequelize = new Sequelize(dbUrl, {

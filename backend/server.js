@@ -30,11 +30,15 @@ app.get('/', (req, res) => {
 });
 
 // Sync database and start server
+// Start server immediately to handle requests (and CORS) even if DB fails
+app.listen(PORT, () => {
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+});
+
+// Attempt to sync database
 db.sequelize.sync({ alter: true }).then(() => {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server is running on http://localhost:${PORT}`);
-    console.log('✅ Database synchronized.');
-  });
+  console.log('✅ Database synchronized.');
 }).catch(err => {
   console.error('❌ Unable to connect to the database:', err);
+  console.error('⚠️ Server is running but database is not connected. API calls may fail.');
 });
