@@ -27,7 +27,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_BASE_URL
-        fromService:
-          type: web
-          name: tidjob-lokal-backend
-          property: host
+        value: https://tidjob-lokal-backend-eu.onrender.com
