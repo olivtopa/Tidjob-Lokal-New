@@ -7,6 +7,12 @@ import GardeEnfantIcon from './components/icons/GardeEnfantIcon';
 import CovoiturageIcon from './components/icons/CovoiturageIcon';
 
 let baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+
+// Handle Render internal hostnames (e.g., "service-name-slug") by appending .onrender.com
+if (!baseUrl.includes('localhost') && !baseUrl.includes('.')) {
+  baseUrl = `${baseUrl}.onrender.com`;
+}
+
 if (!baseUrl.startsWith('http')) {
   baseUrl = `https://${baseUrl}`;
 }
