@@ -68,6 +68,16 @@ const App: React.FC = () => {
               throw new Error(user.error || 'Impossible de récupérer le profil utilisateur');
             }
             setCurrentUser(user);
+
+            // If user is provider, fetch their service requests
+            if (user.role === 'provider') {
+              const serviceRequestsRes = await fetchWithAuth(`${API_BASE_URL}/servicerequests`);
+              if (serviceRequestsRes.ok) {
+                const requestsData = await serviceRequestsRes.json();
+                setServiceRequests(requestsData);
+              }
+            }
+
             navigateTo(Screen.Home); // Navigate to home if auto-login successful
           } catch (autoLoginError) {
             console.error("Auto-login failed, clearing token", autoLoginError);
