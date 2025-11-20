@@ -1,4 +1,3 @@
-
 [
   {
     "id": "serv-1",
@@ -20,11 +19,11 @@
   },
   {
     "id": "serv-3",
-    "title": "Aide au déménagement local",
-    "description": "Deux déménageurs pour vous aider à charger/décharger votre camion.",
-    "price": 80,
-    "providerId": "prov-4",
-    "category": "Déménagement",
+    "title": "Soutien scolaire mathématiques",
+    "description": "Professeur expérimenté propose cours de maths tous niveaux.",
+    "price": 25,
+    "providerId": "user-2",
+    "category": "Cours",
     "imageUrl": "https://picsum.photos/seed/movehelp/800/600"
   },
   {
@@ -36,7 +35,7 @@
     "category": "Bricolage",
     "imageUrl": "https://picsum.photos/seed/furniture/800/600"
   },
-    {
+  {
     "id": "serv-5",
     "title": "Garde d'enfants en soirée",
     "description": "Babysitting pour vos soirées, jeux et coucher assurés.",
