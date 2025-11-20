@@ -154,6 +154,7 @@ exports.startConversation = async (req, res) => {
     res.status(201).json(newConversation);
   } catch (error) {
     console.error('Error starting conversation:', error);
+    console.error('Error details:', JSON.stringify(error, null, 2)); // Log full error details
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

@@ -341,7 +341,7 @@ const App: React.FC = () => {
       const newConversation = await response.json();
 
       if (!response.ok) {
-        throw new Error(newConversation.message || 'Failed to start conversation.');
+        throw new Error(newConversation.message + (newConversation.error ? `: ${newConversation.error}` : '') || 'Failed to start conversation.');
       }
 
       setConversations(prev => {
