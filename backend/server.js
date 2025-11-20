@@ -59,8 +59,15 @@ app.listen(PORT, () => {
 });
 
 // Attempt to sync database
-db.sequelize.sync({ alter: true }).then(() => {
+db.sequelize.sync({ alter: true }).then(async () => {
   console.log('✅ Database synchronized.');
+  try {
+    // Force removal of NOT NULL constraint on ServiceId which might persist despite sync
+    await db.sequelize.query('ALTER TABLE "Conversations" ALTER COLUMN "ServiceId" DROP NOT NULL;');
+    console.log('✅ Fixed ServiceId constraint.');
+  } catch (e) {
+    console.log('⚠️ Could not alter ServiceId (might already be nullable or other error):', e.message);
+  }
 }).catch(err => {
   console.error('❌ Unable to connect to the database:', err);
   console.error('⚠️ Server is running but database is not connected. API calls may fail.');
