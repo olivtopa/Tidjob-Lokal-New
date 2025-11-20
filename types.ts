@@ -61,7 +61,8 @@ export interface Message {
 
 export interface Conversation {
   id: string;
-  service: Service;
+  service?: Service | null; // Optional now
+  serviceRequest?: ServiceRequest | null; // New field
   provider: Provider;
   messages: Message[];
   unread: boolean;

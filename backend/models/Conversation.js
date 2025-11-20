@@ -8,12 +8,21 @@ const Conversation = sequelize.define('Conversation', {
     allowNull: false,
     defaultValue: DataTypes.NOW,
   },
-  // Add ServiceId to link conversation to a service
+  // ServiceId is now optional because a conversation can be about a ServiceRequest
   ServiceId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
     references: {
-      model: 'Services', // 'Services' is the table name
+      model: 'Services',
+      key: 'id',
+    },
+  },
+  // Add ServiceRequestId to link conversation to a service request
+  ServiceRequestId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: 'ServiceRequests',
       key: 'id',
     },
   },

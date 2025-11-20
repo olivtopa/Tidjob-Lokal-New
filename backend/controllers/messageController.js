@@ -5,13 +5,18 @@ const { Op } = require('sequelize');
 const conversationIncludeOptions = [
   { model: User, as: 'client', attributes: ['id', 'name', 'avatarUrl'] },
   { model: User, as: 'provider', attributes: ['id', 'name', 'avatarUrl'] },
-  { 
-    model: Service, 
-    as: 'service', 
+  {
+    model: Service,
+    as: 'service',
     attributes: ['id', 'title', 'category']
   },
-  { 
-    model: Message, 
+  {
+    model: ServiceRequest,
+    as: 'serviceRequest',
+    attributes: ['id', 'title', 'category']
+  },
+  {
+    model: Message,
     as: 'messages',
     attributes: ['id', 'content', 'timestamp', 'senderId'],
     include: [{ model: User, as: 'sender', attributes: ['id', 'name', 'avatarUrl'] }],
@@ -74,37 +79,61 @@ exports.getMessages = async (req, res) => {
 
 // @desc    Start a new conversation
 // @route   POST /api/messages
-// @access  Private (Client only)
+// @access  Private (Client or Provider)
 exports.startConversation = async (req, res) => {
   try {
-    const { ServiceId, providerId, initialMessageContent } = req.body;
-    const clientId = req.user.id; // Client initiating the conversation
+    const { ServiceId, ServiceRequestId, providerId, initialMessageContent } = req.body;
+    const currentUserId = req.user.id;
 
-    // Add validation
-    if (!ServiceId || !providerId) {
-      return res.status(400).json({ message: 'ServiceId and providerId are required.' });
+    // Validation: Must have either ServiceId or ServiceRequestId
+    if (!ServiceId && !ServiceRequestId) {
+      return res.status(400).json({ message: 'ServiceId or ServiceRequestId is required.' });
     }
 
-    // Check if a conversation already exists for this service between these two users
-    let conversation = await Conversation.findOne({
-      where: {
-        ServiceId,
-        clientId,
-        providerId,
-      },
-    });
+    // Determine participants
+    // If ServiceId is present, it's a client contacting a provider about a Service.
+    // If ServiceRequestId is present, it's a provider contacting a client about a ServiceRequest.
+
+    let clientId, targetProviderId;
+
+    if (ServiceId) {
+      // Client contacting Provider
+      clientId = currentUserId;
+      targetProviderId = providerId;
+      if (!targetProviderId) return res.status(400).json({ message: 'providerId is required when starting conversation from a Service.' });
+    } else {
+      // Provider contacting Client (via ServiceRequest)
+      // For ServiceRequest, the 'client' is the one who made the request.
+      // The 'provider' is the current user responding to it.
+      const request = await ServiceRequest.findByPk(ServiceRequestId);
+      if (!request) return res.status(404).json({ message: 'ServiceRequest not found.' });
+
+      clientId = request.clientId; // The user who posted the request
+      targetProviderId = currentUserId; // The provider responding
+    }
+
+    // Check if a conversation already exists
+    let whereClause = {
+      clientId,
+      providerId: targetProviderId,
+    };
+
+    if (ServiceId) whereClause.ServiceId = ServiceId;
+    if (ServiceRequestId) whereClause.ServiceRequestId = ServiceRequestId;
+
+    let conversation = await Conversation.findOne({ where: whereClause });
 
     if (conversation) {
-      // If conversation exists, fetch it with all associations and return it
       const fullConversation = await Conversation.findByPk(conversation.id, { include: conversationIncludeOptions });
       return res.status(200).json(fullConversation);
     }
 
     // Create new conversation
     conversation = await Conversation.create({
-      ServiceId,
+      ServiceId: ServiceId || null,
+      ServiceRequestId: ServiceRequestId || null,
       clientId,
-      providerId,
+      providerId: targetProviderId,
       lastMessageAt: new Date(),
     });
 
@@ -112,13 +141,12 @@ exports.startConversation = async (req, res) => {
     if (initialMessageContent) {
       await Message.create({
         conversationId: conversation.id,
-        senderId: clientId,
+        senderId: currentUserId,
         content: initialMessageContent,
         timestamp: new Date(),
       });
     }
 
-    // Fetch the newly created or existing conversation with all associations
     const newConversation = await Conversation.findByPk(conversation.id, {
       include: conversationIncludeOptions,
     });

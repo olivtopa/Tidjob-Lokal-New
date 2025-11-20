@@ -315,6 +315,42 @@ const App: React.FC = () => {
     }
   }, [currentUser, fetchWithAuth, navigateTo]);
 
+  const handleRespondToRequest = useCallback(async (request: ServiceRequest, initialMessageContent: string) => {
+    if (!currentUser) return;
+
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/messages`, {
+        method: 'POST',
+        body: JSON.stringify({
+          ServiceRequestId: request.id,
+          providerId: currentUser.id, // Current user is the provider responding
+          initialMessageContent,
+        }),
+      });
+
+      const newConversation = await response.json();
+
+      if (!response.ok) {
+        throw new Error(newConversation.message || 'Failed to start conversation.');
+      }
+
+      setConversations(prev => {
+        const existingIndex = prev.findIndex(c => c.id === newConversation.id);
+        if (existingIndex > -1) {
+          return prev.map((c, index) => index === existingIndex ? newConversation : c);
+        } else {
+          return [newConversation, ...prev];
+        }
+      });
+      setSelectedConversation(newConversation);
+      navigateTo(Screen.Chat);
+
+    } catch (error: any) {
+      console.error("Error responding to request:", error);
+      setError(error.message);
+    }
+  }, [currentUser, fetchWithAuth, navigateTo]);
+
   const handleSendMessage = useCallback(async (conversationId: string, messageText: string) => {
     if (!currentUser) return; // Guard against user being null
 
@@ -364,7 +400,7 @@ const App: React.FC = () => {
         return <SignUpScreen navigateTo={navigateTo} onSignUp={handleSignUp} error={error} isLoading={isLoading} />;
       case Screen.Home:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
-        if (currentUser.role === 'provider') return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} />;
+        if (currentUser.role === 'provider') return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} />;
         return <HomeScreen navigateTo={navigateTo} user={currentUser} providers={providers} services={services} onSelectService={handleSelectService} />;
       case Screen.Find:
         return <FindServiceScreen services={services} navigateTo={navigateTo} onSelectService={handleSelectService} />;
@@ -385,7 +421,7 @@ const App: React.FC = () => {
         return <ChatScreen conversation={selectedConversation} currentUser={currentUser} navigateTo={navigateTo} onSendMessage={handleSendMessage} />;
       case Screen.ProviderDashboard:
         if (!currentUser || currentUser.role !== 'provider') { navigateTo(Screen.Login); return null; }
-        return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} />;
+        return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} />;
       case Screen.RequestService:
         return <RequestServiceScreen navigateTo={navigateTo} onPublish={handlePublishRequest} />;
       default:
