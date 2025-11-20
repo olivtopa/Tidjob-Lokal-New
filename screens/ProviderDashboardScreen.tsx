@@ -20,15 +20,7 @@ const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: Serv
       <span className="text-xs text-gray-400">{request.createdAt}</span>
     </div>
     <button
-      onClick={() => {
-        console.log("Clicking respond for request:", request.id);
-        if (onRespond) {
-          onRespond(request, "Bonjour, je suis intéressé par votre demande.");
-        } else {
-          console.error("onRespond is undefined!");
-          alert("Erreur: Fonction de réponse non disponible.");
-        }
-      }}
+      onClick={() => onRespond(request, "Bonjour, je suis intéressé par votre demande.")}
       className="w-full mt-3 bg-teal-500 text-white font-bold py-2 px-5 rounded-lg transition-colors hover:bg-teal-600 text-sm">
       Répondre à la demande
     </button>
