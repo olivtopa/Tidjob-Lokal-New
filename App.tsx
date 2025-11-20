@@ -358,6 +358,7 @@ const App: React.FC = () => {
     } catch (error: any) {
       console.error("Error responding to request:", error);
       setError(error.message);
+      alert(`Erreur: ${error.message}`); // Temporary: Show error to user
     }
   }, [currentUser, fetchWithAuth, navigateTo]);
 
