@@ -15,8 +15,11 @@ const ConversationPreview: React.FC<{ conversation: Conversation; onSelect: () =
     <div className="flex-1 ml-4 border-b border-gray-200 pb-3">
       <div className="flex justify-between items-start">
         <div>
-            <p className="text-md font-semibold text-gray-800">{conversation.provider.name}</p>
-            <p className="text-sm text-gray-500 truncate max-w-[180px]">{conversation.messages[conversation.messages.length - 1].text}</p>
+          <p className="text-md font-semibold text-gray-800">{conversation.provider.name}</p>
+          <p className="text-xs text-teal-600 font-medium mb-0.5">
+            {conversation.service?.title || conversation.serviceRequest?.title || 'Service inconnu'}
+          </p>
+          <p className="text-sm text-gray-500 truncate max-w-[180px]">{conversation.messages[conversation.messages.length - 1].content}</p>
         </div>
         <span className="text-xs text-gray-400">{conversation.messages[conversation.messages.length - 1].timestamp}</span>
       </div>
@@ -29,7 +32,7 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ conversations, onSelect
   return (
     <div className="p-4 bg-gray-50 min-h-full">
       <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-4">Messages</h1>
-      
+
       {conversations.length > 0 ? (
         <div className="space-y-1">
           {conversations.map(conv => (
