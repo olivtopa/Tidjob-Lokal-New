@@ -54,7 +54,7 @@ export interface Service {
 
 export interface Message {
   id: string;
-  text: string;
+  content: string;
   timestamp: string;
   senderId: string; // 'user-1' for the current user, or a provider's ID
 }

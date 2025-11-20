@@ -12,7 +12,7 @@ const MessageBubble: React.FC<{ message: Message; isOwnMessage: boolean }> = ({ 
   return (
     <div className={`flex items-end ${isOwnMessage ? 'justify-end' : 'justify-start'}`}>
       <div className={`max-w-xs md:max-w-md px-4 py-2 rounded-2xl ${isOwnMessage ? 'bg-teal-500 text-white rounded-br-none' : 'bg-gray-200 text-gray-800 rounded-bl-none'}`}>
-        <p className="text-sm">{message.text}</p>
+        <p className="text-sm">{message.content}</p>
       </div>
     </div>
   );
@@ -21,7 +21,7 @@ const MessageBubble: React.FC<{ message: Message; isOwnMessage: boolean }> = ({ 
 const ChatScreen: React.FC<ChatScreenProps> = ({ conversation, currentUser, navigateTo, onSendMessage }) => {
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
-  
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -42,10 +42,10 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ conversation, currentUser, navi
         <button onClick={() => navigateTo(Screen.Messages)} className="text-gray-700 p-2 rounded-full hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
-        <img src={conversation.provider.avatarUrl} alt={conversation.provider.name} className="w-10 h-10 rounded-full object-cover ml-2"/>
+        <img src={conversation.provider.avatarUrl} alt={conversation.provider.name} className="w-10 h-10 rounded-full object-cover ml-2" />
         <div className="ml-3">
-            <h1 className="text-md font-bold text-gray-900">{conversation.provider.name}</h1>
-            <p className="text-xs text-gray-500">{conversation.service?.title}</p>
+          <h1 className="text-md font-bold text-gray-900">{conversation.provider.name}</h1>
+          <p className="text-xs text-gray-500">{conversation.service?.title}</p>
         </div>
       </header>
 
