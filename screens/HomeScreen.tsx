@@ -9,10 +9,14 @@ interface HomeScreenProps {
   services: Service[];
   navigateTo: (screen: Screen) => void;
   onSelectService: (service: Service) => void;
+  onSelectCategory: (category: string) => void;
 }
 
-const CategoryCard: React.FC<{ category: ServiceCategory }> = ({ category }) => (
-  <div className="relative rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
+const CategoryCard: React.FC<{ category: ServiceCategory; onClick: () => void }> = ({ category, onClick }) => (
+  <div
+    onClick={onClick}
+    className="relative rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300 cursor-pointer"
+  >
     <img src={category.imageUrl} alt={category.name} className="w-full h-24 object-cover" />
     <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-3">
       <category.icon className="w-6 h-6 text-white mb-1" />
@@ -22,28 +26,28 @@ const CategoryCard: React.FC<{ category: ServiceCategory }> = ({ category }) => 
 );
 
 const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => void; }> = ({ service, onSelect }) => (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-4">
-        <img src={service.imageUrl} alt={service.title} className="w-full h-40 object-cover"/>
-        <div className="p-4">
-            <p className="text-sm font-semibold text-teal-600">{service.category}</p>
-            <h3 className="text-lg font-bold text-gray-900 mt-1">{service.title}</h3>
-            <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center">
-                    <img src={service.provider.avatarUrl} alt={service.provider.name} className="w-8 h-8 rounded-full object-cover"/>
-                    <span className="ml-2 text-sm font-medium text-gray-700">{service.provider.name}</span>
-                </div>
-                <button 
-                  onClick={() => onSelect(service)}
-                  className="bg-teal-500 text-white font-bold py-2 px-5 rounded-lg transition-colors hover:bg-teal-600 text-sm"
-                >
-                  Voir
-                </button>
-            </div>
+  <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-4">
+    <img src={service.imageUrl} alt={service.title} className="w-full h-40 object-cover" />
+    <div className="p-4">
+      <p className="text-sm font-semibold text-teal-600">{service.category}</p>
+      <h3 className="text-lg font-bold text-gray-900 mt-1">{service.title}</h3>
+      <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center">
+          <img src={service.provider.avatarUrl} alt={service.provider.name} className="w-8 h-8 rounded-full object-cover" />
+          <span className="ml-2 text-sm font-medium text-gray-700">{service.provider.name}</span>
         </div>
+        <button
+          onClick={() => onSelect(service)}
+          className="bg-teal-500 text-white font-bold py-2 px-5 rounded-lg transition-colors hover:bg-teal-600 text-sm"
+        >
+          Voir
+        </button>
+      </div>
     </div>
+  </div>
 );
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ user, services, navigateTo, onSelectService }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ user, services, navigateTo, onSelectService, onSelectCategory }) => {
   return (
     <div className="bg-gray-50 min-h-full">
       <header className="p-4 pt-6">
@@ -66,7 +70,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user, services, navigateTo, onS
       <section className="mt-8 px-4">
         <h2 className="text-xl font-bold text-gray-800 mb-4">Catégories</h2>
         <div className="grid grid-cols-2 gap-4">
-          {SERVICE_CATEGORIES.map(cat => <CategoryCard key={cat.id} category={cat} />)}
+          {SERVICE_CATEGORIES.map(cat => (
+            <CategoryCard
+              key={cat.id}
+              category={cat}
+              onClick={() => onSelectCategory(cat.name)}
+            />
+          ))}
         </div>
       </section>
 

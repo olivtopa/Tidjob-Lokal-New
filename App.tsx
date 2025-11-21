@@ -37,10 +37,17 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [selectedCategory, setSelectedCategory] = useState<string>('Tous');
+
   const navigateTo = useCallback((screen: Screen) => {
     setError(null);
     setCurrentScreen(screen);
   }, []);
+
+  const handleCategorySelect = useCallback((category: string) => {
+    setSelectedCategory(category);
+    navigateTo(Screen.Find);
+  }, [navigateTo]);
 
   // Helper function for authenticated fetches
   const fetchWithAuth = useCallback(async (url: string, options?: RequestInit) => {
@@ -411,9 +418,9 @@ const App: React.FC = () => {
       case Screen.Home:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
         if (currentUser.role === 'provider') return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} />;
-        return <HomeScreen navigateTo={navigateTo} user={currentUser} providers={providers} services={services} onSelectService={handleSelectService} />;
+        return <HomeScreen navigateTo={navigateTo} user={currentUser} providers={providers} services={services} onSelectService={handleSelectService} onSelectCategory={handleCategorySelect} />;
       case Screen.Find:
-        return <FindServiceScreen services={services} navigateTo={navigateTo} onSelectService={handleSelectService} />;
+        return <FindServiceScreen services={services} navigateTo={navigateTo} onSelectService={handleSelectService} initialCategory={selectedCategory} />;
       case Screen.Offer:
         return <OfferServiceScreen navigateTo={navigateTo} onPublishService={handlePublishService} />;
       case Screen.Profile:
