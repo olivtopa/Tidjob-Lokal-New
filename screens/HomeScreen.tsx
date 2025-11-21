@@ -17,7 +17,7 @@ const CategoryCard: React.FC<{ category: ServiceCategory; onClick: () => void }>
     onClick={onClick}
     className="relative rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300 cursor-pointer"
   >
-    <img src={category.imageUrl} alt={category.name} className="w-full h-24 object-cover" />
+    <img src={category.imageUrl} alt="" className="w-full h-24 object-cover" />
     <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-3">
       <category.icon className="w-6 h-6 text-white mb-1" />
       <h3 className="font-bold text-white text-md">{category.name}</h3>
