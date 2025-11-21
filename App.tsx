@@ -39,9 +39,33 @@ const App: React.FC = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<string>('Tous');
 
-  const navigateTo = useCallback((screen: Screen) => {
+  const navigateTo = useCallback((screen: Screen, addToHistory = true) => {
     setError(null);
     setCurrentScreen(screen);
+    if (addToHistory) {
+      window.history.pushState({ screen }, '', '');
+    }
+  }, []);
+
+  useEffect(() => {
+    // Handle back button
+    const handlePopState = (event: PopStateEvent) => {
+      if (event.state && event.state.screen) {
+        setCurrentScreen(event.state.screen);
+      } else {
+        // Fallback or initial state
+        setCurrentScreen(Screen.Landing);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    // Set initial state
+    window.history.replaceState({ screen: Screen.Landing }, '', '');
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
   }, []);
 
   const handleCategorySelect = useCallback((category: string) => {
