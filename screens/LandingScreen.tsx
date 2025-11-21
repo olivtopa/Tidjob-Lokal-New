@@ -10,15 +10,15 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigateTo }) => {
     <div className="flex flex-col h-full text-center bg-gray-900 text-white">
       <div className="flex-1 flex flex-col justify-center items-center p-8 z-10">
         <div className="w-24 h-24 bg-teal-500 rounded-3xl flex items-center justify-center mb-6 shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-white" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-            </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-white" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+          </svg>
         </div>
         <h1 className="text-5xl font-extrabold text-white tracking-tight mb-4">
           Tidjob <span className="font-light">Lokal</span>
         </h1>
         <p className="max-w-md text-lg text-gray-300 mb-8">
-          L'aide dont vous avez besoin, juste à côté.
+          Tidjob-Lokal connecte voisins et prestataires locaux pour tous vos besoins du quotidien. Trouvez de l'aide ou proposez vos services en quelques clics, en toute confiance et simplicité.
         </p>
       </div>
       <div className="p-6 pb-12 z-10">
@@ -35,8 +35,8 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigateTo }) => {
           Se connecter
         </button>
       </div>
-       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-30" 
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-30"
         style={{ backgroundImage: "url('https://picsum.photos/seed/community/800/1200')" }}
       ></div>
       <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
