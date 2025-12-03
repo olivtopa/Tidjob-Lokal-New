@@ -9,10 +9,8 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigateTo }) => {
   return (
     <div className="flex flex-col h-full text-center bg-gray-900 text-white">
       <div className="flex-1 flex flex-col justify-center items-center p-8 z-10">
-        <div className="w-24 h-24 bg-teal-500 rounded-3xl flex items-center justify-center mb-6 shadow-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-white" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-          </svg>
+        <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center mb-6 shadow-lg overflow-hidden">
+          <img src="/logo.jpg" alt="Tidjob Lokal Logo" className="w-full h-full object-cover" />
         </div>
         <h1 className="text-5xl font-extrabold text-white tracking-tight mb-4">
           Tidjob <span className="font-light">Lokal</span>
