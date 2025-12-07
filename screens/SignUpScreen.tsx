@@ -27,13 +27,13 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
 
         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSignUp(name, email, password, role); }}>
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">Vous êtes :</label>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">Je souhaite :</label>
             <div className="flex rounded-lg shadow-sm border border-gray-200">
               <button type="button" onClick={() => setRole('client')} className={`w-full px-4 py-3 text-sm font-semibold rounded-l-lg transition-colors ${role === 'client' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
-                Un client
+                Je cherche un service
               </button>
               <button type="button" onClick={() => setRole('provider')} className={`w-full px-4 py-3 text-sm font-semibold rounded-r-lg transition-colors ${role === 'provider' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
-                Un prestataire
+                Je propose un service
               </button>
             </div>
           </div>

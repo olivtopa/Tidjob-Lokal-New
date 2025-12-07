@@ -13,7 +13,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
     { label: 'Paramètres du compte', icon: '⚙️' },
     { label: 'Historique des services', icon: '📜' },
     { label: 'Centre d\'aide', icon: '❓' },
-    { label: 'Mentions légales', action: () => navigateTo(Screen.Legal) , icon: '⚖️' },
+    { label: 'Mentions légales', action: () => navigateTo(Screen.Legal), icon: '⚖️' },
   ];
 
   return (
@@ -23,15 +23,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
           <img src={user.avatarUrl} alt={user.name} className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" />
           <h1 className="text-2xl font-bold text-gray-900 mt-4">{user.name}</h1>
           <p className="text-md text-gray-500">{user.email}</p>
-          <p className="text-sm text-teal-600 font-semibold mt-1">{user.role === 'client' ? 'Client' : 'Prestataire'}</p>
+          <p className="text-sm text-teal-600 font-semibold mt-1">{user.role === 'client' ? 'Je cherche' : 'Je propose'}</p>
         </div>
       </div>
 
       <div className="p-4 mt-6">
         <div className="bg-white rounded-xl shadow-md">
           {menuItems.map((item, index) => (
-            <button 
-              key={index} 
+            <button
+              key={index}
               onClick={item.action}
               className={`w-full flex items-center p-4 text-left ${index !== menuItems.length - 1 ? 'border-b border-gray-100' : ''} hover:bg-gray-50 transition-colors`}>
               <span className="text-xl mr-4">{item.icon}</span>
