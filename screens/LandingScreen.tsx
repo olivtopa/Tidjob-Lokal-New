@@ -12,9 +12,12 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigateTo }) => {
         <div className="w-32 h-32 bg-white rounded-3xl flex items-center justify-center mb-6 shadow-lg overflow-hidden">
           <img src="/logo.jpg" alt="Tidjob Lokal Logo" className="w-full h-full object-cover" />
         </div>
-        <h1 className="text-5xl font-extrabold text-white tracking-tight mb-4">
+        <h1 className="text-5xl font-extrabold text-white tracking-tight mb-2">
           Tidjob <span className="font-light">Lokal</span>
         </h1>
+        <p className="text-xl font-medium text-teal-400 mb-6 italic">
+          Trouvez de l'aide près de chez vous
+        </p>
         <p className="max-w-md text-lg text-gray-300 mb-8">
           Tidjob-Lokal connecte voisins et prestataires locaux pour tous vos besoins du quotidien. Trouvez de l'aide ou proposez vos services en quelques clics, en toute confiance et simplicité.
         </p>
