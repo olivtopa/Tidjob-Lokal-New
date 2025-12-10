@@ -17,17 +17,19 @@ const allowedOrigins = [
   'http://localhost:3000', // Vite default dev port
   'http://localhost:5173', // Vite default dev port (sometimes)
   'http://192.168.1.166:3000', // Allow local network access
-  // Add your deployed frontend URL here when you have it
-  // e.g., 'https://your-frontend-app.onrender.com' 
+  process.env.FRONTEND_URL, // Allow specific Vercel URL defined in env vars
 ];
+
+// Helper to check for Vercel preview deployments
+const isVercelOrigin = (origin) => origin && origin.endsWith('.vercel.app');
 
 const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
 
-    // Allow allowed origins and any Render deployment
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.onrender.com')) {
+    // Allow allowed origins and any Render deployment and any Vercel deployment
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.onrender.com') || isVercelOrigin(origin)) {
       return callback(null, true);
     }
 

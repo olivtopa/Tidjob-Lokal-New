@@ -2,7 +2,7 @@
 # You should move this file to the root of your project directory.
 
 services:
-  # Backend Service
+  # Backend Service (Node.js/Express) - Free Tier capable
   - type: web
     name: tidjob-lokal-backend
     env: node
@@ -14,17 +14,9 @@ services:
         generateValue: true
       - key: NODE_ENV
         value: production
+      # User must add DATABASE_URL manually in Render Dashboard pointing to Supabase
+      # User must add FRONTEND_URL manually if we enforce strict CORS
 
-  # Frontend Service
-  - type: web
-    name: tidjob-lokal-frontend
-    env: static
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    envVars:
-      - key: VITE_API_BASE_URL
-        value: https://tidjob-lokal-backend-eu.onrender.com
+  # Frontend is now deployed on Vercel (Free & Fast)
+  # We remove the Render static site service to save build minutes and complexity.
+
