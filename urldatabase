@@ -1,1 +1,1 @@
-postgresql://postgres:boipounoualle17@@db.ulnnslekeeenvzpszsau.supabase.co:5432/postgres
+postgresql://postgres.ulnnslekeeenvzpszsau:boipounoualle17@@aws-1-eu-west-1.pooler.supabase.com:5432/postgres
