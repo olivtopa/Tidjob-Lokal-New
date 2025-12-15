@@ -14,6 +14,7 @@ import MessagesScreen from './screens/MessagesScreen';
 import ChatScreen from './screens/ChatScreen';
 import ProviderDashboardScreen from './screens/ProviderDashboardScreen';
 import RequestServiceScreen from './screens/RequestServiceScreen';
+import AccountSettingsScreen from './screens/AccountSettingsScreen';
 
 import { API_BASE_URL } from './constants';
 
@@ -465,6 +466,9 @@ const App: React.FC = () => {
         return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} />;
       case Screen.RequestService:
         return <RequestServiceScreen navigateTo={navigateTo} onPublish={handlePublishRequest} />;
+      case Screen.AccountSettings:
+        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        return <AccountSettingsScreen user={currentUser} navigateTo={navigateTo} onLogout={handleLogout} />;
       default:
         return <LandingScreen navigateTo={navigateTo} />;
     }

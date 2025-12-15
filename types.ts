@@ -15,6 +15,7 @@ export enum Screen {
   Chat,
   ProviderDashboard,
   RequestService,
+  AccountSettings,
 }
 
 export interface User {

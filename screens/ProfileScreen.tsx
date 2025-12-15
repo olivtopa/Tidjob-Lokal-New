@@ -13,7 +13,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
   const [showQRCode, setShowQRCode] = useState(false);
 
   const menuItems = [
-    { label: 'Paramètres du compte', icon: '⚙️' },
+    { label: 'Paramètres du compte', action: () => navigateTo(Screen.AccountSettings), icon: '⚙️' },
     { label: 'Historique des services', icon: '📜' },
     { label: 'Centre d\'aide', icon: '❓' },
     { label: 'Mentions légales', action: () => navigateTo(Screen.Legal), icon: '⚖️' },
