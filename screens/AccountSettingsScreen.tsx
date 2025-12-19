@@ -19,6 +19,10 @@ const AccountSettingsScreen: React.FC<AccountSettingsScreenProps> = ({ user: ini
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
+    React.useEffect(() => {
+        console.log('AccountSettingsScreen: Mounted');
+    }, []);
+
     const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
         const token = localStorage.getItem('jwtToken');
         const headers = {

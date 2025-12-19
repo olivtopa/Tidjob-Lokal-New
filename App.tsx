@@ -41,6 +41,7 @@ const App: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Tous');
 
   const navigateTo = useCallback((screen: Screen, addToHistory = true) => {
+    console.log('App: navigateTo called with screen:', screen);
     setError(null);
     setCurrentScreen(screen);
     if (addToHistory) {
@@ -468,6 +469,7 @@ const App: React.FC = () => {
         return <RequestServiceScreen navigateTo={navigateTo} onPublish={handlePublishRequest} />;
       case Screen.AccountSettings:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
+        console.log('App: Rendering AccountSettingsScreen');
         return <AccountSettingsScreen user={currentUser} navigateTo={navigateTo} onLogout={handleLogout} />;
       default:
         return <LandingScreen navigateTo={navigateTo} />;
