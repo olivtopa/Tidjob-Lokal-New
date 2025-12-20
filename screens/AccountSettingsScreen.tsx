@@ -131,19 +131,51 @@ const AccountSettingsScreen: React.FC<AccountSettingsScreenProps> = ({ user: ini
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">URL Avatar</label>
-                            <input
-                                type="text"
-                                value={avatarUrl}
-                                onChange={(e) => setAvatarUrl(e.target.value)}
-                                placeholder="https://example.com/masuperphoto.jpg"
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
-                            />
-                            {avatarUrl && (
-                                <div className="mt-2">
-                                    <img src={avatarUrl} alt="Aperçu" className="w-12 h-12 rounded-full object-cover border" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Photo de profil</label>
+                            <div className="flex items-center space-x-4">
+                                <div className="relative">
+                                    <img
+                                        src={avatarUrl || 'https://via.placeholder.com/150'}
+                                        alt="Avatar"
+                                        className="w-20 h-20 rounded-full object-cover border-2 border-gray-100 shadow-sm"
+                                        onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/150')}
+                                    />
+                                    <label
+                                        htmlFor="avatar-upload"
+                                        className="absolute bottom-0 right-0 bg-teal-600 text-white rounded-full p-1.5 cursor-pointer hover:bg-teal-700 shadow-md transition-all"
+                                        title="Changer la photo"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                    </label>
+                                    <input
+                                        id="avatar-upload"
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                if (file.size > 5 * 1024 * 1024) {
+                                                    alert("L'image est trop volumineuse (max 5Mo)");
+                                                    return;
+                                                }
+                                                const reader = new FileReader();
+                                                reader.onloadend = () => {
+                                                    setAvatarUrl(reader.result as string);
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}
+                                    />
                                 </div>
-                            )}
+                                <div className="flex-1">
+                                    <p className="text-sm text-gray-500 mb-1">Formats supportés: JPG, PNG</p>
+                                    <p className="text-xs text-gray-400">Taille max: 5 Mo</p>
+                                </div>
+                            </div>
                         </div>
                         <button
                             type="submit"
