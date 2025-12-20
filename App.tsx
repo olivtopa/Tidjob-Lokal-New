@@ -154,23 +154,34 @@ const App: React.FC = () => {
   }, [currentUser]);
 
   // New useEffect to fetch conversations when currentUser changes
+  // Poll for new messages every 30 seconds
   useEffect(() => {
+    if (!currentUser) return;
+
     const fetchConversations = async () => {
-      if (currentUser) {
-        try {
-          const conversationsRes = await fetchWithAuth(`${API_BASE_URL}/messages`);
-          if (!conversationsRes.ok) {
-            throw new Error(`Failed to fetch conversations: ${conversationsRes.statusText}`);
-          }
-          const conversationsData = await conversationsRes.json();
-          setConversations(conversationsData);
-        } catch (error) {
-          console.error("Error fetching conversations:", error);
-          setError(`Erreur de chargement des conversations: ${error instanceof Error ? error.message : String(error)}`);
-        }
+      try {
+        const conversationsRes = await fetchWithAuth(`${API_BASE_URL}/messages`);
+        if (!conversationsRes.ok) return; // Silent fail on poll
+
+        const conversationsData = await conversationsRes.json();
+
+        // Update state
+        setConversations(prev => {
+          // Simple check to see if we have new unread messages compared to previous state
+          // to potentially show a toast (omitted for now, just updating data)
+          return conversationsData;
+        });
+
+      } catch (error) {
+        console.error("Error polling conversations:", error);
       }
     };
-    fetchConversations();
+
+    fetchConversations(); // Initial fetch
+
+    const intervalId = setInterval(fetchConversations, 10000); // Poll every 10 seconds
+
+    return () => clearInterval(intervalId);
   }, [currentUser, fetchWithAuth]);
 
   const handleLogin = useCallback(async (email: string, password: string) => {
