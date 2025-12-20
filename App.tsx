@@ -472,7 +472,7 @@ const App: React.FC = () => {
         return <LegalScreen navigateTo={navigateTo} />;
       case Screen.ServiceDetail:
         if (!selectedService) { navigateTo(Screen.Find); return null; }
-        return <ServiceDetailScreen service={selectedService} navigateTo={navigateTo} onStartConversation={handleStartConversation} />;
+        return <ServiceDetailScreen service={selectedService} navigateTo={navigateTo} onStartConversation={handleStartConversation} user={currentUser} />;
       case Screen.Messages:
         return <MessagesScreen conversations={conversations} onSelectConversation={handleSelectConversation} />;
       case Screen.Chat:

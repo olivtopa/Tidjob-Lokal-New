@@ -5,24 +5,33 @@ interface ServiceDetailScreenProps {
   service: Service;
   navigateTo: (screen: Screen) => void;
   onStartConversation: (service: Service, initialMessage: string) => void;
+  user?: User | null;
 }
 
-const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navigateTo, onStartConversation }) => {
+const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navigateTo, onStartConversation, user }) => {
   const [message, setMessage] = useState('');
   const { title, description, price, provider, category, imageUrl } = service;
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (message.trim() === '') return;
     console.log('ServiceDetailScreen: Starting conversation with service:', service, 'and message:', message);
     onStartConversation(service, message);
+  };
+
+  const handleBack = () => {
+    // If provider, go back to "Mes Services", else go back to "Find"
+    if (user?.role === 'provider') {
+      navigateTo(Screen.ProviderServices);
+    } else {
+      navigateTo(Screen.Find);
+    }
   };
 
   return (
     <div className="bg-gray-50 min-h-full">
       <header className="relative">
         <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
-        <button onClick={() => navigateTo(Screen.Find)} className="absolute top-4 left-4 bg-white/70 backdrop-blur-sm p-2 rounded-full text-gray-800 hover:bg-white transition">
+        <button onClick={handleBack} className="absolute top-4 left-4 bg-white/70 backdrop-blur-sm p-2 rounded-full text-gray-800 hover:bg-white transition">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
       </header>
@@ -65,8 +74,8 @@ const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navi
             type="submit"
             disabled={message.trim() === ''}
             className={`w-full mt-4 font-bold py-3 px-4 rounded-lg text-lg transition duration-300 ${message.trim() === ''
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-teal-500 hover:bg-teal-600 text-white'
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-teal-500 hover:bg-teal-600 text-white'
               }`}
           >
             Envoyer le message
