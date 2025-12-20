@@ -6,9 +6,10 @@ import { API_BASE_URL } from '../constants';
 interface ProviderServicesScreenProps {
     user: User;
     navigateTo: (screen: Screen) => void;
+    onSelectService: (service: Service) => void;
 }
 
-const ProviderServicesScreen: React.FC<ProviderServicesScreenProps> = ({ user, navigateTo }) => {
+const ProviderServicesScreen: React.FC<ProviderServicesScreenProps> = ({ user, navigateTo, onSelectService }) => {
     const [services, setServices] = useState<Service[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -66,7 +67,11 @@ const ProviderServicesScreen: React.FC<ProviderServicesScreenProps> = ({ user, n
                 ) : (
                     <div className="space-y-4">
                         {services.map((service) => (
-                            <div key={service.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center">
+                            <div
+                                key={service.id}
+                                onClick={() => onSelectService(service)}
+                                className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center cursor-pointer hover:shadow-md transition-shadow"
+                            >
                                 <div>
                                     <span className="bg-teal-50 text-teal-800 text-xs font-semibold px-2 py-0.5 rounded mb-2 inline-block">{service.category}</span>
                                     <h3 className="text-lg font-bold text-gray-800">{service.title}</h3>
