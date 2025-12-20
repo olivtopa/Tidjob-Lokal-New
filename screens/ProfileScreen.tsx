@@ -12,6 +12,8 @@ interface ProfileScreenProps {
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateTo }) => {
   const [showQRCode, setShowQRCode] = useState(false);
 
+  console.log('ProfileScreen: Rendering');
+
   const menuItems = [
     {
       label: 'Paramètres du compte',
@@ -44,7 +46,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
           {menuItems.map((item, index) => (
             <button
               key={index}
-              onClick={item.action}
+              onClick={(e) => {
+                console.log(`ProfileScreen: Clicked item index ${index}: ${item.label}`);
+                if (item.action) {
+                  console.log('ProfileScreen: Executing action for', item.label);
+                  item.action();
+                } else {
+                  console.log('ProfileScreen: No action for', item.label);
+                }
+              }}
               className={`w-full flex items-center p-4 text-left ${index !== menuItems.length - 1 ? 'border-b border-gray-100' : ''} hover:bg-gray-50 transition-colors`}>
               <span className="text-xl mr-4">{item.icon}</span>
               <span className="flex-1 text-gray-700 font-medium">{item.label}</span>
