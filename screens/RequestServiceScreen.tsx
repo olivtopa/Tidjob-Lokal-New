@@ -31,17 +31,24 @@ const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo,
   };
 
   return (
-    <div className="p-4 bg-gray-50 min-h-full">
-      <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-6">Demander un service</h1>
-      
+    <div className="p-4 bg-gray-50 min-h-full pb-20">
+      <div className="flex items-center mb-6 pt-4">
+        <button onClick={() => navigateTo(Screen.Home)} className="text-gray-600 mr-4 p-2 bg-white rounded-full shadow-sm">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <h1 className="text-3xl font-bold text-gray-900">Demander un service</h1>
+      </div>
+
       <form className="space-y-6 bg-white p-4 rounded-xl shadow-md" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title" className="text-sm font-medium text-gray-700">Titre de votre demande</label>
-          <input 
-            type="text" 
-            id="title" 
-            required 
-            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" 
+          <input
+            type="text"
+            id="title"
+            required
+            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
             placeholder="Ex: Tondre ma pelouse"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -49,19 +56,19 @@ const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo,
         </div>
 
         <div>
-            <label htmlFor="category" className="text-sm font-medium text-gray-700">Catégorie</label>
-            <select 
-              id="category" 
-              required 
-              className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 bg-white appearance-none"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-                <option value="">Sélectionnez une catégorie</option>
-                {SERVICE_CATEGORIES.map(cat => (
-                    <option key={cat.id} value={cat.name}>{cat.name}</option>
-                ))}
-            </select>
+          <label htmlFor="category" className="text-sm font-medium text-gray-700">Catégorie</label>
+          <select
+            id="category"
+            required
+            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 bg-white appearance-none"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="">Sélectionnez une catégorie</option>
+            {SERVICE_CATEGORIES.map(cat => (
+              <option key={cat.id} value={cat.name}>{cat.name}</option>
+            ))}
+          </select>
         </div>
 
         <div>
@@ -76,13 +83,13 @@ const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo,
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
         </div>
-        
+
         {error && <div className="text-sm text-red-600 bg-red-100 p-3 rounded-lg text-center">{error}</div>}
 
         <div className="pt-2">
-            <button type="submit" disabled={isLoading} className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300 disabled:bg-teal-300">
-              {isLoading ? 'Publication...' : 'Publier ma demande'}
-            </button>
+          <button type="submit" disabled={isLoading} className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300 disabled:bg-teal-300">
+            {isLoading ? 'Publication...' : 'Publier ma demande'}
+          </button>
         </div>
       </form>
     </div>
