@@ -13,6 +13,8 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [localError, setLocalError] = useState<string | null>(null);
 
   return (
     <div className="min-h-full flex flex-col justify-center items-center p-6 bg-gray-100">
@@ -25,7 +27,15 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
           <p className="text-gray-500 mt-2">Créez votre compte en quelques secondes.</p>
         </div>
 
-        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSignUp(name, email, password, role); }}>
+        <form className="space-y-4" onSubmit={(e) => {
+          e.preventDefault();
+          setLocalError(null);
+          if (password !== confirmPassword) {
+            setLocalError("Les mots de passe ne correspondent pas.");
+            return;
+          }
+          onSignUp(name, email, password, role);
+        }}>
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">Je souhaite :</label>
             <div className="flex rounded-lg shadow-sm border border-gray-200">
@@ -49,9 +59,13 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
             <label htmlFor="password" className="text-sm font-medium text-gray-700">Mot de passe</label>
             <input type="password" id="password" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="********" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
+          <div>
+            <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
+            <input type="password" id="confirmPassword" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="********" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+          </div>
 
           <div className="pt-2">
-            {error && <div className="text-sm text-red-600 bg-red-100 p-3 rounded-lg mb-4 text-center">{error}</div>}
+            {(localError || error) && <div className="text-sm text-red-600 bg-red-100 p-3 rounded-lg mb-4 text-center">{localError || error}</div>}
             <button type="submit" disabled={isLoading} className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300 disabled:bg-teal-300 disabled:cursor-not-allowed flex items-center justify-center">
               {isLoading ? (
                 <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
