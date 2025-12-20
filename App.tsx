@@ -17,6 +17,7 @@ import RequestServiceScreen from './screens/RequestServiceScreen';
 import AccountSettingsScreen from './screens/AccountSettingsScreen';
 import ServiceHistoryScreen from './screens/ServiceHistoryScreen';
 import HelpCenterScreen from './screens/HelpCenterScreen';
+import ProviderServicesScreen from './screens/ProviderServicesScreen';
 
 import { API_BASE_URL } from './constants';
 
@@ -491,6 +492,9 @@ const App: React.FC = () => {
         return <ServiceHistoryScreen user={currentUser} serviceRequests={serviceRequests} navigateTo={navigateTo} />;
       case Screen.HelpCenter:
         return <HelpCenterScreen navigateTo={navigateTo} />;
+      case Screen.ProviderServices:
+        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        return <ProviderServicesScreen user={currentUser} navigateTo={navigateTo} />;
       default:
         return <LandingScreen navigateTo={navigateTo} />;
     }
@@ -523,7 +527,7 @@ const App: React.FC = () => {
   const renderProviderNav = () => (
     <div className="flex justify-around items-center h-16">
       <NavItem screen={Screen.ProviderDashboard} icon={<ClipboardListIcon className="w-6 h-6" />} label="Demandes" />
-      <NavItem screen={Screen.Offer} icon={<PlusCircleIcon className="w-6 h-6" />} label="Mes Services" />
+      <NavItem screen={Screen.Offer} icon={<PlusCircleIcon className="w-6 h-6" />} label="Proposer" />
       <NavItem screen={Screen.Messages} icon={<MessageSquareIcon className="w-6 h-6" />} label="Messages" hasNotification={hasUnreadMessages} />
       <NavItem screen={Screen.Profile} icon={<UserIcon className="w-6 h-6" />} label="Profil" />
     </div>

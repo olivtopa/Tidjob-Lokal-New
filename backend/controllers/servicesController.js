@@ -6,7 +6,14 @@ const { Service } = require('../models');
 // @access  Public
 const getServices = async (req, res) => {
   try {
-    const services = await Service.findAll({ include: 'provider' });
+    let where = {};
+    if (req.query.providerId) {
+      where.providerId = req.query.providerId;
+    }
+    const services = await Service.findAll({
+      where,
+      include: 'provider'
+    });
     res.json(services);
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -17,13 +17,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
     {
       label: 'Paramètres du compte',
       action: () => {
-        console.log('ProfileScreen: Clicked AccountSettings');
-        console.log('ProfileScreen: Target Screen ID:', Screen.AccountSettings);
         navigateTo(Screen.AccountSettings);
       },
-      icon: '⚙️'
+      icon: '⚙️' // Gear
     },
-    { label: 'Historique des services', action: () => navigateTo(Screen.ServiceHistory), icon: '📜' },
+    // Conditionally add "Mes Services" for providers
+    ...(user.role === 'provider' ? [{
+      label: 'Mes Services',
+      action: () => navigateTo(Screen.ProviderServices),
+      icon: '🛠️'
+    }] : []),
+    { label: 'Historique des services', action: () => navigateTo(Screen.ServiceHistory), icon: '📜' }, // History (Requests)
     { label: 'Centre d\'aide', action: () => navigateTo(Screen.HelpCenter), icon: '❓' },
     { label: 'Mentions légales', action: () => navigateTo(Screen.Legal), icon: '⚖️' },
     { label: 'Partager l\'application', action: () => setShowQRCode(true), icon: '🔗' },

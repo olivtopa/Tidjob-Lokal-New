@@ -18,6 +18,7 @@ export enum Screen {
   AccountSettings,
   ServiceHistory,
   HelpCenter,
+  ProviderServices,
 }
 
 export interface User {
