@@ -15,6 +15,7 @@ import ChatScreen from './screens/ChatScreen';
 import ProviderDashboardScreen from './screens/ProviderDashboardScreen';
 import RequestServiceScreen from './screens/RequestServiceScreen';
 import AccountSettingsScreen from './screens/AccountSettingsScreen';
+import ServiceHistoryScreen from './screens/ServiceHistoryScreen';
 
 import { API_BASE_URL } from './constants';
 
@@ -102,13 +103,13 @@ const App: React.FC = () => {
             }
             setCurrentUser(user);
 
-            // If user is provider, fetch their service requests
-            if (user.role === 'provider') {
-              const serviceRequestsRes = await fetchWithAuth(`${API_BASE_URL}/servicerequests`);
-              if (serviceRequestsRes.ok) {
-                const requestsData = await serviceRequestsRes.json();
-                setServiceRequests(requestsData);
-              }
+            // Fetch service requests for both providers AND clients (now that backend allows it)
+            // If user is provider -> all requests (marketplace)
+            // If user is client -> my requests (history)
+            const serviceRequestsRes = await fetchWithAuth(`${API_BASE_URL}/servicerequests`);
+            if (serviceRequestsRes.ok) {
+              const requestsData = await serviceRequestsRes.json();
+              setServiceRequests(requestsData);
             }
 
             navigateTo(Screen.Home); // Navigate to home if auto-login successful
@@ -208,17 +209,19 @@ const App: React.FC = () => {
       // Step 3: Set the user and navigate
       setCurrentUser(user);
 
-      // Fetch service requests if the user is a provider
-      if (user.role === 'provider') {
-        const serviceRequestsRes = await fetchWithAuth(`${API_BASE_URL}/servicerequests`);
-        if (!serviceRequestsRes.ok) {
-          throw new Error(`Impossible de récupérer les demandes de service : ${serviceRequestsRes.statusText}`);
-        }
+      // Fetch service requests for both (Provider = all, Client = mine)
+      const serviceRequestsRes = await fetchWithAuth(`${API_BASE_URL}/servicerequests`);
+      if (serviceRequestsRes.ok) {
         const requestsData = await serviceRequestsRes.json();
         setServiceRequests(requestsData);
-        navigateTo(Screen.ProviderDashboard); // Navigate provider to their dashboard
       } else {
-        navigateTo(Screen.Home); // Navigate client to home
+        console.warn(`Impossible de récupérer les demandes de service : ${serviceRequestsRes.statusText}`);
+      }
+
+      if (user.role === 'provider') {
+        navigateTo(Screen.ProviderDashboard);
+      } else {
+        navigateTo(Screen.Home);
       }
 
     } catch (error: any) {
@@ -471,6 +474,9 @@ const App: React.FC = () => {
         if (!currentUser) { navigateTo(Screen.Login); return null; }
         console.log('App: Rendering AccountSettingsScreen');
         return <AccountSettingsScreen user={currentUser} navigateTo={navigateTo} onLogout={handleLogout} />;
+      case Screen.ServiceHistory:
+        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        return <ServiceHistoryScreen user={currentUser} serviceRequests={serviceRequests} navigateTo={navigateTo} />;
       default:
         return <LandingScreen navigateTo={navigateTo} />;
     }

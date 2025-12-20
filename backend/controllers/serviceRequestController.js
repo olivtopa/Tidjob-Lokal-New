@@ -24,11 +24,17 @@ const createServiceRequest = async (req, res) => {
 // @access  Private/Provider
 const getServiceRequests = async (req, res) => {
   try {
-    // We can add pagination here later if needed
-    const serviceRequests = await ServiceRequest.findAll({ 
+    let queryOptions = {
       include: 'client',
-      order: [['createdAt', 'DESC']] 
-    });
+      order: [['createdAt', 'DESC']]
+    };
+
+    // If user is a client, only show their own requests
+    if (req.user.role === 'client') {
+      queryOptions.where = { clientId: req.user.id };
+    }
+
+    const serviceRequests = await ServiceRequest.findAll(queryOptions);
     res.json(serviceRequests);
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { 
-  createServiceRequest, 
-  getServiceRequests 
+const {
+  createServiceRequest,
+  getServiceRequests
 } = require('../controllers/serviceRequestController');
 const { protect } = require('../controllers/authMiddleware');
 
@@ -26,6 +26,6 @@ const isProvider = (req, res, next) => {
 
 router.route('/')
   .post(protect, isClient, createServiceRequest)
-  .get(protect, isProvider, getServiceRequests);
+  .get(protect, getServiceRequests);
 
 module.exports = router;

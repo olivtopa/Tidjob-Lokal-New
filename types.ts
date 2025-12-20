@@ -16,6 +16,7 @@ export enum Screen {
   ProviderDashboard,
   RequestService,
   AccountSettings,
+  ServiceHistory,
 }
 
 export interface User {
