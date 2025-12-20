@@ -24,7 +24,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
       icon: '⚙️'
     },
     { label: 'Historique des services', action: () => navigateTo(Screen.ServiceHistory), icon: '📜' },
-    { label: 'Centre d\'aide', icon: '❓' },
+    { label: 'Centre d\'aide', action: () => navigateTo(Screen.HelpCenter), icon: '❓' },
     { label: 'Mentions légales', action: () => navigateTo(Screen.Legal), icon: '⚖️' },
     { label: 'Partager l\'application', action: () => setShowQRCode(true), icon: '🔗' },
   ];
