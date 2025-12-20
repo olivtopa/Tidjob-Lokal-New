@@ -494,7 +494,7 @@ const App: React.FC = () => {
         return <HelpCenterScreen navigateTo={navigateTo} />;
       case Screen.ProviderServices:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
-        return <ProviderServicesScreen user={currentUser} navigateTo={navigateTo} />;
+        return <ProviderServicesScreen user={currentUser} navigateTo={navigateTo} onSelectService={handleSelectService} />;
       default:
         return <LandingScreen navigateTo={navigateTo} />;
     }
