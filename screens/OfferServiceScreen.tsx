@@ -31,17 +31,17 @@ const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onP
   };
 
   return (
-    <div className="p-4 bg-gray-50 min-h-full">
+    <div className="p-4 bg-slate-200 min-h-full">
       <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-6">Proposer un service</h1>
-      
+
       <form className="space-y-6 bg-white p-4 rounded-xl shadow-md" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title" className="text-sm font-medium text-gray-700">Titre du service</label>
-          <input 
-            type="text" 
-            id="title" 
-            required 
-            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" 
+          <input
+            type="text"
+            id="title"
+            required
+            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
             placeholder="Ex: Cours de jardinage à domicile"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -49,19 +49,19 @@ const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onP
         </div>
 
         <div>
-            <label htmlFor="category" className="text-sm font-medium text-gray-700">Catégorie</label>
-            <select 
-              id="category" 
-              required 
-              className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 bg-white appearance-none"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-                <option value="">Sélectionnez une catégorie</option>
-                {SERVICE_CATEGORIES.map(cat => (
-                    <option key={cat.id} value={cat.name}>{cat.name}</option>
-                ))}
-            </select>
+          <label htmlFor="category" className="text-sm font-medium text-gray-700">Catégorie</label>
+          <select
+            id="category"
+            required
+            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 bg-white appearance-none"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="">Sélectionnez une catégorie</option>
+            {SERVICE_CATEGORIES.map(cat => (
+              <option key={cat.id} value={cat.name}>{cat.name}</option>
+            ))}
+          </select>
         </div>
 
         <div>
@@ -76,13 +76,13 @@ const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onP
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
         </div>
-        
+
         {error && <div className="text-sm text-red-600 bg-red-100 p-3 rounded-lg text-center">{error}</div>}
 
         <div className="pt-2">
-            <button type="submit" disabled={isLoading} className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300 disabled:bg-teal-300">
-              {isLoading ? 'Publication...' : 'Publier mon service'}
-            </button>
+          <button type="submit" disabled={isLoading} className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300 disabled:bg-teal-300">
+            {isLoading ? 'Publication...' : 'Publier mon service'}
+          </button>
         </div>
       </form>
     </div>

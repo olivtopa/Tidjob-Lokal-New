@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Screen, Service } from '../types';
+import { Screen, Service, User } from '../types';
 
 interface ServiceDetailScreenProps {
   service: Service;
@@ -28,7 +28,7 @@ const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navi
   };
 
   return (
-    <div className="bg-gray-50 min-h-full">
+    <div className="bg-slate-200 min-h-full">
       <header className="relative">
         <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
         <button onClick={handleBack} className="absolute top-4 left-4 bg-white/70 backdrop-blur-sm p-2 rounded-full text-gray-800 hover:bg-white transition">

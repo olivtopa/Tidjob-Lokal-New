@@ -13,7 +13,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, i
   const [password, setPassword] = useState('');
 
   return (
-    <div className="min-h-full flex flex-col justify-center items-center p-6 bg-gray-100">
+    <div className="min-h-full flex flex-col justify-center items-center p-6 bg-slate-200">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-block w-24 h-24 bg-white rounded-full mb-4 shadow-md overflow-hidden">

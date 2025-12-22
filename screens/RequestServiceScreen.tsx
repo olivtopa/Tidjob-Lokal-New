@@ -31,7 +31,7 @@ const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo,
   };
 
   return (
-    <div className="p-4 bg-gray-50 min-h-full pb-20">
+    <div className="p-4 bg-slate-200 min-h-full pb-20">
       <div className="flex items-center mb-6 pt-4">
         <button onClick={() => navigateTo(Screen.Home)} className="text-gray-600 mr-4 p-2 bg-white rounded-full shadow-sm">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

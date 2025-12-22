@@ -48,7 +48,7 @@ const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => 
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ user, services, navigateTo, onSelectService, onSelectCategory }) => {
   return (
-    <div className="bg-gray-50 min-h-full">
+    <div className="bg-slate-200 min-h-full">
       <header className="p-4 pt-6">
         <h1 className="text-2xl font-light text-gray-600">Bonjour,</h1>
         <p className="text-3xl font-bold text-gray-900">{user.name.split(' ')[0]} !</p>

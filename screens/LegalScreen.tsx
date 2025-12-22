@@ -16,7 +16,7 @@ const LegalScreen: React.FC<LegalScreenProps> = ({ navigateTo }) => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-full flex flex-col">
+    <div className="bg-slate-200 min-h-full flex flex-col">
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center">
           <button onClick={() => navigateTo(Screen.Profile)} className="text-gray-600 p-2 rounded-full hover:bg-gray-100 mr-2 transition-colors">

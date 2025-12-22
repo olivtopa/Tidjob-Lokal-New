@@ -30,7 +30,7 @@ const ConversationPreview: React.FC<{ conversation: Conversation; onSelect: () =
 
 const MessagesScreen: React.FC<MessagesScreenProps> = ({ conversations, onSelectConversation }) => {
   return (
-    <div className="p-4 bg-gray-50 min-h-full">
+    <div className="p-4 bg-slate-200 min-h-full">
       <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-4">Messages</h1>
 
       {conversations.length > 0 ? (
