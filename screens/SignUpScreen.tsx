@@ -17,14 +17,14 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
   const [localError, setLocalError] = useState<string | null>(null);
 
   return (
-    <div className="min-h-full flex flex-col justify-center items-center p-6 bg-slate-200">
+    <div className="min-h-full flex flex-col justify-center items-center p-6 bg-gray-900">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-block w-24 h-24 bg-white rounded-full mb-4 shadow-md overflow-hidden">
             <img src="/logo.jpg" alt="Tidjob Lokal Logo" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800">Rejoignez la communauté</h1>
-          <p className="text-gray-500 mt-2">Créez votre compte en quelques secondes.</p>
+          <h1 className="text-3xl font-bold text-white">Rejoignez la communauté</h1>
+          <p className="text-gray-400 mt-2">Créez votre compte en quelques secondes.</p>
         </div>
 
         <form className="space-y-4" onSubmit={(e) => {
@@ -37,7 +37,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
           onSignUp(name, email, password, role);
         }}>
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">Je souhaite :</label>
+            <label className="text-sm font-medium text-gray-300 mb-2 block">Je souhaite :</label>
             <div className="flex rounded-lg shadow-sm border border-gray-200">
               <button type="button" onClick={() => setRole('client')} className={`w-full px-4 py-3 text-sm font-semibold rounded-l-lg transition-colors ${role === 'client' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
                 Je cherche un service
@@ -48,19 +48,19 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
             </div>
           </div>
           <div>
-            <label htmlFor="name" className="text-sm font-medium text-gray-700">Nom complet</label>
+            <label htmlFor="name" className="text-sm font-medium text-gray-300">Nom complet</label>
             <input type="text" id="name" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Alex Doe" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div>
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">Adresse e-mail</label>
+            <label htmlFor="email" className="text-sm font-medium text-gray-300">Adresse e-mail</label>
             <input type="email" id="email" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="vous@exemple.com" value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div>
-            <label htmlFor="password" className="text-sm font-medium text-gray-700">Mot de passe</label>
+            <label htmlFor="password" className="text-sm font-medium text-gray-300">Mot de passe</label>
             <input type="password" id="password" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="********" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           <div>
-            <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
+            <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-300">Confirmer le mot de passe</label>
             <input type="password" id="confirmPassword" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="********" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
           </div>
 
@@ -77,14 +77,14 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
           </div>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-gray-400">
           En vous inscrivant, vous acceptez nos{' '}
           <button onClick={() => navigateTo(Screen.Legal)} className="font-medium text-teal-600 hover:text-teal-500">
             Termes et Conditions
           </button>.
         </p>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
+        <p className="mt-4 text-center text-sm text-gray-400">
           Déjà un compte ?{' '}
           <button onClick={() => navigateTo(Screen.Login)} className="font-medium text-teal-600 hover:text-teal-500">
             Connectez-vous

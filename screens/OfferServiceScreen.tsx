@@ -31,8 +31,8 @@ const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onP
   };
 
   return (
-    <div className="p-4 bg-slate-200 min-h-full">
-      <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-6">Proposer un service</h1>
+    <div className="p-4 bg-gray-900 min-h-full">
+      <h1 className="text-3xl font-bold text-white pt-4 mb-6">Proposer un service</h1>
 
       <form className="space-y-6 bg-white p-4 rounded-xl shadow-md" onSubmit={handleSubmit}>
         <div>

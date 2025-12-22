@@ -503,12 +503,12 @@ const App: React.FC = () => {
   const NavItem: React.FC<{ screen: Screen; icon: React.ReactNode; label: string; hasNotification?: boolean }> = ({ screen, icon, label, hasNotification }) => (
     <button
       onClick={() => navigateTo(screen)}
-      className={`relative flex flex-col items-center justify-center w-full pt-2 pb-1 transition-colors duration-200 ${currentScreen === screen ? 'text-teal-500' : 'text-gray-500 hover:text-teal-600'
+      className={`relative flex flex-col items-center justify-center w-full pt-2 pb-1 transition-colors duration-200 ${currentScreen === screen ? 'text-teal-400' : 'text-gray-400 hover:text-teal-400'
         }`}
     >
       {icon}
       <span className="text-xs mt-1">{label}</span>
-      {hasNotification && <span className="absolute top-1 right-[calc(50%-20px)] w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>}
+      {hasNotification && <span className="absolute top-1 right-[calc(50%-20px)] w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-gray-900"></span>}
     </button>
   );
 
@@ -534,11 +534,11 @@ const App: React.FC = () => {
   );
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-lg h-screen flex flex-col font-sans">
+    <div className="max-w-md mx-auto bg-gray-900 shadow-lg h-screen flex flex-col font-sans">
       <main className="flex-1 overflow-y-auto pb-20">{renderScreen()}</main>
 
       {currentUser && (
-        <footer className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 shadow-t-strong">
+        <footer className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-gray-900 border-t border-gray-800 shadow-t-strong">
           {currentUser.role === 'client' ? renderUserNav() : renderProviderNav()}
         </footer>
       )}

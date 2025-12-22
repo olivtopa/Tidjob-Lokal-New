@@ -34,7 +34,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
   ];
 
   return (
-    <div className="bg-slate-200 min-h-full pb-10">
+    <div className="bg-gray-900 min-h-full pb-10">
       <div className="p-4 pt-8 bg-white shadow-sm">
         <div className="flex flex-col items-center">
           <img src={user.avatarUrl} alt={user.name} className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" />

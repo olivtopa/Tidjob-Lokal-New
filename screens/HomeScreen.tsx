@@ -48,10 +48,10 @@ const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => 
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ user, services, navigateTo, onSelectService, onSelectCategory }) => {
   return (
-    <div className="bg-slate-200 min-h-full">
+    <div className="bg-gray-900 min-h-full">
       <header className="p-4 pt-6">
-        <h1 className="text-2xl font-light text-gray-600">Bonjour,</h1>
-        <p className="text-3xl font-bold text-gray-900">{user.name.split(' ')[0]} !</p>
+        <h1 className="text-2xl font-light text-gray-400">Bonjour,</h1>
+        <p className="text-3xl font-bold text-white">{user.name.split(' ')[0]} !</p>
       </header>
 
       <div className="px-4 mt-4">
@@ -67,7 +67,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user, services, navigateTo, onS
       </div>
 
       <section className="mt-8 px-4">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Catégories</h2>
+        <h2 className="text-xl font-bold text-white mb-4">Catégories</h2>
         <div className="grid grid-cols-2 gap-4">
           {SERVICE_CATEGORIES.map(cat => (
             <CategoryCard
@@ -80,7 +80,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user, services, navigateTo, onS
       </section>
 
       <section className="mt-8 px-4 pb-4">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Services populaires</h2>
+        <h2 className="text-xl font-bold text-white mb-4">Services populaires</h2>
         <div className="space-y-3">
           {services.slice(0, 4).map(service => <ServiceCard key={service.id} service={service} onSelect={onSelectService} />)}
         </div>

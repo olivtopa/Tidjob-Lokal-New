@@ -102,7 +102,7 @@ const AccountSettingsScreen: React.FC<AccountSettingsScreenProps> = ({ user: ini
     };
 
     return (
-        <div className="bg-slate-200 min-h-full pb-20">
+        <div className="bg-gray-900 min-h-full pb-20">
             <div className="bg-white shadow-sm p-4 flex items-center">
                 <button onClick={() => navigateTo(Screen.Profile)} className="mr-4 text-gray-600 font-bold text-xl">
                     ←

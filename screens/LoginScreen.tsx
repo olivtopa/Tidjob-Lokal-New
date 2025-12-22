@@ -13,19 +13,19 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, i
   const [password, setPassword] = useState('');
 
   return (
-    <div className="min-h-full flex flex-col justify-center items-center p-6 bg-slate-200">
+    <div className="min-h-full flex flex-col justify-center items-center p-6 bg-gray-900">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-block w-24 h-24 bg-white rounded-full mb-4 shadow-md overflow-hidden">
             <img src="/logo.jpg" alt="Tidjob Lokal Logo" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800">Content de vous revoir !</h1>
-          <p className="text-gray-500 mt-2">Connectez-vous pour continuer.</p>
+          <h1 className="text-3xl font-bold text-white">Content de vous revoir !</h1>
+          <p className="text-gray-400 mt-2">Connectez-vous pour continuer.</p>
         </div>
 
         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onLogin(email, password); }}>
           <div>
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">Adresse e-mail</label>
+            <label htmlFor="email" className="text-sm font-medium text-gray-300">Adresse e-mail</label>
             <input
               type="email"
               id="email"
@@ -37,7 +37,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, i
             />
           </div>
           <div>
-            <label htmlFor="password" className="text-sm font-medium text-gray-700">Mot de passe</label>
+            <label htmlFor="password" className="text-sm font-medium text-gray-300">Mot de passe</label>
             <input
               type="password"
               id="password"
@@ -61,7 +61,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, i
           </button>
         </form>
 
-        <p className="mt-8 text-center text-sm text-gray-600">
+        <p className="mt-8 text-center text-sm text-gray-400">
           Pas encore de compte ?{' '}
           <button onClick={() => navigateTo(Screen.SignUp)} className="font-medium text-teal-600 hover:text-teal-500">
             Inscrivez-vous

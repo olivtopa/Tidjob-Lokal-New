@@ -57,8 +57,8 @@ const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigat
   }, [services, searchTerm, selectedCategory]);
 
   return (
-    <div className="p-4 bg-slate-200 min-h-full">
-      <h1 className="text-3xl font-bold text-gray-900 pt-4">Trouver une prestation</h1>
+    <div className="p-4 bg-gray-900 min-h-full">
+      <h1 className="text-3xl font-bold text-white pt-4">Trouver une prestation</h1>
 
       <div className="relative my-4">
         <input
