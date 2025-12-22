@@ -15,13 +15,12 @@ interface HomeScreenProps {
 const CategoryCard: React.FC<{ category: ServiceCategory; onClick: () => void }> = ({ category, onClick }) => (
   <div
     onClick={onClick}
-    className="relative rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300 cursor-pointer"
+    className="group flex flex-col items-center justify-center p-4 bg-white rounded-2xl shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 cursor-pointer border border-gray-100 hover:border-teal-100/50 aspect-square"
   >
-    <img src={category.imageUrl} alt="" className="w-full h-24 object-cover" />
-    <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-3">
-      <category.icon className="w-6 h-6 text-white mb-1" />
-      <h3 className="font-bold text-white text-md">{category.name}</h3>
+    <div className="p-3 mb-3 rounded-2xl bg-teal-50 group-hover:bg-teal-500 group-hover:scale-110 transition-all duration-300">
+      <category.icon className="w-8 h-8 text-teal-600 group-hover:text-white transition-colors duration-300" />
     </div>
+    <h3 className="font-semibold text-gray-700 text-sm text-center group-hover:text-teal-700 transition-colors duration-300">{category.name}</h3>
   </div>
 );
 
