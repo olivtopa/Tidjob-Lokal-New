@@ -31,14 +31,14 @@ const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo,
   };
 
   return (
-    <div className="p-4 bg-gray-900 min-h-full pb-20">
+    <div className="p-4 bg-gray-100 min-h-full pb-20">
       <div className="flex items-center mb-6 pt-4">
         <button onClick={() => navigateTo(Screen.Home)} className="text-gray-600 mr-4 p-2 bg-white rounded-full shadow-sm">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <h1 className="text-3xl font-bold text-white">Demander un service</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Demander un service</h1>
       </div>
 
       <form className="space-y-6 bg-white p-4 rounded-xl shadow-md" onSubmit={handleSubmit}>

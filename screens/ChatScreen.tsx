@@ -49,7 +49,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ conversation, currentUser, navi
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4 bg-gray-900">
+      <div className="flex-1 overflow-y-auto p-4 bg-gray-100">
         <div className="space-y-4">
           {conversation.messages.map((msg) => (
             <MessageBubble key={msg.id} message={msg} isOwnMessage={msg.senderId === currentUser.id} />

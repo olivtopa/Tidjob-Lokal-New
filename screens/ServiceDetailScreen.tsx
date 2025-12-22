@@ -28,7 +28,7 @@ const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navi
   };
 
   return (
-    <div className="bg-gray-900 min-h-full">
+    <div className="bg-gray-100 min-h-full">
       <header className="relative">
         <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
         <button onClick={handleBack} className="absolute top-4 left-4 bg-white/70 backdrop-blur-sm p-2 rounded-full text-gray-800 hover:bg-white transition">
@@ -38,13 +38,13 @@ const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navi
 
       <div className="p-4 pb-6">
         <p className="text-sm font-semibold text-teal-600 mb-1">{category}</p>
-        <h1 className="text-3xl font-bold text-white">{title}</h1>
-        <p className="text-2xl font-extrabold text-white mt-2">{price}€</p>
-        <p className="text-gray-300 text-base mt-4">{description}</p>
+        <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
+        <p className="text-2xl font-extrabold text-gray-800 mt-2">{price}€</p>
+        <p className="text-gray-600 text-base mt-4">{description}</p>
 
-        <div className="my-6 border-t border-gray-700"></div>
+        <div className="my-6 border-t border-gray-200"></div>
 
-        <h2 className="text-xl font-bold text-white mb-3">Proposé par</h2>
+        <h2 className="text-xl font-bold text-gray-800 mb-3">Proposé par</h2>
         <div className="flex items-center p-3 bg-white rounded-xl shadow-md space-x-4">
           <img className="w-16 h-16 rounded-full object-cover" src={provider.avatarUrl} alt={provider.name} />
           <div className="flex-1">
@@ -58,10 +58,10 @@ const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navi
           </div>
         </div>
 
-        <div className="my-6 border-t border-gray-700"></div>
+        <div className="my-6 border-t border-gray-200"></div>
 
         <form onSubmit={handleSendMessage}>
-          <h2 className="text-xl font-bold text-white mb-3">Contacter {provider.name.split(' ')[0]}</h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-3">Contacter {provider.name.split(' ')[0]}</h2>
           <textarea
             rows={4}
             required

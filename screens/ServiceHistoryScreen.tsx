@@ -10,7 +10,7 @@ interface ServiceHistoryScreenProps {
 
 const ServiceHistoryScreen: React.FC<ServiceHistoryScreenProps> = ({ user, serviceRequests, navigateTo }) => {
     return (
-        <div className="bg-gray-900 min-h-full pb-20">
+        <div className="bg-gray-100 min-h-full pb-20">
             <div className="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10">
                 <button onClick={() => navigateTo(Screen.Profile)} className="text-gray-600 mr-4">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

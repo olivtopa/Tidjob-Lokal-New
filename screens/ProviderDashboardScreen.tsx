@@ -29,8 +29,8 @@ const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: Serv
 
 const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ serviceRequests, navigateTo, onRespond }) => {
   return (
-    <div className="p-4 bg-gray-900 min-h-full">
-      <h1 className="text-3xl font-bold text-white pt-4 mb-4">Mes Demandes de Service</h1>
+    <div className="p-4 bg-gray-100 min-h-full">
+      <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-4">Mes Demandes de Service</h1>
 
       {serviceRequests.length > 0 ? (
         <div>
@@ -41,8 +41,8 @@ const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ servi
           <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-300 mx-auto mb-4">
             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>
           </svg>
-          <h2 className="text-xl font-bold text-white">Aucune demande pour le moment</h2>
-          <p className="text-gray-400 mt-2">Les nouvelles demandes de service des clients apparaîtront ici.</p>
+          <h2 className="text-xl font-bold text-gray-700">Aucune demande pour le moment</h2>
+          <p className="text-gray-500 mt-2">Les nouvelles demandes de service des clients apparaîtront ici.</p>
         </div>
       )}
     </div>
