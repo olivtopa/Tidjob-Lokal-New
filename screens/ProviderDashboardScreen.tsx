@@ -30,7 +30,7 @@ const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: Serv
 const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ serviceRequests, navigateTo, onRespond }) => {
   return (
     <div className="p-4 bg-gray-100 min-h-full">
-      <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-4">Mes Demandes de Service</h1>
+      <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-4">Demandes de services</h1>
 
       {serviceRequests.length > 0 ? (
         <div>
