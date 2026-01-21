@@ -18,6 +18,8 @@ const allowedOrigins = [
   'http://localhost:5173', // Vite default dev port (sometimes)
   'http://192.168.1.166:3000', // Allow local network access
   process.env.FRONTEND_URL, // Allow specific Vercel URL defined in env vars
+  'https://tidjob.com',
+  'https://www.tidjob.com'
 ];
 
 // Helper to check for Vercel preview deployments

@@ -73,7 +73,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
           <div className="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-xl font-bold text-gray-800 mb-4">Partager Tidjob Lokal</h3>
             <div className="bg-white p-2 rounded-lg">
-              <QRCode value={window.location.origin} size={200} />
+              <QRCode value="https://tidjob.com" size={200} />
             </div>
             <p className="text-gray-500 text-sm mt-4 text-center">Scannez ce code pour ouvrir l'application</p>
             <button
