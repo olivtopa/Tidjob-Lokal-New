@@ -12,6 +12,36 @@ interface ProfileScreenProps {
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateTo }) => {
   const [showQRCode, setShowQRCode] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+
+  React.useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    // Show the install prompt
+    deferredPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to the install prompt: ${outcome}`);
+    // We've used the prompt, and can't use it again, throw it away
+    setDeferredPrompt(null);
+    setIsInstallable(false);
+  };
 
 
   const menuItems = [
@@ -31,6 +61,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
     { label: 'Historique des services', action: () => navigateTo(Screen.ServiceHistory), icon: '📜' }, // History (Requests)
     { label: 'Centre d\'aide', action: () => navigateTo(Screen.HelpCenter), icon: '❓' },
     { label: 'Mentions légales', action: () => navigateTo(Screen.Legal), icon: '⚖️' },
+    ...(isInstallable ? [{
+      label: 'Installer l\'application',
+      action: handleInstallClick,
+      icon: '📲'
+    }] : []),
     { label: 'Partager l\'application', action: () => setShowQRCode(true), icon: '🔗' },
   ];
 
