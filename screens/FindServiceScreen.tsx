@@ -11,7 +11,7 @@ interface FindServiceScreenProps {
 
 const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => void; }> = ({ service, onSelect }) => (
   <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-4">
-    <img src={service.imageUrl} alt={service.title} className="w-full h-40 object-cover" />
+
     <div className="p-4">
       <p className="text-sm font-semibold text-teal-600">{service.category}</p>
       <h3 className="text-lg font-bold text-gray-900 mt-1">{service.title}</h3>

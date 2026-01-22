@@ -29,15 +29,15 @@ const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navi
 
   return (
     <div className="bg-gray-100 min-h-full">
-      <header className="relative">
-        <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
-        <button onClick={handleBack} className="absolute top-4 left-4 bg-white/70 backdrop-blur-sm p-2 rounded-full text-gray-800 hover:bg-white transition">
+      <header className="p-4 flex items-center">
+        <button onClick={handleBack} className="bg-white border border-gray-200 p-2 rounded-full text-gray-800 hover:bg-gray-50 transition shadow-sm mr-4">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
+        <span className="text-sm font-semibold text-teal-600">{category}</span>
       </header>
 
       <div className="p-4 pb-6">
-        <p className="text-sm font-semibold text-teal-600 mb-1">{category}</p>
+
         <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
         <p className="text-2xl font-extrabold text-gray-800 mt-2">{price}€</p>
         <p className="text-gray-600 text-base mt-4">{description}</p>
