@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Screen, User } from '../types';
 import QRCode from 'react-qr-code';
 
+
 interface ProfileScreenProps {
   user: User;
   onLogout: () => void;

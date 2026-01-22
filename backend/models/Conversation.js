@@ -8,6 +8,14 @@ const Conversation = sequelize.define('Conversation', {
     allowNull: false,
     defaultValue: DataTypes.NOW,
   },
+  clientLastReadAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  providerLastReadAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   // ServiceId is now optional because a conversation can be about a ServiceRequest
   ServiceId: {
     type: DataTypes.INTEGER,

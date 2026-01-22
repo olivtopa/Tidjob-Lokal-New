@@ -42,7 +42,37 @@ exports.getConversations = async (req, res) => {
       order: [['lastMessageAt', 'DESC']],
     });
 
-    res.status(200).json(conversations);
+    // Compute 'unread' status for each conversation
+    const conversationsWithUnread = conversations.map(conv => {
+      const c = conv.toJSON();
+      const isClient = c.clientId === userId;
+      const lastReadAt = isClient ? c.clientLastReadAt : c.providerLastReadAt;
+
+      // If never read, it's unread if there are messages.
+      // If read, check if lastMessageAt is newer than lastReadAt.
+      let unread = false;
+      if (!lastReadAt) {
+        unread = true;
+        // Optional refinement: if I AM the sender of the last message, it shouldn't be unread for me.
+        if (c.messages && c.messages.length > 0) {
+          const lastMsg = c.messages[c.messages.length - 1];
+          if (lastMsg.senderId === userId) unread = false;
+        } else {
+          unread = false; // No messages, so not unread
+        }
+      } else {
+        unread = new Date(c.lastMessageAt) > new Date(lastReadAt);
+        // Same refinement: if I sent the last message, it's read (or rather, not unread)
+        if (c.messages && c.messages.length > 0) {
+          const lastMsg = c.messages[c.messages.length - 1];
+          if (lastMsg.senderId === userId) unread = false;
+        }
+      }
+
+      return { ...c, unread };
+    });
+
+    res.status(200).json(conversationsWithUnread);
   } catch (error) {
     console.error('Error fetching conversations:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -69,6 +99,14 @@ exports.getMessages = async (req, res) => {
     if (conversation.clientId !== userId && conversation.providerId !== userId) {
       return res.status(403).json({ message: 'Not authorized to access this conversation' });
     }
+
+    // Mark as read
+    if (conversation.clientId === userId) {
+      conversation.clientLastReadAt = new Date();
+    } else {
+      conversation.providerLastReadAt = new Date();
+    }
+    await conversation.save();
 
     res.status(200).json(conversation.messages);
   } catch (error) {
@@ -194,6 +232,11 @@ exports.sendMessage = async (req, res) => {
     const fullMessage = await Message.findByPk(message.id, {
       include: [{ model: User, as: 'sender', attributes: ['id', 'name', 'avatarUrl'] }],
     });
+
+    // --- Notification Logic Removed (Visual Notifications used instead) ---
+    // The previous push notification logic has been replaced by the 'unread' status
+    // on the conversation object, which drives the in-app "Red Bell" and App Badge.
+    // --------------------------
 
     res.status(201).json(fullMessage);
   } catch (error) {

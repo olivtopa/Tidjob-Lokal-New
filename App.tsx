@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Screen, User, Service, Conversation, Message, ServiceRequest, Provider } from './types';
+import { registerServiceWorker } from './utils/notification';
 
 import LandingScreen from './screens/LandingScreen';
 import LoginScreen from './screens/LoginScreen';
@@ -27,6 +28,7 @@ import PlusCircleIcon from './components/icons/PlusCircleIcon';
 import UserIcon from './components/icons/UserIcon';
 import MessageSquareIcon from './components/icons/MessageSquareIcon';
 import ClipboardListIcon from './components/icons/ClipboardListIcon';
+import BellIcon from './components/icons/BellIcon';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>(Screen.Landing);
@@ -67,6 +69,8 @@ const App: React.FC = () => {
 
     // Set initial state
     window.history.replaceState({ screen: Screen.Landing }, '', '');
+
+    registerServiceWorker(); // Register Service Worker
 
     return () => {
       window.removeEventListener('popstate', handlePopState);
@@ -184,6 +188,19 @@ const App: React.FC = () => {
 
     return () => clearInterval(intervalId);
   }, [currentUser, fetchWithAuth]);
+
+  // Handle App Badge based on unread conversations
+  useEffect(() => {
+    const unreadCount = conversations.filter(c => c.unread).length;
+
+    if ('setAppBadge' in navigator) {
+      if (unreadCount > 0) {
+        navigator.setAppBadge(unreadCount).catch(e => console.error("Error setting app badge:", e));
+      } else {
+        navigator.clearAppBadge().catch(e => console.error("Error clearing app badge:", e));
+      }
+    }
+  }, [conversations]);
 
   const handleLogin = useCallback(async (email: string, password: string) => {
     setError(null);
@@ -328,7 +345,9 @@ const App: React.FC = () => {
       navigateTo(Screen.Chat);
     } catch (error) {
       console.error("Error fetching messages for conversation:", error);
-      setError(`Erreur de chargement des messages: ${error instanceof Error ? error.message : String(error)}`);
+      const errorMessage = `Erreur de chargement des messages: ${error instanceof Error ? error.message : String(error)}`;
+      setError(errorMessage);
+      alert(errorMessage); // Temporary debugging: Show alert so user sees the error
     }
   }, [fetchWithAuth, navigateTo]);
 
@@ -474,7 +493,8 @@ const App: React.FC = () => {
         if (!selectedService) { navigateTo(Screen.Find); return null; }
         return <ServiceDetailScreen service={selectedService} navigateTo={navigateTo} onStartConversation={handleStartConversation} user={currentUser} />;
       case Screen.Messages:
-        return <MessagesScreen conversations={conversations} onSelectConversation={handleSelectConversation} />;
+        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        return <MessagesScreen conversations={conversations} onSelectConversation={handleSelectConversation} currentUser={currentUser} />;
       case Screen.Chat:
         if (!selectedConversation || !currentUser) { navigateTo(Screen.Messages); return null; }
         return <ChatScreen conversation={selectedConversation} currentUser={currentUser} navigateTo={navigateTo} onSendMessage={handleSendMessage} />;
@@ -506,9 +526,15 @@ const App: React.FC = () => {
       className={`relative flex flex-col items-center justify-center w-full pt-2 pb-1 transition-colors duration-200 ${currentScreen === screen ? 'text-teal-500' : 'text-gray-500 hover:text-teal-600'
         }`}
     >
-      {icon}
+      <div className="relative">
+        {icon}
+        {hasNotification && (
+          <div className="absolute -top-2 -right-2 bg-white rounded-full p-0.5 border border-white">
+            <BellIcon className="w-4 h-4 text-red-500 fill-current" />
+          </div>
+        )}
+      </div>
       <span className="text-xs mt-1">{label}</span>
-      {hasNotification && <span className="absolute top-1 right-[calc(50%-20px)] w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>}
     </button>
   );
 

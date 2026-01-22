@@ -36,16 +36,32 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ conversation, currentUser, navi
     }
   };
 
+  // Determine who defines the "correspondent" (the other person)
+  const isMeProvider = currentUser.id === conversation.provider.id;
+
+  let otherName = '';
+  let otherAvatar = '';
+
+  if (isMeProvider) {
+    // I am the provider -> Show Client
+    otherName = conversation.client?.name || 'Client inconnu';
+    otherAvatar = conversation.client?.avatarUrl || 'https://via.placeholder.com/150';
+  } else {
+    // I am the client -> Show Provider
+    otherName = conversation.provider?.name || 'Prestataire inconnu';
+    otherAvatar = conversation.provider?.avatarUrl || 'https://via.placeholder.com/150';
+  }
+
   return (
     <div className="h-full flex flex-col">
       <header className="flex items-center p-3 border-b border-gray-200 bg-white sticky top-0 z-10">
         <button onClick={() => navigateTo(Screen.Messages)} className="text-gray-700 p-2 rounded-full hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
-        <img src={conversation.provider.avatarUrl} alt={conversation.provider.name} className="w-10 h-10 rounded-full object-cover ml-2" />
+        <img src={otherAvatar} alt={otherName} className="w-10 h-10 rounded-full object-cover ml-2" />
         <div className="ml-3">
-          <h1 className="text-md font-bold text-gray-900">{conversation.provider.name}</h1>
-          <p className="text-xs text-gray-500">{conversation.service?.title}</p>
+          <h1 className="text-md font-bold text-gray-900">{otherName}</h1>
+          <p className="text-xs text-gray-500">{conversation.service?.title || conversation.serviceRequest?.title}</p>
         </div>
       </header>
 

@@ -11,6 +11,7 @@ const serviceRoutes = require('./routes/servicesRoutes');
 const providerRoutes = require('./routes/providersRoutes');
 const serviceRequestRoutes = require('./routes/serviceRequestRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 // CORS Configuration
 const allowedOrigins = [
@@ -49,7 +50,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/providers', providerRoutes);
 app.use('/api/servicerequests', serviceRequestRoutes);
-app.use('/api/messages', messageRoutes); // New: Use message routes
+app.use('/api/messages', messageRoutes);
+app.use('/api/notifications', notificationRoutes); // New: Notification routes
 
 // Basic health check route
 app.get('/', (req, res) => {

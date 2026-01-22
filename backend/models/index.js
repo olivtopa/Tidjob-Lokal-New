@@ -5,6 +5,7 @@ const Service = require('./Service');
 const ServiceRequest = require('./ServiceRequest');
 const Conversation = require('./Conversation');
 const Message = require('./Message');
+const Subscription = require('./Subscription');
 
 // User-Service relationship (a provider has many services)
 User.hasMany(Service, { as: 'offeredServices', foreignKey: 'providerId' });
@@ -27,13 +28,18 @@ Message.belongsTo(Conversation, { foreignKey: 'conversationId' });
 Conversation.hasMany(Message, { as: 'messages', foreignKey: 'conversationId' });
 Message.belongsTo(User, { as: 'sender', foreignKey: 'senderId' });
 
+// Subscription relationships
+User.hasMany(Subscription, { as: 'subscriptions', foreignKey: 'userId' });
+Subscription.belongsTo(User, { as: 'user', foreignKey: 'userId' });
+
 const db = {
   sequelize,
   User,
   Service,
   ServiceRequest,
   Conversation,
-  Message
+  Message,
+  Subscription
 };
 
 module.exports = db;

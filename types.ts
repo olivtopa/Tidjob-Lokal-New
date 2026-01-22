@@ -68,6 +68,7 @@ export interface Conversation {
   service?: Service | null; // Optional now
   serviceRequest?: ServiceRequest | null; // New field
   provider: Provider;
+  client: User; // Added client to access the other participant
   messages: Message[];
   unread: boolean;
 }
