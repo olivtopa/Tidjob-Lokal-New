@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
-import { Screen } from '../types';
+import { Screen, User } from '../types';
 
 interface HelpCenterScreenProps {
     navigateTo: (screen: Screen) => void;
+    user: User | null;
 }
 
 const FAQItem = ({ question, answer }: { question: string, answer: string }) => {
@@ -27,7 +28,7 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
     );
 };
 
-const HelpCenterScreen: React.FC<HelpCenterScreenProps> = ({ navigateTo }) => {
+const HelpCenterScreen: React.FC<HelpCenterScreenProps> = ({ navigateTo, user }) => {
     return (
         <div className="bg-gray-100 min-h-full pb-20">
             <div className="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10">
@@ -44,10 +45,19 @@ const HelpCenterScreen: React.FC<HelpCenterScreenProps> = ({ navigateTo }) => {
                 {/* Section FAQ */}
                 <section className="bg-white rounded-xl shadow-sm p-5">
                     <h2 className="text-lg font-bold text-teal-600 mb-4">Questions Fréquentes</h2>
-                    <FAQItem
-                        question="Comment proposer un service ?"
-                        answer="Pour proposer un service, allez dans l'onglet 'Mes Services' et cliquez sur le bouton '+'. Remplissez ensuite le formulaire avec les détails de votre prestation."
-                    />
+
+                    {user?.role === 'provider' ? (
+                        <FAQItem
+                            question="Comment proposer un service ?"
+                            answer="Vous avez deux possibilités : cliquez sur l'icône '+' dans la barre de menu en bas, ou utilisez le bouton 'Proposer un service' directement sur votre écran d'accueil."
+                        />
+                    ) : (
+                        <FAQItem
+                            question="Comment demander un service ?"
+                            answer="Pour demander un service, allez sur l'écran d'accueil et cliquez sur le bouton 'Demander un service'. Décrivez votre besoin et publiez votre annonce."
+                        />
+                    )}
+
                     <FAQItem
                         question="Le paiement est-il sécurisé ?"
                         answer="Tidjob Lokal met en relation les particuliers. Le paiement se fait généralement en main propre ou via les méthodes convenues entre vous et le prestataire. Nous travaillons sur une solution de paiement intégrée."

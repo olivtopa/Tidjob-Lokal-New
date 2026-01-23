@@ -515,7 +515,7 @@ const App: React.FC = () => {
         if (!currentUser) { navigateTo(Screen.Login); return null; }
         return <ServiceHistoryScreen user={currentUser} serviceRequests={serviceRequests} navigateTo={navigateTo} />;
       case Screen.HelpCenter:
-        return <HelpCenterScreen navigateTo={navigateTo} />;
+        return <HelpCenterScreen navigateTo={navigateTo} user={currentUser} />;
       case Screen.ProviderServices:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
         return <ProviderServicesScreen user={currentUser} navigateTo={navigateTo} onSelectService={handleSelectService} />;
