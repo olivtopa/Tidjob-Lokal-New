@@ -29,7 +29,7 @@ const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: Serv
         <div className="p-4">
             <p className="text-xs font-bold text-teal-600 uppercase tracking-wide">{request.category}</p>
             <h3 className="text-base font-bold text-gray-900 mt-1 truncate">{request.title}</h3>
-            <p className="text-gray-500 text-xs mt-1 line-clamp-2 h-8">{request.description}</p>
+            <p className="text-gray-500 text-sm mt-1 line-clamp-2">{request.description}</p>
 
             <div className="flex items-center mt-3 pt-3 border-t border-gray-50">
                 <img src={request.client.avatarUrl} alt={request.client.name} className="w-6 h-6 rounded-full object-cover" />
