@@ -4,13 +4,14 @@ import { SERVICE_CATEGORIES } from '../constants';
 
 interface OfferServiceScreenProps {
   navigateTo: (screen: Screen) => void;
-  onPublishService: (title: string, description: string, category: string) => Promise<void>;
+  onPublishService: (title: string, description: string, category: string, price: number) => Promise<void>;
 }
 
 const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onPublishService }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
+  const [price, setPrice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +20,7 @@ const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onP
     setIsLoading(true);
     setError(null);
     try {
-      await onPublishService(title, description, category);
+      await onPublishService(title, description, category, parseFloat(price));
       // On success, maybe navigate to a "my services" screen or show a success message.
       // For now, we can navigate back to the provider dashboard.
       navigateTo(Screen.ProviderDashboard);
@@ -62,6 +63,21 @@ const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onP
               <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
           </select>
+        </div>
+
+        <div>
+          <label htmlFor="price" className="text-sm font-medium text-gray-700">Tarif (€)</label>
+          <input
+            type="number"
+            id="price"
+            required
+            min="0"
+            step="0.01"
+            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+            placeholder="Ex: 50"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+          />
         </div>
 
         <div>

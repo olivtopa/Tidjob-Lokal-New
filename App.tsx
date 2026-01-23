@@ -19,6 +19,7 @@ import AccountSettingsScreen from './screens/AccountSettingsScreen';
 import ServiceHistoryScreen from './screens/ServiceHistoryScreen';
 import HelpCenterScreen from './screens/HelpCenterScreen';
 import ProviderServicesScreen from './screens/ProviderServicesScreen';
+import ProviderHomeScreen from './screens/ProviderHomeScreen';
 
 import { API_BASE_URL } from './constants';
 
@@ -249,7 +250,7 @@ const App: React.FC = () => {
       }
 
       if (user.role === 'provider') {
-        navigateTo(Screen.ProviderDashboard);
+        navigateTo(Screen.ProviderHome);
       } else {
         navigateTo(Screen.Home);
       }
@@ -290,10 +291,10 @@ const App: React.FC = () => {
     }
   }, [navigateTo]);
 
-  const handlePublishRequest = useCallback(async (title: string, category: string, description: string) => {
+  const handlePublishRequest = useCallback(async (title: string, category: string, description: string, budget?: number) => {
     const response = await fetchWithAuth(`${API_BASE_URL}/servicerequests`, {
       method: 'POST',
-      body: JSON.stringify({ title, category, description }),
+      body: JSON.stringify({ title, category, description, budget }),
     });
     const data = await response.json();
     if (!response.ok) {
@@ -303,10 +304,10 @@ const App: React.FC = () => {
     console.log('Service request created:', data);
   }, [fetchWithAuth]);
 
-  const handlePublishService = useCallback(async (title: string, description: string, category: string) => {
+  const handlePublishService = useCallback(async (title: string, description: string, category: string, price: number) => {
     const response = await fetchWithAuth(`${API_BASE_URL}/services`, {
       method: 'POST',
-      body: JSON.stringify({ title, description, category }),
+      body: JSON.stringify({ title, description, category, price }),
     });
     const data = await response.json();
     if (!response.ok) {
@@ -501,6 +502,9 @@ const App: React.FC = () => {
       case Screen.ProviderDashboard:
         if (!currentUser || currentUser.role !== 'provider') { navigateTo(Screen.Login); return null; }
         return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} />;
+      case Screen.ProviderHome:
+        if (!currentUser || currentUser.role !== 'provider') { navigateTo(Screen.Login); return null; }
+        return <ProviderHomeScreen user={currentUser} serviceRequests={serviceRequests} navigateTo={navigateTo} onSelectCategory={handleCategorySelect} onRespond={handleRespondToRequest} />;
       case Screen.RequestService:
         return <RequestServiceScreen navigateTo={navigateTo} onPublish={handlePublishRequest} />;
       case Screen.AccountSettings:
@@ -552,7 +556,8 @@ const App: React.FC = () => {
 
   const renderProviderNav = () => (
     <div className="flex justify-around items-center h-16">
-      <NavItem screen={Screen.ProviderDashboard} icon={<ClipboardListIcon className="w-6 h-6" />} label="Demandes" />
+      <NavItem screen={Screen.ProviderHome} icon={<HomeIcon className="w-6 h-6" />} label="Accueil" />
+      <NavItem screen={Screen.ProviderDashboard} icon={<SearchIcon className="w-6 h-6" />} label="Demandes" />
       <NavItem screen={Screen.Offer} icon={<PlusCircleIcon className="w-6 h-6" />} label="Proposer" />
       <NavItem screen={Screen.Messages} icon={<MessageSquareIcon className="w-6 h-6" />} label="Messages" hasNotification={hasUnreadMessages} />
       <NavItem screen={Screen.Profile} icon={<UserIcon className="w-6 h-6" />} label="Profil" />

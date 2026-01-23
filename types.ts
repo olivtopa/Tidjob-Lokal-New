@@ -19,6 +19,7 @@ export enum Screen {
   ServiceHistory,
   HelpCenter,
   ProviderServices,
+  ProviderHome,
 }
 
 export interface User {

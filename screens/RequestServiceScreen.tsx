@@ -4,13 +4,14 @@ import { SERVICE_CATEGORIES } from '../constants';
 
 interface RequestServiceScreenProps {
   navigateTo: (screen: Screen) => void;
-  onPublish: (title: string, category: string, description: string) => Promise<void>;
+  onPublish: (title: string, category: string, description: string, budget?: number) => Promise<void>;
 }
 
 const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo, onPublish }) => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
+  const [budget, setBudget] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +20,7 @@ const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo,
     setIsLoading(true);
     setError(null);
     try {
-      await onPublish(title, category, description);
+      await onPublish(title, category, description, budget ? parseFloat(budget) : undefined);
       // On success, maybe navigate to a "my requests" screen or show a success message.
       // For now, we can navigate back home.
       navigateTo(Screen.Home);
@@ -69,6 +70,20 @@ const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo,
               <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
           </select>
+        </div>
+
+        <div>
+          <label htmlFor="budget" className="text-sm font-medium text-gray-700">Budget estimé (€)</label>
+          <input
+            type="number"
+            id="budget"
+            min="0"
+            step="0.01"
+            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+            placeholder="Ex: 50"
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)}
+          />
         </div>
 
         <div>
