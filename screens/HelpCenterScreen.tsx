@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Screen, User } from '../types';
+import { API_BASE_URL } from '../constants';
 
 interface HelpCenterScreenProps {
     navigateTo: (screen: Screen) => void;
@@ -72,18 +73,65 @@ const HelpCenterScreen: React.FC<HelpCenterScreenProps> = ({ navigateTo, user })
                     />
                 </section>
 
-                {/* Section Contact */}
+                {/* Section Contact Form */}
                 <section className="bg-white rounded-xl shadow-sm p-5">
                     <h2 className="text-lg font-bold text-teal-600 mb-2">Nous contacter</h2>
                     <p className="text-gray-600 text-sm mb-4">
-                        Vous ne trouvez pas la réponse à votre question ? Notre équipe est là pour vous aider.
+                        Vous ne trouvez pas la réponse à votre question ? Envoyez-nous un message directement.
                     </p>
-                    <a
-                        href="mailto:support@tidjob-lokal.com"
-                        className="block w-full text-center bg-teal-50 text-teal-700 font-semibold py-3 rounded-lg border border-teal-200 hover:bg-teal-100 transition-colors"
-                    >
-                        📧 Envoyer un email
-                    </a>
+
+                    <form onSubmit={async (e) => {
+                        e.preventDefault();
+                        const form = e.target as HTMLFormElement;
+                        const messageInput = form.elements.namedItem('message') as HTMLTextAreaElement;
+                        const message = messageInput.value;
+                        const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+                        if (!message.trim()) return;
+
+                        submitButton.disabled = true;
+                        submitButton.textContent = 'Envoi...';
+
+                        try {
+                            const response = await fetch(`${API_BASE_URL}/support/contact`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    message,
+                                    email: user?.email,
+                                    name: user?.name
+                                })
+                            });
+
+                            if (response.ok) {
+                                alert('Message envoyé avec succès !');
+                                messageInput.value = '';
+                            } else {
+                                alert('Erreur lors de l\'envoi.');
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            alert('Erreur de connexion.');
+                        } finally {
+                            submitButton.disabled = false;
+                            submitButton.textContent = 'Envoyer le message';
+                        }
+                    }}>
+                        <textarea
+                            name="message"
+                            rows={4}
+                            required
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 mb-3"
+                            placeholder="Votre message pour contact@tidjob.com..."
+                        ></textarea>
+
+                        <button
+                            type="submit"
+                            className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:bg-teal-300"
+                        >
+                            Envoyer le message
+                        </button>
+                    </form>
                 </section>
 
             </div>
