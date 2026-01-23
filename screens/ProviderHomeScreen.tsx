@@ -25,7 +25,7 @@ const CategoryCard: React.FC<{ category: ServiceCategory; onClick: () => void }>
 );
 
 const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: ServiceRequest, initialMessage: string) => void }> = ({ request, onRespond }) => (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden min-w-[280px] w-[280px] flex-shrink-0 snap-center">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
         <div className="p-4">
             <p className="text-xs font-bold text-teal-600 uppercase tracking-wide">{request.category}</p>
             <h3 className="text-base font-bold text-gray-900 mt-1 truncate">{request.title}</h3>
@@ -101,14 +101,14 @@ const ProviderHomeScreen: React.FC<ProviderHomeScreenProps> = ({ user, serviceRe
                 </div>
             </section>
 
-            {/* Recent Requests Carousel */}
-            <section className="mt-8 pl-4 mb-4">
-                <h2 className="text-xl font-bold text-gray-800 mb-4 pr-4">Demandes récentes</h2>
-                <div className="flex overflow-x-auto pb-4 space-x-4 pr-4 scrollbar-hide snap-x">
+            {/* Recent Requests List */}
+            <section className="mt-8 px-4 mb-4">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Demandes récentes</h2>
+                <div className="space-y-3">
                     {serviceRequests.length > 0 ? (
                         serviceRequests.slice(0, 5).map(req => <RequestCard key={req.id} request={req} onRespond={onRespond} />)
                     ) : (
-                        <div className="w-full text-center py-8 bg-white rounded-xl border border-dashed border-gray-300 mr-4">
+                        <div className="w-full text-center py-8 bg-white rounded-xl border border-dashed border-gray-300">
                             <p className="text-gray-500">Aucune demande récente</p>
                         </div>
                     )}
