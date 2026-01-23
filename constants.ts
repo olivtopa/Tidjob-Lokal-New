@@ -1,6 +1,6 @@
 import { ServiceCategory } from './types';
-import IronIcon from './components/icons/IronIcon';
-import ShearsIcon from './components/icons/ShearsIcon';
+import RakeIcon from './components/icons/RakeIcon';
+import CleaningBucketIcon from './components/icons/CleaningBucketIcon';
 import TutoringIcon from './components/icons/TutoringIcon';
 import BricolageIcon from './components/icons/BricolageIcon';
 import GardeEnfantIcon from './components/icons/GardeEnfantIcon';
@@ -19,8 +19,8 @@ if (!baseUrl.startsWith('http')) {
 export const API_BASE_URL = `${baseUrl}/api`;
 
 export const SERVICE_CATEGORIES: ServiceCategory[] = [
-  { id: 'cat-1', name: 'Jardinage', icon: ShearsIcon, imageUrl: '/images/categories/jardinage.png' },
-  { id: 'cat-2', name: 'Ménage', icon: IronIcon, imageUrl: '/images/categories/menage.png' },
+  { id: 'cat-1', name: 'Jardinage', icon: RakeIcon, imageUrl: '/images/categories/jardinage.png' },
+  { id: 'cat-2', name: 'Ménage', icon: CleaningBucketIcon, imageUrl: '/images/categories/menage.png' },
   { id: 'cat-3', name: 'Cours', icon: TutoringIcon, imageUrl: '/images/categories/cours.png' },
   { id: 'cat-4', name: 'Bricolage', icon: BricolageIcon, imageUrl: '/images/categories/bricolage.png' },
   { id: 'cat-5', name: 'Garde d\'enfant', icon: GardeEnfantIcon, imageUrl: '/images/categories/garde-enfant.png' },
