@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const messageController = require('../controllers/messageController');
-const authMiddleware = require('../controllers/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Get all conversations for the authenticated user (client or provider)
 router.get('/', authMiddleware.protect, messageController.getConversations);

@@ -13,6 +13,7 @@ const serviceRequestRoutes = require('./routes/serviceRequestRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const supportRoutes = require('./routes/supportRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 // CORS Configuration
 const allowedOrigins = [
@@ -54,6 +55,7 @@ app.use('/api/servicerequests', serviceRequestRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/notifications', notificationRoutes); // New: Notification routes
 app.use('/api/support', supportRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Basic health check route
 app.get('/', (req, res) => {
@@ -69,6 +71,11 @@ app.listen(PORT, () => {
 // Attempt to sync database
 db.sequelize.sync({ alter: true }).then(async () => {
   console.log('✅ Database synchronized.');
+
+  // Seed admin user
+  const seedAdminUser = require('./utils/seeder');
+  await seedAdminUser();
+
   try {
     // Force removal of NOT NULL constraint on ServiceId which might persist despite sync
     await db.sequelize.query('ALTER TABLE "Conversations" ALTER COLUMN "ServiceId" DROP NOT NULL;');

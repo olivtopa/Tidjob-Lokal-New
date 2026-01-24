@@ -8,7 +8,7 @@ const {
   updateService,
   deleteService
 } = require('../controllers/servicesController');
-const { protect, isProvider } = require('../controllers/authMiddleware');
+const { protect, isProvider } = require('../middleware/authMiddleware');
 
 router.route('/')
   .get(getServices)

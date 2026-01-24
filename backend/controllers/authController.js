@@ -19,13 +19,27 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
+    // Check if input is email or username (name)
+    const { Op } = require('sequelize');
+    const user = await User.findOne({
+      where: {
+        [Op.or]: [
+          { email: email },
+          { name: email } // We accept name in the 'email' field from frontend
+        ]
+      }
+    });
     if (!user || !(await user.validPassword(password))) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
     const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
       expiresIn: '1h'
     });
+
+    // Log the login
+    const { LoginLog } = require('../models');
+    await LoginLog.create({ UserId: user.id });
+
     res.json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });

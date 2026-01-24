@@ -21,7 +21,7 @@ const User = sequelize.define('User', {
     allowNull: false
   },
   role: {
-    type: DataTypes.ENUM('client', 'provider'),
+    type: DataTypes.ENUM('client', 'provider', 'admin'),
     allowNull: false
   },
   avatarUrl: {
@@ -36,7 +36,7 @@ User.beforeCreate(async (user) => {
   user.password = await bcrypt.hash(user.password, salt);
 });
 
-User.prototype.validPassword = async function(password) {
+User.prototype.validPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 

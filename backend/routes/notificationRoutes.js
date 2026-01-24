@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../controllers/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
 const { Subscription } = require('../models');
 
 // @desc    Subscribe to push notifications

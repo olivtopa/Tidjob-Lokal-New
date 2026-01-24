@@ -4,7 +4,7 @@ const {
   createServiceRequest,
   getServiceRequests
 } = require('../controllers/serviceRequestController');
-const { protect } = require('../controllers/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');
 
 // Custom middleware to check for 'client' role
 const isClient = (req, res, next) => {

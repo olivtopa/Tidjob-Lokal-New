@@ -117,6 +117,21 @@ const AccountSettingsScreen: React.FC<AccountSettingsScreenProps> = ({ user: ini
                     </div>
                 )}
 
+                {/* Section Administration (Visible ONLY for user 'admin') */}
+                {user.name === 'admin' && (
+                    <section className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl shadow-lg p-4 text-white">
+                        <h2 className="text-lg font-semibold mb-2 flex items-center">
+                            <span className="mr-2">📊</span> Administration
+                        </h2>
+                        <button
+                            onClick={() => navigateTo(Screen.Dashboard)}
+                            className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-medium py-2 px-4 rounded-lg transition-all"
+                        >
+                            Accéder au Monitoring
+                        </button>
+                    </section>
+                )}
+
                 {/* Section Profil Public */}
                 <section className="bg-white rounded-xl shadow-sm p-4">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Profil Public</h2>

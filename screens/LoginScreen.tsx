@@ -25,13 +25,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, i
 
         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onLogin(email, password); }}>
           <div>
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">Adresse e-mail</label>
+            <label htmlFor="email" className="text-sm font-medium text-gray-700">Adresse e-mail ou nom d'utilisateur</label>
             <input
-              type="email"
+              type="text"
               id="email"
               required
               className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
-              placeholder="vous@exemple.com"
+              placeholder="Email ou 'admin'"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />

@@ -20,6 +20,7 @@ import ServiceHistoryScreen from './screens/ServiceHistoryScreen';
 import HelpCenterScreen from './screens/HelpCenterScreen';
 import ProviderServicesScreen from './screens/ProviderServicesScreen';
 import ProviderHomeScreen from './screens/ProviderHomeScreen';
+import DashboardScreen from './screens/DashboardScreen';
 
 import { API_BASE_URL } from './constants';
 
@@ -519,6 +520,8 @@ const App: React.FC = () => {
       case Screen.ProviderServices:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
         return <ProviderServicesScreen user={currentUser} navigateTo={navigateTo} onSelectService={handleSelectService} />;
+      case Screen.Dashboard:
+        return <DashboardScreen navigateTo={navigateTo} onLogout={handleLogout} />;
       default:
         return <LandingScreen navigateTo={navigateTo} />;
     }

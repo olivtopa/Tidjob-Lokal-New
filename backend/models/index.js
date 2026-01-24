@@ -7,6 +7,8 @@ const Conversation = require('./Conversation');
 const Message = require('./Message');
 const Subscription = require('./Subscription');
 
+const LoginLog = require('./LoginLog');
+
 // User-Service relationship (a provider has many services)
 User.hasMany(Service, { as: 'offeredServices', foreignKey: 'providerId' });
 Service.belongsTo(User, { as: 'provider', foreignKey: 'providerId' });
@@ -14,6 +16,15 @@ Service.belongsTo(User, { as: 'provider', foreignKey: 'providerId' });
 // User-ServiceRequest relationship (a client has many service requests)
 User.hasMany(ServiceRequest, { as: 'requestedServices', foreignKey: 'clientId' });
 ServiceRequest.belongsTo(User, { as: 'client', foreignKey: 'clientId' });
+
+// ServiceRequest realized by a provider
+User.hasMany(ServiceRequest, { as: 'performedRequests', foreignKey: 'providerId' });
+ServiceRequest.belongsTo(User, { as: 'provider', foreignKey: 'providerId' });
+
+// Login Logs
+User.hasMany(LoginLog, { foreignKey: 'UserId' }); // Explicit foreign key for clarity
+LoginLog.belongsTo(User, { foreignKey: 'UserId' });
+
 
 // Conversation relationships
 // A conversation is between a client and a provider regarding a service
@@ -39,7 +50,8 @@ const db = {
   ServiceRequest,
   Conversation,
   Message,
-  Subscription
+  Subscription,
+  LoginLog
 };
 
 module.exports = db;
