@@ -18,6 +18,10 @@ const Service = sequelize.define('Service', {
   price: {
     type: DataTypes.FLOAT,
     allowNull: true
+  },
+  providerId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
   }
 });
 

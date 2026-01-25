@@ -11,7 +11,7 @@ exports.getStatsData = async (req, res) => {
         // Let's use a raw query for aggregation which is often easier than Sequelize for this.
         // SQLite: strftime('%Y-%m-%d', loginAt)
         const dailyConnections = await sequelize.query(
-            `SELECT date(loginAt) as date, COUNT(*) as count FROM LoginLogs GROUP BY date(loginAt) ORDER BY date DESC LIMIT 30`,
+            `SELECT date("loginAt") as date, COUNT(*) as count FROM "LoginLogs" GROUP BY date("loginAt") ORDER BY date("loginAt") DESC LIMIT 30`,
             { type: sequelize.QueryTypes.SELECT }
         );
 
@@ -176,5 +176,17 @@ exports.getAllRequests = async (req, res) => {
     } catch (error) {
         console.error('Error fetching all requests:', error);
         res.status(500).json({ message: 'Error fetching requests' });
+    }
+};
+
+exports.getAllServices = async (req, res) => {
+    try {
+        const services = await Service.findAll({
+            order: [['createdAt', 'DESC']],
+        });
+        res.status(200).json(services);
+    } catch (error) {
+        console.error('Error fetching all services:', error);
+        res.status(500).json({ message: 'Error fetching services' });
     }
 };

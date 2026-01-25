@@ -69,11 +69,13 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
     const [loading, setLoading] = useState(true);
 
     // Navigation State: 'menu' is the grid, others are sub-views
-    const [currentView, setCurrentView] = useState<'menu' | 'users' | 'requests' | 'providers' | 'clients' | 'connections' | 'categories' | 'messages'>('menu');
+    const [currentView, setCurrentView] = useState<'menu' | 'users' | 'requests' | 'services' | 'providers' | 'clients' | 'connections' | 'categories' | 'messages'>('menu');
+    const [historyStack, setHistoryStack] = useState<string[]>(['menu']);
 
     // List Data
     const [usersList, setUsersList] = useState<UserData[]>([]);
     const [requestsList, setRequestsList] = useState<RequestData[]>([]);
+    const [servicesList, setServicesList] = useState<ServiceData[]>([]);
     const [listLoading, setListLoading] = useState(false);
 
     // Fetch Initial Data
@@ -104,7 +106,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
     }, []);
 
     // Fetch Lists on demand
-    const fetchList = async (type: 'users' | 'requests') => {
+    const fetchList = async (type: 'users' | 'requests' | 'services') => {
         setListLoading(true);
         try {
             const token = localStorage.getItem('jwtToken');
@@ -112,7 +114,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
             if (res.ok) {
                 const data = await res.json();
                 if (type === 'users') setUsersList(data);
-                else setRequestsList(data);
+                else if (type === 'requests') setRequestsList(data);
+                else if (type === 'services') setServicesList(data);
             }
         } catch (e) {
             console.error(e);
@@ -123,9 +126,23 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
 
     // Handlers
     const handleViewChange = (view: typeof currentView) => {
+        setHistoryStack(prev => [...prev, view]);
         setCurrentView(view);
         if (view === 'users' && usersList.length === 0) fetchList('users');
         if (view === 'requests' && requestsList.length === 0) fetchList('requests');
+        if (view === 'services' && servicesList.length === 0) fetchList('services');
+    };
+
+    const handleBack = () => {
+        if (historyStack.length > 1) {
+            const newStack = [...historyStack];
+            newStack.pop(); // Remove current
+            const prevView = newStack[newStack.length - 1] as typeof currentView;
+            setHistoryStack(newStack);
+            setCurrentView(prevView);
+        } else {
+            setCurrentView('menu');
+        }
     };
 
     if (loading) {
@@ -134,8 +151,12 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
 
     // --- Sub-View Renderers ---
 
-    const renderHeader = (title: string, isHome: boolean = false) => (
-        isHome ? (
+    const renderHeader = (title: string, isHome: boolean = false) => {
+        const isDetailView = ['providers', 'requests', 'services'].includes(currentView);
+        const backLabel = isDetailView ? "Retour" : "Accueil";
+        const backAction = isDetailView ? handleBack : () => { setHistoryStack(['menu']); setCurrentView('menu'); };
+
+        return isHome ? (
             <header className="bg-white p-6 rounded-b-[30px] shadow-sm mb-6">
                 <div className="flex justify-between items-start">
                     <div>
@@ -143,7 +164,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                         <p className="text-gray-500 mt-1">Gérez votre application TidJob</p>
                     </div>
                     <button
-                        onClick={() => navigateTo(Screen.AccountSettings)}
+                        onClick={onLogout}
                         className="bg-gray-100 p-3 rounded-full hover:bg-gray-200 hover:text-teal-600 transition-colors"
                     >
                         <Icons.Logout />
@@ -155,16 +176,16 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                 <h2 className="text-3xl font-bold text-gray-800 tracking-tight mb-4">{title}</h2>
                 <div className="flex justify-end">
                     <button
-                        onClick={() => setCurrentView('menu')}
+                        onClick={backAction}
                         className="flex items-center space-x-2 text-gray-600 bg-white hover:bg-gray-50 hover:text-teal-600 px-6 py-2 rounded-xl transition-all shadow-sm border border-gray-200"
                     >
                         <Icons.Back />
-                        <span className="font-medium">Accueil</span>
+                        <span className="font-medium">{backLabel}</span>
                     </button>
                 </div>
             </div>
-        )
-    );
+        );
+    };
 
     const renderUsers = () => (
         <div className="max-w-6xl mx-auto animate-fade-in">
@@ -223,6 +244,37 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                                         <td className="px-8 py-5"><span className="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600 border border-gray-200">{r.category}</span></td>
                                         <td className="px-8 py-5 font-bold text-teal-600 text-lg">{r.budget ? `${r.budget} €` : '-'}</td>
                                         <td className="px-8 py-5">{new Date(r.createdAt).toLocaleDateString()}</td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderServices = () => (
+        <div className="max-w-6xl mx-auto animate-fade-in">
+            {renderHeader('Offres de Services')}
+            <div className="bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-100 mx-4">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm text-gray-600">
+                        <thead className="bg-gray-50 text-gray-800 uppercase text-xs tracking-wider border-b border-gray-100">
+                            <tr>
+                                <th className="px-8 py-5 font-bold">Titre</th>
+                                <th className="px-8 py-5 font-bold">Catégorie</th>
+                                <th className="px-8 py-5 font-bold">Prix</th>
+                                <th className="px-8 py-5 font-bold">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                            {listLoading ? <tr><td colSpan={4} className="p-10 text-center text-teal-600">Chargement...</td></tr> :
+                                servicesList.map((s) => (
+                                    <tr key={s.id} className="hover:bg-gray-50 transition-colors">
+                                        <td className="px-8 py-5 font-semibold text-gray-900">{s.title}</td>
+                                        <td className="px-8 py-5"><span className="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600 border border-gray-200">{s.category}</span></td>
+                                        <td className="px-8 py-5 font-bold text-teal-600 text-lg">{s.price ? `${s.price} €` : '-'}</td>
+                                        <td className="px-8 py-5">{new Date(s.createdAt).toLocaleDateString()}</td>
                                     </tr>
                                 ))}
                         </tbody>
@@ -304,7 +356,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
 
                 {/* Offres Prestataires Card */}
                 <div
-                    onClick={() => handleViewChange('providers')}
+                    onClick={() => handleViewChange('services')}
                     className="bg-white rounded-3xl p-10 shadow-xl border border-gray-100 hover:shadow-2xl hover:scale-[1.01] transition-all cursor-pointer group flex items-center justify-center h-48"
                 >
                     <div className="flex items-center space-x-4">
@@ -358,14 +410,6 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                             onClick={() => handleViewChange('users')}
                         />
                         <MenuTile
-                            title="Demandes"
-                            icon={<Icons.Requests />}
-                            colorClass="bg-blue-50 group-hover:bg-blue-500"
-                            textClass="text-blue-600"
-                            value={stats?.requests}
-                            onClick={() => handleViewChange('requests')}
-                        />
-                        <MenuTile
                             title="Prestataires"
                             icon={<Icons.Check />}
                             colorClass="bg-teal-50 group-hover:bg-teal-500"
@@ -386,13 +430,17 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                             textClass="text-red-600"
                             onClick={() => handleViewChange('connections')}
                         />
-                        <MenuTile
-                            title="Catégories"
-                            icon={<span className="text-3xl">🗂️</span>}
-                            colorClass="bg-yellow-50 group-hover:bg-yellow-500"
-                            textClass="text-yellow-600"
-                            onClick={() => handleViewChange('categories')}
-                        />
+                        <div className="col-span-2 flex justify-center">
+                            <div className="w-1/2">
+                                <MenuTile
+                                    title="Catégories"
+                                    icon={<span className="text-3xl">🗂️</span>}
+                                    colorClass="bg-yellow-50 group-hover:bg-yellow-500"
+                                    textClass="text-yellow-600"
+                                    onClick={() => handleViewChange('categories')}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -405,6 +453,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
             <div className="pt-8 pb-20">
                 {currentView === 'users' && renderUsers()}
                 {currentView === 'requests' && renderRequests()}
+                {currentView === 'services' && renderServices()}
                 {currentView === 'providers' && renderPerformanceTable('Performance Prestataires', advancedStats?.providerStats || [], ['Nom', 'Offres', 'Réalisées'], (p: any) => (
                     <tr key={p.id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-8 py-5 font-semibold text-gray-900">{p.name}</td>

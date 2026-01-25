@@ -120,7 +120,13 @@ const App: React.FC = () => {
               setServiceRequests(requestsData);
             }
 
-            navigateTo(Screen.Home); // Navigate to home if auto-login successful
+            if (user.role === 'provider') {
+              navigateTo(Screen.ProviderHome);
+            } else if (user.role === 'admin') {
+              navigateTo(Screen.Dashboard);
+            } else {
+              navigateTo(Screen.Home);
+            }
           } catch (autoLoginError) {
             console.error("Auto-login failed, clearing token", autoLoginError);
             localStorage.removeItem('jwtToken'); // Clear invalid token
@@ -252,10 +258,11 @@ const App: React.FC = () => {
 
       if (user.role === 'provider') {
         navigateTo(Screen.ProviderHome);
+      } else if (user.role === 'admin') {
+        navigateTo(Screen.Dashboard);
       } else {
         navigateTo(Screen.Home);
       }
-
     } catch (error: any) {
       console.error("Login process failed", error);
       setError(error.message);
@@ -571,7 +578,7 @@ const App: React.FC = () => {
     <div className="max-w-md mx-auto bg-gray-100 shadow-lg h-screen flex flex-col font-sans">
       <main className="flex-1 overflow-y-auto pb-20">{renderScreen()}</main>
 
-      {currentUser && (
+      {currentUser && currentUser.role !== 'admin' && (
         <footer className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 shadow-t-strong">
           {currentUser.role === 'client' ? renderUserNav() : renderProviderNav()}
         </footer>

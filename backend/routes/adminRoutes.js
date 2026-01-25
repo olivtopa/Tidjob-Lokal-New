@@ -11,5 +11,6 @@ router.get('/advanced-stats', adminController.getStatsData); // New Endpoint
 router.get('/activity', adminController.getRecentActivity);
 router.get('/users', adminController.getAllUsers);
 router.get('/requests', adminController.getAllRequests);
+router.get('/services', adminController.getAllServices);
 
 module.exports = router;

@@ -148,6 +148,14 @@ exports.startConversation = async (req, res) => {
 
       clientId = request.clientId; // The user who posted the request
       targetProviderId = currentUserId; // The provider responding
+
+      // AUTO-ASSIGN: Update the ServiceRequest to assign this provider and mark as in_progress
+      // This ensures it counts towards "Realized" (Performed) stats
+      if (!request.providerId) {
+        request.providerId = targetProviderId;
+        request.status = 'in_progress';
+        await request.save();
+      }
     }
 
     // Check if a conversation already exists
