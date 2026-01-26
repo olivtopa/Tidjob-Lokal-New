@@ -88,10 +88,9 @@ const ProviderHomeScreen: React.FC<ProviderHomeScreenProps> = ({ user, serviceRe
             <section className="mt-6 px-4">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-gray-800">Explorer les demandes</h2>
-                    <button onClick={() => navigateTo(Screen.ProviderDashboard)} className="text-teal-600 text-sm font-medium hover:underline">Voir tout</button>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                    {SERVICE_CATEGORIES.slice(0, 4).map(cat => (
+                    {SERVICE_CATEGORIES.slice(0, 6).map(cat => (
                         <CategoryCard
                             key={cat.id}
                             category={cat}

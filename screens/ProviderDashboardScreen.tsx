@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Screen, ServiceRequest } from '../types';
+import { SERVICE_CATEGORIES } from '../constants';
 
 interface ProviderDashboardScreenProps {
   serviceRequests: ServiceRequest[];
   navigateTo: (screen: Screen) => void;
   onRespond: (request: ServiceRequest, initialMessage: string) => void;
+  initialCategory?: string;
 }
 
 const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: ServiceRequest, initialMessage: string) => void }> = ({ request, onRespond }) => (
@@ -27,22 +29,65 @@ const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: Serv
   </div>
 );
 
-const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ serviceRequests, navigateTo, onRespond }) => {
+const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ serviceRequests, navigateTo, onRespond, initialCategory = 'Tous' }) => {
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+
+  // Update local state if prop changes (e.g. navigation from home)
+  useEffect(() => {
+    setSelectedCategory(initialCategory);
+  }, [initialCategory]);
+
+  const filteredRequests = selectedCategory === 'Tous'
+    ? serviceRequests
+    : serviceRequests.filter(req => req.category === selectedCategory);
+
+  const categories = [{ id: 'all', name: 'Tous', icon: () => null }, ...SERVICE_CATEGORIES];
+
   return (
-    <div className="p-4 bg-gray-100 min-h-full">
+    <div className="p-4 bg-gray-100 min-h-full pb-24">
       <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-4">Demandes de services</h1>
 
-      {serviceRequests.length > 0 ? (
+      {/* Category Filter Pills */}
+      <div className="flex overflow-x-auto pb-4 mb-2 scrollbar-hide -mx-4 px-4">
+        <div className="flex space-x-2">
+          {categories.map((cat) => (
+            <button
+              key={cat.name}
+              onClick={() => setSelectedCategory(cat.name)}
+              className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-colors ${selectedCategory === cat.name
+                ? 'bg-teal-600 text-white shadow-md'
+                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                }`}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {filteredRequests.length > 0 ? (
         <div>
-          {serviceRequests.map(req => <RequestCard key={req.id} request={req} onRespond={onRespond} />)}
+          {filteredRequests.map(req => <RequestCard key={req.id} request={req} onRespond={onRespond} />)}
         </div>
       ) : (
         <div className="text-center pt-20">
           <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-300 mx-auto mb-4">
             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>
           </svg>
-          <h2 className="text-xl font-bold text-gray-700">Aucune demande pour le moment</h2>
-          <p className="text-gray-500 mt-2">Les nouvelles demandes de service des clients apparaîtront ici.</p>
+          <h2 className="text-xl font-bold text-gray-700">Aucune demande</h2>
+          <p className="text-gray-500 mt-2">
+            {selectedCategory === 'Tous'
+              ? "Les nouvelles demandes de service apparaîtront ici."
+              : `Aucune demande dans la catégorie "${selectedCategory}".`}
+          </p>
+          {selectedCategory !== 'Tous' && (
+            <button
+              onClick={() => setSelectedCategory('Tous')}
+              className="mt-4 text-teal-600 font-medium hover:underline"
+            >
+              Voir toutes les demandes
+            </button>
+          )}
         </div>
       )}
     </div>

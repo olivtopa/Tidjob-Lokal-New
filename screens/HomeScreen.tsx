@@ -107,7 +107,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user, services, navigateTo, onS
       </section>
 
       <section className="mt-8 px-4 pb-4">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Services populaires</h2>
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Prestations populaires</h2>
         <div className="space-y-3">
           {services.slice(0, 4).map(service => <ServiceCard key={service.id} service={service} onSelect={onSelectService} />)}
         </div>

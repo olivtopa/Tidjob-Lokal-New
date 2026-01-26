@@ -81,8 +81,12 @@ const App: React.FC = () => {
 
   const handleCategorySelect = useCallback((category: string) => {
     setSelectedCategory(category);
-    navigateTo(Screen.Find);
-  }, [navigateTo]);
+    if (currentUser?.role === 'provider') {
+      navigateTo(Screen.ProviderDashboard);
+    } else {
+      navigateTo(Screen.Find);
+    }
+  }, [navigateTo, currentUser]);
 
   // Helper function for authenticated fetches
   const fetchWithAuth = useCallback(async (url: string, options?: RequestInit) => {
@@ -509,7 +513,7 @@ const App: React.FC = () => {
         return <ChatScreen conversation={selectedConversation} currentUser={currentUser} navigateTo={navigateTo} onSendMessage={handleSendMessage} />;
       case Screen.ProviderDashboard:
         if (!currentUser || currentUser.role !== 'provider') { navigateTo(Screen.Login); return null; }
-        return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} />;
+        return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} initialCategory={selectedCategory} />;
       case Screen.ProviderHome:
         if (!currentUser || currentUser.role !== 'provider') { navigateTo(Screen.Login); return null; }
         return <ProviderHomeScreen user={currentUser} serviceRequests={serviceRequests} navigateTo={navigateTo} onSelectCategory={handleCategorySelect} onRespond={handleRespondToRequest} />;
