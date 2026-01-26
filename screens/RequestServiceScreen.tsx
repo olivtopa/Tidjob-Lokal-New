@@ -1,111 +1,110 @@
 import React, { useState } from 'react';
 import { Screen } from '../types';
 import { SERVICE_CATEGORIES } from '../constants';
+import LocationAutocomplete from '../components/LocationAutocomplete';
 
 interface RequestServiceScreenProps {
   navigateTo: (screen: Screen) => void;
-  onPublish: (title: string, category: string, description: string, budget?: number) => Promise<void>;
+  onPublish: (title: string, category: string, description: string, budget?: number, zipCode?: string, city?: string, department?: string) => void;
 }
 
 const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo, onPublish }) => {
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(SERVICE_CATEGORIES[0].name);
   const [description, setDescription] = useState('');
   const [budget, setBudget] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Location state
+  const [location, setLocation] = useState<{ city: string, zipCode: string, department: string } | null>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-    try {
-      await onPublish(title, category, description, budget ? parseFloat(budget) : undefined);
-      // On success, maybe navigate to a "my requests" screen or show a success message.
-      // For now, we can navigate back home.
-      navigateTo(Screen.Home);
-    } catch (err: any) {
-      setError(err.message || 'Une erreur est survenue.');
-    } finally {
-      setIsLoading(false);
+    if (!location) {
+      alert("Veuillez sélectionner une localisation");
+      return;
     }
+    const numericBudget = budget ? parseFloat(budget) : undefined;
+    onPublish(title, category, description, numericBudget, location.zipCode, location.city, location.department);
+    navigateTo(Screen.Home); // Go back to home after publishing
   };
 
   return (
-    <div className="p-4 bg-gray-100 min-h-full pb-20">
-      <div className="flex items-center mb-6 pt-4">
-        <button onClick={() => navigateTo(Screen.Home)} className="text-gray-600 mr-4 p-2 bg-white rounded-full shadow-sm">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+    <div className="p-4 bg-gray-50 min-h-full pb-20">
+      <div className="flex items-center mb-6">
+        <button onClick={() => navigateTo(Screen.Home)} className="text-gray-500 mr-4">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
         </button>
-        <h1 className="text-3xl font-bold text-gray-900">Demander un service</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Demander un service</h1>
       </div>
 
-      <form className="space-y-6 bg-white p-4 rounded-xl shadow-md" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="title" className="text-sm font-medium text-gray-700">Titre de votre demande</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Titre de la demande</label>
           <input
             type="text"
-            id="title"
-            required
-            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
-            placeholder="Ex: Tondre ma pelouse"
+            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400"
+            placeholder="Ex: Recherche plombier urgent"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            required
           />
         </div>
 
         <div>
-          <label htmlFor="category" className="text-sm font-medium text-gray-700">Catégorie</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
           <select
-            id="category"
-            required
-            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 bg-white appearance-none"
+            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="">Sélectionnez une catégorie</option>
             {SERVICE_CATEGORIES.map(cat => (
               <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
           </select>
         </div>
 
+        {/* Location Field */}
+        <div className="z-20 relative">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Localisation (Ville)</label>
+          <LocationAutocomplete
+            onSelect={(loc) => setLocation(loc)}
+            placeholder="Où avez-vous besoin du service ?"
+          />
+          {location && (
+            <p className="text-green-600 text-xs mt-1">
+              Sélectionné: {location.city} ({location.zipCode}) - {location.department}
+            </p>
+          )}
+        </div>
+
         <div>
-          <label htmlFor="budget" className="text-sm font-medium text-gray-700">Budget estimé (€)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Description du besoin</label>
+          <textarea
+            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 h-32"
+            placeholder="Détaillez votre demande (dates, spécificités...)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Budget estimé (€) <span className="text-gray-400 font-normal">(Optionnel)</span></label>
           <input
             type="number"
-            id="budget"
-            min="0"
-            step="0.01"
-            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400"
             placeholder="Ex: 50"
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
           />
         </div>
 
-        <div>
-          <label htmlFor="description" className="text-sm font-medium text-gray-700">Description</label>
-          <textarea
-            id="description"
-            rows={5}
-            required
-            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
-            placeholder="Décrivez votre besoin en détail. Ex: J'ai un jardin de 50m², je n'ai pas de tondeuse..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          ></textarea>
-        </div>
-
-        {error && <div className="text-sm text-red-600 bg-red-100 p-3 rounded-lg text-center">{error}</div>}
-
-        <div className="pt-2">
-          <button type="submit" disabled={isLoading} className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300 disabled:bg-teal-300">
-            {isLoading ? 'Publication...' : 'Publier ma demande'}
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-teal-200 transition-all transform hover:scale-[1.02]"
+        >
+          Publier la demande
+        </button>
       </form>
     </div>
   );

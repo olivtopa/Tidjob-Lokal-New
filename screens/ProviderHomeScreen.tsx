@@ -38,14 +38,21 @@ const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: Serv
                     <span className="ml-auto text-xs font-bold text-gray-900">{request.budget} €</span>
                 )}
             </div>
-
-            <button
-                onClick={() => onRespond(request, "Bonjour, je suis intéressé par votre demande.")}
-                className="w-full mt-3 bg-teal-50 text-teal-700 font-bold py-2 px-4 rounded-lg transition-colors hover:bg-teal-100 text-sm"
-            >
-                Répondre
-            </button>
+            {/* Location Display */}
+            {(request.city || request.department) && (
+                <div className="mt-2 flex items-center text-xs text-gray-500">
+                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    {request.city ? `${request.city} (${request.zipCode})` : request.department}
+                </div>
+            )}
         </div>
+
+        <button
+            onClick={() => onRespond(request, "Bonjour, je suis intéressé par votre demande.")}
+            className="w-full mt-3 bg-teal-50 text-teal-700 font-bold py-2 px-4 rounded-lg transition-colors hover:bg-teal-100 text-sm"
+        >
+            Répondre
+        </button>
     </div>
 );
 

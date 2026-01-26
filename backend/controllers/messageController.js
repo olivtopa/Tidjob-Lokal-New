@@ -48,6 +48,11 @@ exports.getConversations = async (req, res) => {
       const isClient = c.clientId === userId;
       const lastReadAt = isClient ? c.clientLastReadAt : c.providerLastReadAt;
 
+      // Ensure messages are sorted by timestamp ASC
+      if (c.messages && c.messages.length > 0) {
+        c.messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      }
+
       // If never read, it's unread if there are messages.
       // If read, check if lastMessageAt is newer than lastReadAt.
       let unread = false;
@@ -56,7 +61,7 @@ exports.getConversations = async (req, res) => {
         // Optional refinement: if I AM the sender of the last message, it shouldn't be unread for me.
         if (c.messages && c.messages.length > 0) {
           const lastMsg = c.messages[c.messages.length - 1];
-          if (lastMsg.senderId === userId) unread = false;
+          if (String(lastMsg.senderId) === String(userId)) unread = false;
         } else {
           unread = false; // No messages, so not unread
         }
@@ -65,11 +70,11 @@ exports.getConversations = async (req, res) => {
         // Same refinement: if I sent the last message, it's read (or rather, not unread)
         if (c.messages && c.messages.length > 0) {
           const lastMsg = c.messages[c.messages.length - 1];
-          if (lastMsg.senderId === userId) unread = false;
+          if (String(lastMsg.senderId) === String(userId)) unread = false;
         }
       }
 
-      return { ...c, unread };
+      return { ...c, unread, messages: c.messages }; // Return sorted messages
     });
 
     res.status(200).json(conversationsWithUnread);
@@ -234,6 +239,14 @@ exports.sendMessage = async (req, res) => {
 
     // Update lastMessageAt for the conversation
     conversation.lastMessageAt = new Date();
+
+    // Also update the read status for the sender (since they just wrote it, they've read the convo)
+    if (conversation.clientId === senderId) {
+      conversation.clientLastReadAt = new Date();
+    } else {
+      conversation.providerLastReadAt = new Date();
+    }
+
     await conversation.save();
 
     // Fetch the created message with sender details

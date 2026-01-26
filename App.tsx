@@ -303,10 +303,10 @@ const App: React.FC = () => {
     }
   }, [navigateTo]);
 
-  const handlePublishRequest = useCallback(async (title: string, category: string, description: string, budget?: number) => {
+  const handlePublishRequest = useCallback(async (title: string, category: string, description: string, budget?: number, zipCode?: string, city?: string, department?: string) => {
     const response = await fetchWithAuth(`${API_BASE_URL}/servicerequests`, {
       method: 'POST',
-      body: JSON.stringify({ title, category, description, budget }),
+      body: JSON.stringify({ title, category, description, budget, zipCode, city, department }),
     });
     const data = await response.json();
     if (!response.ok) {
@@ -316,10 +316,10 @@ const App: React.FC = () => {
     console.log('Service request created:', data);
   }, [fetchWithAuth]);
 
-  const handlePublishService = useCallback(async (title: string, description: string, category: string, price: number) => {
+  const handlePublishService = useCallback(async (title: string, description: string, category: string, price: number, zipCode?: string, city?: string, department?: string) => {
     const response = await fetchWithAuth(`${API_BASE_URL}/services`, {
       method: 'POST',
-      body: JSON.stringify({ title, description, category, price }),
+      body: JSON.stringify({ title, description, category, price, zipCode, city, department }),
     });
     const data = await response.json();
     if (!response.ok) {

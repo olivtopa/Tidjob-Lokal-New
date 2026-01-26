@@ -19,6 +19,18 @@ const Service = sequelize.define('Service', {
     type: DataTypes.FLOAT,
     allowNull: true
   },
+  zipCode: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  department: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   providerId: {
     type: DataTypes.INTEGER,
     allowNull: false

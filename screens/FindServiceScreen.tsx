@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Screen, Service } from '../types';
 import SearchIcon from '../components/icons/SearchIcon';
+import LocationAutocomplete from '../components/LocationAutocomplete';
 
 interface FindServiceScreenProps {
   services: Service[];
@@ -15,6 +16,12 @@ const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => 
     <div className="p-4">
       <p className="text-sm font-semibold text-teal-600">{service.category}</p>
       <h3 className="text-lg font-bold text-gray-900 mt-1">{service.title}</h3>
+      {(service.city || service.department) && (
+        <div className="flex items-center mt-1 text-xs text-teal-600 font-medium mb-1">
+          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          {service.city ? `${service.city} (${service.zipCode})` : service.department}
+        </div>
+      )}
       <p className="text-gray-600 text-sm mt-1">{service.description}</p>
       <div className="flex items-center justify-between mt-4">
         <div className="flex items-center">
@@ -37,6 +44,9 @@ const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigat
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'Tous');
 
+  // Location Filter State
+  const [filterLocation, setFilterLocation] = useState<{ city: string, zipCode: string, department: string } | null>(null);
+
   useEffect(() => {
     if (initialCategory) {
       setSelectedCategory(initialCategory);
@@ -52,15 +62,35 @@ const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigat
         service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         service.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         service.provider.name.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesCategory && matchesSearch;
+
+      let matchesLocation = true;
+      if (filterLocation) {
+        // Filter logic: Match City OR Department
+        // If a city is selected, we ideally match exact city OR zip. 
+        // If only department is used (rare in this autocomplete but possible if we handled it), we match department.
+        // Let's implement robust matching:
+        // 1. If service has no location, it might be hidden or shown depending on preference. Let's show it or hide it? 
+        //    For now, if filtering by location, hide services without location OR mismatch.
+        if (service.city) {
+          matchesLocation = service.city.toLowerCase() === filterLocation.city.toLowerCase();
+        } else if (service.department) {
+          // Fallback to department match if service has no city
+          matchesLocation = service.department.includes(filterLocation.department) || filterLocation.department.includes(service.department);
+        } else {
+          // Service has no location data -> exclude if filter is active
+          matchesLocation = false;
+        }
+      }
+
+      return matchesCategory && matchesSearch && matchesLocation;
     });
-  }, [services, searchTerm, selectedCategory]);
+  }, [services, searchTerm, selectedCategory, filterLocation]);
 
   return (
     <div className="p-4 bg-gray-100 min-h-full">
       <h1 className="text-3xl font-bold text-gray-900 pt-4">Trouver une prestation</h1>
 
-      <div className="relative my-4">
+      <div className="relative my-4 space-y-3">
         <input
           type="text"
           placeholder="Ex: 'Tonte de pelouse'"
@@ -68,7 +98,23 @@ const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigat
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
+        <SearchIcon className="absolute left-4 top-4 w-6 h-6 text-gray-400" />
+
+        {/* Location Filter */}
+        <div className="relative z-20">
+          <LocationAutocomplete
+            onSelect={(loc) => setFilterLocation(loc)}
+            placeholder="Filtrer par ville..."
+          />
+          {filterLocation && (
+            <button
+              onClick={() => setFilterLocation(null)}
+              className="text-xs text-red-500 mt-1 hover:underline"
+            >
+              Effacer le filtre lieu ({filterLocation.city})
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="flex space-x-2 my-4 overflow-x-auto pb-2 -mx-4 px-4">

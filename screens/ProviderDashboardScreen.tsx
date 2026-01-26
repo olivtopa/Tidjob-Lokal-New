@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Screen, ServiceRequest } from '../types';
 import { SERVICE_CATEGORIES } from '../constants';
+import LocationAutocomplete from '../components/LocationAutocomplete';
 
 interface ProviderDashboardScreenProps {
   serviceRequests: ServiceRequest[];
@@ -13,6 +14,12 @@ const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: Serv
   <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-4 p-4">
     <p className="text-sm font-semibold text-teal-600">{request.category}</p>
     <h3 className="text-lg font-bold text-gray-900 mt-1">{request.title}</h3>
+    {(request.city || request.department) && (
+      <div className="flex items-center mt-1 text-xs text-teal-600 font-medium mb-1">
+        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        {request.city ? `${request.city} (${request.zipCode})` : request.department}
+      </div>
+    )}
     <p className="text-gray-600 text-sm mt-1 line-clamp-2">{request.description}</p>
     <div className="flex items-center justify-between mt-4 border-t border-gray-100 pt-3">
       <div className="flex items-center">
@@ -31,21 +38,49 @@ const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: Serv
 
 const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ serviceRequests, navigateTo, onRespond, initialCategory = 'Tous' }) => {
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [filterLocation, setFilterLocation] = useState<{ city: string, zipCode: string, department: string } | null>(null);
 
   // Update local state if prop changes (e.g. navigation from home)
   useEffect(() => {
     setSelectedCategory(initialCategory);
   }, [initialCategory]);
 
-  const filteredRequests = selectedCategory === 'Tous'
-    ? serviceRequests
-    : serviceRequests.filter(req => req.category === selectedCategory);
+  const filteredRequests = serviceRequests.filter(req => {
+    const matchesCategory = selectedCategory === 'Tous' || req.category === selectedCategory;
+    let matchesLocation = true;
+    if (filterLocation) {
+      if (req.city) {
+        matchesLocation = req.city.toLowerCase() === filterLocation.city.toLowerCase();
+      } else if (req.department) {
+        matchesLocation = req.department.includes(filterLocation.department) || filterLocation.department.includes(req.department);
+      } else {
+        matchesLocation = false;
+      }
+    }
+    return matchesCategory && matchesLocation;
+  });
 
   const categories = [{ id: 'all', name: 'Tous', icon: () => null }, ...SERVICE_CATEGORIES];
 
   return (
     <div className="p-4 bg-gray-100 min-h-full pb-24">
       <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-4">Demandes de services</h1>
+
+      {/* Location Filter */}
+      <div className="mb-4 relative z-20">
+        <LocationAutocomplete
+          onSelect={(loc) => setFilterLocation(loc)}
+          placeholder="Filtrer par ville..."
+        />
+        {filterLocation && (
+          <button
+            onClick={() => setFilterLocation(null)}
+            className="text-xs text-red-500 mt-1 hover:underline"
+          >
+            Effacer le filtre lieu ({filterLocation.city})
+          </button>
+        )}
+      </div>
 
       {/* Category Filter Pills */}
       <div className="flex overflow-x-auto pb-4 mb-2 scrollbar-hide -mx-4 px-4">
@@ -76,16 +111,16 @@ const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ servi
           </svg>
           <h2 className="text-xl font-bold text-gray-700">Aucune demande</h2>
           <p className="text-gray-500 mt-2">
-            {selectedCategory === 'Tous'
+            {(selectedCategory === 'Tous' && !filterLocation)
               ? "Les nouvelles demandes de service apparaîtront ici."
-              : `Aucune demande dans la catégorie "${selectedCategory}".`}
+              : `Aucune demande ne correspond à vos filtres.`}
           </p>
-          {selectedCategory !== 'Tous' && (
+          {(selectedCategory !== 'Tous' || filterLocation) && (
             <button
-              onClick={() => setSelectedCategory('Tous')}
+              onClick={() => { setSelectedCategory('Tous'); setFilterLocation(null); }}
               className="mt-4 text-teal-600 font-medium hover:underline"
             >
-              Voir toutes les demandes
+              Réinitialiser les filtres
             </button>
           )}
         </div>

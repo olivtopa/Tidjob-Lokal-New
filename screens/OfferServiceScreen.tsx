@@ -1,105 +1,112 @@
 import React, { useState } from 'react';
 import { Screen } from '../types';
 import { SERVICE_CATEGORIES } from '../constants';
+import LocationAutocomplete from '../components/LocationAutocomplete';
 
 interface OfferServiceScreenProps {
   navigateTo: (screen: Screen) => void;
-  onPublishService: (title: string, description: string, category: string, price: number) => Promise<void>;
+  onPublishService: (title: string, description: string, category: string, price: number, zipCode?: string, city?: string, department?: string) => void;
 }
 
 const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onPublishService }) => {
   const [title, setTitle] = useState('');
+  const [category, setCategory] = useState(SERVICE_CATEGORIES[0].name);
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
-  const [price, setPrice] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [price, setPrice] = useState('0');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Location state
+  const [location, setLocation] = useState<{ city: string, zipCode: string, department: string } | null>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-    try {
-      await onPublishService(title, description, category, parseFloat(price));
-      // On success, maybe navigate to a "my services" screen or show a success message.
-      // For now, we can navigate back to the provider dashboard.
-      navigateTo(Screen.ProviderDashboard);
-    } catch (err: any) {
-      setError(err.message || 'Une erreur est survenue lors de la publication du service.');
-    } finally {
-      setIsLoading(false);
+    if (!location) {
+      alert("Veuillez sélectionner une localisation");
+      return;
     }
+    // Convert price string to number
+    const numericPrice = parseFloat(price);
+    onPublishService(title, description, category, numericPrice, location.zipCode, location.city, location.department);
+    navigateTo(Screen.ProviderServices);
   };
 
   return (
-    <div className="p-4 bg-gray-100 min-h-full">
-      <h1 className="text-3xl font-bold text-gray-900 pt-4 mb-6">Proposer un service</h1>
+    <div className="p-4 bg-gray-50 min-h-full pb-20">
+      <div className="flex items-center mb-6">
+        <button onClick={() => navigateTo(Screen.ProviderHome)} className="text-gray-500 mr-4">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <h1 className="text-2xl font-bold text-gray-900">Proposer un service</h1>
+      </div>
 
-      <form className="space-y-6 bg-white p-4 rounded-xl shadow-md" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="title" className="text-sm font-medium text-gray-700">Titre du service</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Titre de l'annonce</label>
           <input
             type="text"
-            id="title"
-            required
-            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
-            placeholder="Ex: Cours de jardinage à domicile"
+            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400"
+            placeholder="Ex: Tonte de pelouse"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            required
           />
         </div>
 
         <div>
-          <label htmlFor="category" className="text-sm font-medium text-gray-700">Catégorie</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
           <select
-            id="category"
-            required
-            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 bg-white appearance-none"
+            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="">Sélectionnez une catégorie</option>
             {SERVICE_CATEGORIES.map(cat => (
               <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
           </select>
         </div>
 
+        {/* Location Field */}
+        <div className="z-20 relative">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Localisation (Ville)</label>
+          <LocationAutocomplete
+            onSelect={(loc) => setLocation(loc)}
+            placeholder="Rechercher une commune..."
+          />
+          {location && (
+            <p className="text-green-600 text-xs mt-1">
+              Sélectionné: {location.city} ({location.zipCode}) - {location.department}
+            </p>
+          )}
+        </div>
+
         <div>
-          <label htmlFor="price" className="text-sm font-medium text-gray-700">Tarif (€)</label>
-          <input
-            type="number"
-            id="price"
+          <label className="block text-sm font-medium text-gray-700 mb-1">Description détaillée</label>
+          <textarea
+            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 h-32"
+            placeholder="Décrivez vos compétences et ce que vous proposez..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             required
-            min="0"
-            step="0.01"
-            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
-            placeholder="Ex: 50"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
           />
         </div>
 
         <div>
-          <label htmlFor="description" className="text-sm font-medium text-gray-700">Description détaillée</label>
-          <textarea
-            id="description"
-            rows={5}
+          <label className="block text-sm font-medium text-gray-700 mb-1">Tarif indicatif (€)</label>
+          <input
+            type="number"
+            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400"
+            placeholder="0"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
             required
-            className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
-            placeholder="Décrivez votre service, votre expérience, vos tarifs..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          ></textarea>
+          />
         </div>
 
-        {error && <div className="text-sm text-red-600 bg-red-100 p-3 rounded-lg text-center">{error}</div>}
-
-        <div className="pt-2">
-          <button type="submit" disabled={isLoading} className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-300 disabled:bg-teal-300">
-            {isLoading ? 'Publication...' : 'Publier mon service'}
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-teal-200 transition-all transform hover:scale-[1.02]"
+        >
+          Publier l'annonce
+        </button>
       </form>
     </div>
   );

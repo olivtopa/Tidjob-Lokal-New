@@ -5,12 +5,15 @@ const { ServiceRequest } = require('../models');
 // @access  Private/Client
 const createServiceRequest = async (req, res) => {
   try {
-    const { title, description, category, budget } = req.body;
+    const { title, description, category, budget, zipCode, city, department } = req.body;
     const serviceRequest = await ServiceRequest.create({
       title,
       description,
       category,
       budget,
+      zipCode,
+      city,
+      department,
       clientId: req.user.id // req.user is set by the 'protect' middleware
     });
     res.status(201).json(serviceRequest);

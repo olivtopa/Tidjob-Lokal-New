@@ -55,6 +55,9 @@ export interface Service {
   provider: Provider;
   category: string;
   imageUrl: string;
+  zipCode?: string;
+  city?: string;
+  department?: string;
   serviceRequestId?: string; // Optional, as not all services might originate from a request
 }
 
@@ -81,6 +84,9 @@ export interface ServiceRequest {
   description: string;
   category: string;
   budget?: number;
+  zipCode?: string;
+  city?: string;
+  department?: string;
   postedAt: string;
   client: User;
 }

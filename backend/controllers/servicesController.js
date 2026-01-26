@@ -41,12 +41,15 @@ const getServiceById = async (req, res) => {
 // @access  Private/Provider
 const createService = async (req, res) => {
   try {
-    const { title, description, category, price } = req.body;
+    const { title, description, category, price, zipCode, city, department } = req.body;
     const service = await Service.create({
       title,
       description,
       category,
       price,
+      zipCode,
+      city,
+      department,
       providerId: req.user.id
     });
     res.status(201).json(service);
@@ -66,11 +69,14 @@ const updateService = async (req, res) => {
       if (service.providerId !== req.user.id) {
         return res.status(403).json({ error: 'User not authorized to update this service' });
       }
-      const { title, description, category, price } = req.body;
+      const { title, description, category, price, zipCode, city, department } = req.body;
       service.title = title || service.title;
       service.description = description || service.description;
       service.category = category || service.category;
       service.price = price || service.price;
+      service.zipCode = zipCode || service.zipCode;
+      service.city = city || service.city;
+      service.department = department || service.department;
       await service.save();
       res.json(service);
     } else {
