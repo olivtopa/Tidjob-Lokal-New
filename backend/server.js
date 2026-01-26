@@ -11,7 +11,6 @@ const serviceRoutes = require('./routes/servicesRoutes');
 const providerRoutes = require('./routes/providersRoutes');
 const serviceRequestRoutes = require('./routes/serviceRequestRoutes');
 const messageRoutes = require('./routes/messageRoutes');
-const notificationRoutes = require('./routes/notificationRoutes');
 const supportRoutes = require('./routes/supportRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
@@ -53,7 +52,6 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/providers', providerRoutes);
 app.use('/api/servicerequests', serviceRequestRoutes);
 app.use('/api/messages', messageRoutes);
-app.use('/api/notifications', notificationRoutes); // New: Notification routes
 app.use('/api/support', supportRoutes);
 app.use('/api/admin', adminRoutes);
 
