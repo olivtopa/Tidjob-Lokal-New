@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Screen } from '../types';
+import EyeIcon from '../components/icons/EyeIcon';
+import EyeOffIcon from '../components/icons/EyeOffIcon';
 
 interface SignUpScreenProps {
   navigateTo: (screen: Screen) => void;
@@ -14,6 +16,8 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
   return (
@@ -57,11 +61,53 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
           </div>
           <div>
             <label htmlFor="password" className="text-sm font-medium text-gray-700">Mot de passe</label>
-            <input type="password" id="password" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="********" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <div className="relative mt-1">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 pr-10"
+                placeholder="********"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOffIcon className="h-5 w-5" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" />
+                )}
+              </button>
+            </div>
           </div>
           <div>
             <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
-            <input type="password" id="confirmPassword" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="********" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            <div className="relative mt-1">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 pr-10"
+                placeholder="********"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? (
+                  <EyeOffIcon className="h-5 w-5" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" />
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="pt-2">

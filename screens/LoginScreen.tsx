@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Screen } from '../types';
+import EyeIcon from '../components/icons/EyeIcon';
+import EyeOffIcon from '../components/icons/EyeOffIcon';
 
 interface LoginScreenProps {
   navigateTo: (screen: Screen) => void;
@@ -11,6 +13,7 @@ interface LoginScreenProps {
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, isLoading }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="min-h-full flex flex-col justify-center items-center p-6 bg-gray-100">
@@ -38,15 +41,28 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, i
           </div>
           <div>
             <label htmlFor="password" className="text-sm font-medium text-gray-700">Mot de passe</label>
-            <input
-              type="password"
-              id="password"
-              required
-              className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
-              placeholder="********"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="relative mt-1">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 pr-10"
+                placeholder="********"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOffIcon className="h-5 w-5" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" />
+                )}
+              </button>
+            </div>
           </div>
           <div className="flex justify-end">
             <button type="button" onClick={() => navigateTo(Screen.ForgotPassword)} className="text-sm font-medium text-teal-600 hover:text-teal-500">
