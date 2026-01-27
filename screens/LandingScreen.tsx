@@ -13,7 +13,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigateTo }) => {
           <img src="/logo.jpg" alt="Tidjob Lokal Logo" className="w-full h-full object-cover" />
         </div>
         <h1 className="text-5xl font-extrabold text-white tracking-tight mb-2">
-          Tidjob <span className="font-light">Lokal</span>
+          Tidjob Lokal
         </h1>
         <p className="text-xl font-medium text-teal-400 mb-6 italic">
           Trouvez de l'aide ou proposez vos services près de chez vous
