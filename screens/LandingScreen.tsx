@@ -16,7 +16,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigateTo }) => {
           Tidjob <span className="font-light">Lokal</span>
         </h1>
         <p className="text-xl font-medium text-teal-400 mb-6 italic">
-          Trouvez de l'aide près de chez vous
+          Trouvez de l'aide ou proposez vos services près de chez vous
         </p>
         <p className="max-w-md text-lg text-gray-300 mb-8">
           Tidjob-Lokal connecte voisins et prestataires locaux pour tous vos besoins du quotidien. Trouvez de l'aide ou proposez vos services en quelques clics, en toute confiance et simplicité.
