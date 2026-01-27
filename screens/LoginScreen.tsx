@@ -48,6 +48,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, i
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          <div className="flex justify-end">
+            <button type="button" onClick={() => navigateTo(Screen.ForgotPassword)} className="text-sm font-medium text-teal-600 hover:text-teal-500">
+              Mot de passe oublié ?
+            </button>
+          </div>
 
           {error && <div className="text-sm text-red-600 bg-red-100 p-3 rounded-lg text-center">{error}</div>}
 

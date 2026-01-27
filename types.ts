@@ -21,6 +21,8 @@ export enum Screen {
   ProviderServices,
   ProviderHome,
   Dashboard,
+  ForgotPassword,
+  ResetPassword,
 }
 
 export interface User {

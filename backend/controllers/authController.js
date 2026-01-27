@@ -1,6 +1,8 @@
 
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { User } = require('../models');
+const sendEmail = require('../utils/sendEmail');
 
 const signup = async (req, res) => {
   try {
@@ -123,6 +125,112 @@ const updatePassword = async (req, res) => {
   }
 };
 
+// @desc    Forgot Password - Send reset email
+// @route   POST /api/auth/forgotpassword
+// @access  Public
+const forgotPassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { email: req.body.email } });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Get reset token
+    const resetToken = crypto.randomBytes(20).toString('hex');
+
+    // Hash token and set to resetPasswordToken field in DB
+    user.resetPasswordToken = crypto
+      .createHash('sha256')
+      .update(resetToken)
+      .digest('hex');
+
+    // Set expire (e.g., 10 minutes)
+    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+    await user.save();
+
+    // Create reset url
+    // If running deeply local (emulator), logic might differ, but generally generic link works 
+    // Usually frontend URL. Let's assume frontend is handling the route /resetpassword/:resetToken
+    // If backend and frontend are same origin/port during dev (often not), user needs the FRONTEND URL.
+    // For now we return the token in response too for easy dev testing, but email should contain link.
+    const resetUrl = `${req.protocol}://${req.get('host')}/resetpassword/${resetToken}`;
+    // WAIT: req.get('host') gives backend host. If frontend is different (React Native/Expo), deep link is needed.
+    // Since this is a React Web App (Tidjob-Lokal-New implies web stack often), let's assume standard web link.
+    // But honestly, for this "Simple" request, sending the CODE (token) is often easier to type on mobile than a link if deep linking isn't setup.
+    // Let's send a simple message with the token.
+
+    const message = `Vous avez demandé la réinitialisation de votre mot de passe. \n\nVeuillez utiliser ce jeton pour réinitialiser votre mot de passe : \n\n ${resetToken} \n\n Ce lien expire dans 10 minutes.`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Réinitialisation de mot de passe - Tidjob Lokal',
+        message
+      });
+
+      res.status(200).json({ success: true, data: 'Email sent' });
+    } catch (err) {
+      console.error(err);
+      user.resetPasswordToken = null;
+      user.resetPasswordExpire = null;
+      await user.save();
+      return res.status(500).json({ error: 'Email could not be sent' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// @desc    Reset Password
+// @route   PUT /api/auth/resetpassword/:resettoken
+// @access  Public
+const resetPassword = async (req, res) => {
+  try {
+    // Get hashed token
+    const resetPasswordToken = crypto
+      .createHash('sha256')
+      .update(req.params.resettoken)
+      .digest('hex');
+
+    const user = await User.findOne({
+      where: {
+        resetPasswordToken,
+        resetPasswordExpire: { [require('sequelize').Op.gt]: Date.now() }
+      }
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid or expired token' });
+    }
+
+    // Set new password
+    const { password } = req.body;
+
+    // Hash password manually as we did in updatePassword (since hooks might be missing for update)
+    const bcrypt = require('bcryptjs');
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
+    user.resetPasswordToken = null;
+    user.resetPasswordExpire = null;
+
+    await user.save();
+
+    // Log the user in directly? Or ask to login? Usually ask to login.
+    // We can return a token if we want to auto-login.
+    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
+      expiresIn: '1h'
+    });
+
+    res.status(200).json({ success: true, token, message: 'Password updated successfully' });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // @desc    Delete user account
 // @route   DELETE /api/auth/profile
 // @access  Private
@@ -136,4 +244,4 @@ const deleteAccount = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, getMe, updateProfile, updatePassword, deleteAccount };
+module.exports = { signup, login, getMe, updateProfile, updatePassword, deleteAccount, forgotPassword, resetPassword };

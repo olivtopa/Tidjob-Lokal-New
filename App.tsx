@@ -11,6 +11,8 @@ import OfferServiceScreen from './screens/OfferServiceScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import LegalScreen from './screens/LegalScreen';
 import ServiceDetailScreen from './screens/ServiceDetailScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import MessagesScreen from './screens/MessagesScreen';
 import ChatScreen from './screens/ChatScreen';
 import ProviderDashboardScreen from './screens/ProviderDashboardScreen';
@@ -489,6 +491,10 @@ const App: React.FC = () => {
         return <LoginScreen navigateTo={navigateTo} onLogin={handleLogin} error={error} isLoading={isLoading} />;
       case Screen.SignUp:
         return <SignUpScreen navigateTo={navigateTo} onSignUp={handleSignUp} error={error} isLoading={isLoading} />;
+      case Screen.ForgotPassword:
+        return <ForgotPasswordScreen navigateTo={navigateTo} />;
+      case Screen.ResetPassword:
+        return <ResetPasswordScreen navigateTo={navigateTo} />;
       case Screen.Home:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
         if (currentUser.role === 'provider') return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} />;
