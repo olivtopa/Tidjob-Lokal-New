@@ -31,7 +31,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigateTo, onLogin, error, i
               id="email"
               required
               className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
-              placeholder="Email ou 'admin'"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
