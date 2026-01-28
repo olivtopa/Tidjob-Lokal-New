@@ -59,28 +59,30 @@ const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navi
         </div>
 
         <div className="my-6 border-t border-gray-200"></div>
-
-        <form onSubmit={handleSendMessage}>
-          <h2 className="text-xl font-bold text-gray-800 mb-3">Contacter {provider.name.split(' ')[0]}</h2>
-          <textarea
-            rows={4}
-            required
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
-            placeholder={`Bonjour ${provider.name.split(' ')[0]}, je suis intéressé(e) par votre service de "${title}"...`}
-          ></textarea>
-          <button
-            type="submit"
-            disabled={message.trim() === ''}
-            className={`w-full mt-4 font-bold py-3 px-4 rounded-lg text-lg transition duration-300 ${message.trim() === ''
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-teal-500 hover:bg-teal-600 text-white'
-              }`}
-          >
-            Envoyer le message
-          </button>
-        </form>
+        {/* Only show contact form if the current user is NOT the provider of this service */}
+        {user?.id !== provider.id && (
+          <form onSubmit={handleSendMessage}>
+            <h2 className="text-xl font-bold text-gray-800 mb-3">Contacter {provider.name.split(' ')[0]}</h2>
+            <textarea
+              rows={4}
+              required
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500"
+              placeholder={`Bonjour ${provider.name.split(' ')[0]}, je suis intéressé(e) par votre service de "${title}"...`}
+            ></textarea>
+            <button
+              type="submit"
+              disabled={message.trim() === ''}
+              className={`w-full mt-4 font-bold py-3 px-4 rounded-lg text-lg transition duration-300 ${message.trim() === ''
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-teal-500 hover:bg-teal-600 text-white'
+                }`}
+            >
+              Envoyer le message
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );
