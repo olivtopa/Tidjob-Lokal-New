@@ -39,7 +39,7 @@ const ServiceDetailScreen: React.FC<ServiceDetailScreenProps> = ({ service, navi
       <div className="p-4 pb-6">
 
         <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
-        <p className="text-2xl font-extrabold text-gray-800 mt-2">{String(price).replace('€', '')}</p>
+        <p className="text-2xl font-extrabold text-gray-800 mt-2">{price} €</p>
         <p className="text-gray-600 text-base mt-4">{description}</p>
 
         <div className="my-6 border-t border-gray-200"></div>

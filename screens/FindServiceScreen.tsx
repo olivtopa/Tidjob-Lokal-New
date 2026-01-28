@@ -28,6 +28,9 @@ const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => 
           <img src={service.provider.avatarUrl} alt={service.provider.name} className="w-8 h-8 rounded-full object-cover" />
           <span className="ml-2 text-sm font-medium text-gray-700">{service.provider.name}</span>
         </div>
+        {service.price !== undefined && (
+          <span className="text-lg font-bold text-gray-900">{service.price} €</span>
+        )}
         <button
           onClick={() => onSelect(service)}
           className="bg-teal-500 text-white font-bold py-2 px-5 rounded-lg transition-colors hover:bg-teal-600 text-sm"
