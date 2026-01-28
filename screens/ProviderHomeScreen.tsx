@@ -97,7 +97,7 @@ const ProviderHomeScreen: React.FC<ProviderHomeScreenProps> = ({ user, serviceRe
                     <h2 className="text-xl font-bold text-gray-800">Explorer les demandes</h2>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                    {SERVICE_CATEGORIES.slice(0, 6).map(cat => (
+                    {SERVICE_CATEGORIES.map(cat => (
                         <CategoryCard
                             key={cat.id}
                             category={cat}

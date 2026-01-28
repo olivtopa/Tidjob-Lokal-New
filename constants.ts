@@ -6,6 +6,9 @@ import BricolageIcon from './components/icons/BricolageIcon';
 import GardeEnfantIcon from './components/icons/GardeEnfantIcon';
 import CovoiturageIcon from './components/icons/CovoiturageIcon';
 
+import ShearsIcon from './components/icons/ShearsIcon';
+import ChefIcon from './components/icons/ChefIcon';
+
 let baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 // Handle Render internal hostnames (e.g., "service-name-slug") by appending .onrender.com
@@ -25,4 +28,6 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
   { id: 'cat-4', name: 'Bricolage', icon: BricolageIcon, imageUrl: '/images/categories/bricolage.png' },
   { id: 'cat-5', name: 'Garde d\'enfant', icon: GardeEnfantIcon, imageUrl: '/images/categories/garde-enfant.png' },
   { id: 'cat-6', name: 'Covoiturage', icon: CovoiturageIcon, imageUrl: '/images/categories/covoiturage.png' },
+  { id: 'cat-7', name: 'Beauté & Bien-être', icon: ShearsIcon, imageUrl: '/images/categories/beaute.png' },
+  { id: 'cat-8', name: 'Cuisine & Traiteur', icon: ChefIcon, imageUrl: '/images/categories/cuisine.png' },
 ];
