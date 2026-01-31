@@ -91,6 +91,20 @@ const ProviderHomeScreen: React.FC<ProviderHomeScreenProps> = ({ user, serviceRe
                 </button>
             </header>
 
+            {/* Recent Requests List */}
+            <section className="mt-8 px-4 mb-4">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Demandes récentes</h2>
+                <div className="space-y-3">
+                    {serviceRequests.length > 0 ? (
+                        serviceRequests.slice(0, 5).map(req => <RequestCard key={req.id} request={req} onRespond={onRespond} />)
+                    ) : (
+                        <div className="w-full text-center py-8 bg-white rounded-xl border border-dashed border-gray-300">
+                            <p className="text-gray-500">Aucune demande récente</p>
+                        </div>
+                    )}
+                </div>
+            </section>
+
             {/* Categories Grid */}
             <section className="mt-6 px-4">
                 <div className="flex justify-between items-center mb-4">
@@ -104,20 +118,6 @@ const ProviderHomeScreen: React.FC<ProviderHomeScreenProps> = ({ user, serviceRe
                             onClick={() => onSelectCategory(cat.name)}
                         />
                     ))}
-                </div>
-            </section>
-
-            {/* Recent Requests List */}
-            <section className="mt-8 px-4 mb-4">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">Demandes récentes</h2>
-                <div className="space-y-3">
-                    {serviceRequests.length > 0 ? (
-                        serviceRequests.slice(0, 5).map(req => <RequestCard key={req.id} request={req} onRespond={onRespond} />)
-                    ) : (
-                        <div className="w-full text-center py-8 bg-white rounded-xl border border-dashed border-gray-300">
-                            <p className="text-gray-500">Aucune demande récente</p>
-                        </div>
-                    )}
                 </div>
             </section>
         </div>

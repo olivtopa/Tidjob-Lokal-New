@@ -293,9 +293,54 @@ const App: React.FC = () => {
         throw new Error(data.error || 'Erreur lors de l\'inscription');
       }
 
-      // Successfully signed up, now navigate to login screen
-      // We could also pass a success message.
-      navigateTo(Screen.Login);
+      // Auto-login logic
+      if (data.token) {
+        localStorage.setItem('jwtToken', data.token);
+        console.log('Signup successful, auto-login with token:', data.token);
+
+        // Fetch user profile immediately
+        const profileResponse = await fetch(`${API_BASE_URL}/auth/me`, {
+          headers: {
+            'Authorization': `Bearer ${data.token}`
+          }
+        });
+
+        const user = await profileResponse.json();
+
+        if (!profileResponse.ok) {
+          throw new Error('Inscription réussie mais impossible de récupérer le profil.');
+        }
+
+        setCurrentUser(user);
+
+        // Fetch service requests
+        try {
+          const serviceRequestsRes = await fetch(`${API_BASE_URL}/servicerequests`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${data.token}`
+            }
+          });
+          if (serviceRequestsRes.ok) {
+            const requestsData = await serviceRequestsRes.json();
+            setServiceRequests(requestsData);
+          }
+        } catch (reqError) {
+          console.warn("Could not fetch service requests on signup auto-login", reqError);
+        }
+
+        // Navigate based on role
+        if (user.role === 'provider') {
+          navigateTo(Screen.ProviderHome);
+        } else if (user.role === 'admin') {
+          navigateTo(Screen.Dashboard);
+        } else {
+          navigateTo(Screen.Home);
+        }
+      } else {
+        // Fallback if legacy backend (no token)
+        navigateTo(Screen.Login);
+      }
 
     } catch (error: any) {
       console.error("Sign up failed", error);
