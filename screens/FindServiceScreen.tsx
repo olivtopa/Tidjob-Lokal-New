@@ -136,12 +136,24 @@ const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigat
       </div>
 
       <div>
+
         {filteredServices.length > 0 ? (
           filteredServices.map(service => <ServiceCard key={service.id} service={service} onSelect={onSelectService} />)
         ) : (
           <p className="text-center text-gray-500 mt-8">Aucun service ne correspond à votre recherche.</p>
         )}
       </div>
+
+      {/* Floating Action Button for Offering Service */}
+      <button
+        onClick={() => navigateTo(Screen.Offer)}
+        className="fixed bottom-20 right-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded-full shadow-lg flex items-center transition transform hover:scale-105 z-30"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        Proposer un service
+      </button>
     </div>
   );
 };

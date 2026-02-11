@@ -26,6 +26,6 @@ const isProvider = (req, res, next) => {
 
 router.route('/')
   .post(protect, isClient, createServiceRequest)
-  .get(protect, getServiceRequests);
+  .get(getServiceRequests);
 
 module.exports = router;

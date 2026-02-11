@@ -117,7 +117,6 @@ const App: React.FC = () => {
             }
             setCurrentUser(user);
 
-            // Fetch service requests for both providers AND clients (now that backend allows it)
             // If user is provider -> all requests (marketplace)
             // If user is client -> my requests (history)
             const serviceRequestsRes = await fetchWithAuth(`${API_BASE_URL}/servicerequests`);
@@ -126,25 +125,39 @@ const App: React.FC = () => {
               setServiceRequests(requestsData);
             }
 
-            if (user.role === 'provider') {
-              navigateTo(Screen.ProviderHome);
-            } else if (user.role === 'admin') {
-              navigateTo(Screen.Dashboard);
-            } else {
-              navigateTo(Screen.Home);
+            // Redirect logic (only if we are on Landing or Login/Signup, otherwise preserve state)
+            // We only redirect if we just logged in (which is handled in handleLogin/handleSignup). 
+            // Here, it's auto-login.
+            // If we are on Landing, we might want to go to Dashboard/Home.
+            if (currentScreen === Screen.Landing || currentScreen === Screen.Login || currentScreen === Screen.SignUp) {
+              if (user.role === 'provider') {
+                navigateTo(Screen.ProviderHome);
+              } else if (user.role === 'admin') {
+                navigateTo(Screen.Dashboard);
+              } else {
+                navigateTo(Screen.Home);
+              }
             }
+
           } catch (autoLoginError) {
             console.error("Auto-login failed, clearing token", autoLoginError);
             localStorage.removeItem('jwtToken'); // Clear invalid token
             setCurrentUser(null);
-            navigateTo(Screen.Landing);
+            // navigateTo(Screen.Landing); // Don't force redirect to landing on auto-login fail, allow public browsing
           }
         }
 
-        // Fetch initial public data (services and providers)
-        const [servicesRes, providersRes] = await Promise.all([
+        // Fetch initial public data (services and providers) AND Service Requests (now public)
+        const [servicesRes, providersRes, requestsRes] = await Promise.all([
           fetchWithAuth(`${API_BASE_URL}/services`),
-          fetchWithAuth(`${API_BASE_URL}/providers`)
+          fetchWithAuth(`${API_BASE_URL}/providers`),
+          // Fetch requests publicly if no user or if user is provider (marketplace style)
+          // If user is client, we might want "my requests" specifically, but for public browsing we want "all"?
+          // The backend route is now public for getting ALL requests.
+          // Filtering happening on frontend or backend?
+          // The current backend getServiceRequests returns ALL requests if allowed. 
+          // We removed 'protect' so it returns all.
+          fetch(`${API_BASE_URL}/servicerequests`)
         ]);
 
         if (!servicesRes.ok || !providersRes.ok) {
@@ -156,6 +169,12 @@ const App: React.FC = () => {
 
         setServices(servicesData);
         setProviders(providersData);
+
+        if (requestsRes.ok) {
+          const requestsData = await requestsRes.json();
+          setServiceRequests(requestsData);
+        }
+
       } catch (error) {
         console.error("Failed to fetch initial data or auto-login", error);
         setError(`Erreur de chargement initial: ${error instanceof Error ? error.message : String(error)}`);
@@ -164,7 +183,8 @@ const App: React.FC = () => {
       }
     };
     initializeAppData();
-  }, [fetchWithAuth, navigateTo]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchWithAuth, navigateTo]); // Removed currentUser dependency to avoid loops
 
   useEffect(() => {
     if (currentUser) {
@@ -253,7 +273,7 @@ const App: React.FC = () => {
       // Step 3: Set the user and navigate
       setCurrentUser(user);
 
-      // Fetch service requests for both (Provider = all, Client = mine)
+      // Fetch service requests based on role (refresh)
       const serviceRequestsRes = await fetchWithAuth(`${API_BASE_URL}/servicerequests`);
       if (serviceRequestsRes.ok) {
         const requestsData = await serviceRequestsRes.json();
@@ -413,7 +433,11 @@ const App: React.FC = () => {
 
   const handleStartConversation = useCallback(async (service: Service, initialMessageContent: string) => {
     console.log('App.tsx: handleStartConversation called with service:', service);
-    if (!currentUser) return; // Guard against user being null
+    if (!currentUser) {
+      console.log("User not logged in, redirecting to SignUp");
+      navigateTo(Screen.SignUp);
+      return;
+    }
 
     try {
       const response = await fetchWithAuth(`${API_BASE_URL}/messages`, {
@@ -454,7 +478,10 @@ const App: React.FC = () => {
   }, [currentUser, fetchWithAuth, navigateTo]);
 
   const handleRespondToRequest = useCallback(async (request: ServiceRequest, initialMessageContent: string) => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      navigateTo(Screen.SignUp);
+      return;
+    }
 
     try {
       const response = await fetchWithAuth(`${API_BASE_URL}/messages`, {
@@ -547,6 +574,7 @@ const App: React.FC = () => {
       case Screen.Find:
         return <FindServiceScreen services={services} navigateTo={navigateTo} onSelectService={handleSelectService} initialCategory={selectedCategory} />;
       case Screen.Offer:
+        if (!currentUser) { navigateTo(Screen.SignUp); return null; }
         return <OfferServiceScreen navigateTo={navigateTo} onPublishService={handlePublishService} />;
       case Screen.Profile:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
@@ -563,12 +591,13 @@ const App: React.FC = () => {
         if (!selectedConversation || !currentUser) { navigateTo(Screen.Messages); return null; }
         return <ChatScreen conversation={selectedConversation} currentUser={currentUser} navigateTo={navigateTo} onSendMessage={handleSendMessage} />;
       case Screen.ProviderDashboard:
-        if (!currentUser || currentUser.role !== 'provider') { navigateTo(Screen.Login); return null; }
+        // Allow public access to view requests (ProviderDashboard is acting as "Requests View")
         return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} initialCategory={selectedCategory} />;
       case Screen.ProviderHome:
         if (!currentUser || currentUser.role !== 'provider') { navigateTo(Screen.Login); return null; }
         return <ProviderHomeScreen user={currentUser} serviceRequests={serviceRequests} navigateTo={navigateTo} onSelectCategory={handleCategorySelect} onRespond={handleRespondToRequest} />;
       case Screen.RequestService:
+        if (!currentUser) { navigateTo(Screen.SignUp); return null; }
         return <RequestServiceScreen navigateTo={navigateTo} onPublish={handlePublishRequest} />;
       case Screen.AccountSettings:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
@@ -629,13 +658,23 @@ const App: React.FC = () => {
     </div>
   );
 
+  const renderGuestNav = () => (
+    <div className="flex justify-around items-center h-16">
+      <NavItem screen={Screen.Landing} icon={<HomeIcon className="w-6 h-6" />} label="Accueil" />
+      <NavItem screen={Screen.Find} icon={<SearchIcon className="w-6 h-6" />} label="Offres" />
+      <NavItem screen={Screen.ProviderDashboard} icon={<ClipboardListIcon className="w-6 h-6" />} label="Demandes" />
+      <NavItem screen={Screen.Login} icon={<UserIcon className="w-6 h-6" />} label="Connexion" />
+    </div>
+  );
+
   return (
     <div className="max-w-md mx-auto bg-gray-100 shadow-lg h-screen flex flex-col font-sans">
       <main className="flex-1 overflow-y-auto pb-20">{renderScreen()}</main>
 
-      {currentUser && currentUser.role !== 'admin' && (
+      {/* Show footer if user is logged in (and not admin) OR if user is guest and not on auth/landing screens */}
+      {((currentUser && currentUser.role !== 'admin') || (!currentUser && currentScreen !== Screen.Landing && currentScreen !== Screen.Login && currentScreen !== Screen.SignUp && currentScreen !== Screen.ForgotPassword && currentScreen !== Screen.ResetPassword)) && (
         <footer className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 shadow-t-strong">
-          {currentUser.role === 'client' ? renderUserNav() : renderProviderNav()}
+          {currentUser ? (currentUser.role === 'client' ? renderUserNav() : renderProviderNav()) : renderGuestNav()}
         </footer>
       )}
     </div>

@@ -24,17 +24,21 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigateTo }) => {
       </div>
       <div className="p-6 pb-12 z-10">
         <button
-          onClick={() => navigateTo(Screen.SignUp)}
+          onClick={() => navigateTo(Screen.Find)}
           className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-xl text-lg transition duration-300 ease-in-out transform hover:scale-105 mb-4"
         >
-          Créer un compte
+          Voir les offres de services
         </button>
         <button
-          onClick={() => navigateTo(Screen.Login)}
-          className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-xl text-lg transition duration-300"
+          onClick={() => navigateTo(Screen.ProviderDashboard)}
+          className="w-full bg-teal-800 hover:bg-teal-900 text-white font-bold py-3 px-4 rounded-xl text-lg transition duration-300 ease-in-out transform hover:scale-105 mb-6"
         >
-          Se connecter
+          Voir les demandes
         </button>
+
+        <div className="text-gray-400 text-sm">
+          Déjà membre ? <button onClick={() => navigateTo(Screen.Login)} className="text-teal-400 hover:underline font-bold">Se connecter</button> ou <button onClick={() => navigateTo(Screen.SignUp)} className="text-teal-400 hover:underline font-bold">S'inscrire</button>
+        </div>
       </div>
       <div
         className="absolute inset-0 bg-cover bg-center opacity-30"

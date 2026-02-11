@@ -125,6 +125,18 @@ const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ servi
           )}
         </div>
       )}
+
+
+      {/* Floating Action Button for Posting Request */}
+      <button
+        onClick={() => navigateTo(Screen.RequestService)}
+        className="fixed bottom-20 right-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full shadow-lg flex items-center transition transform hover:scale-105 z-30"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Publier une demande
+      </button>
     </div>
   );
 };
