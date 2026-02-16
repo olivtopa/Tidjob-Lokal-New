@@ -93,15 +93,17 @@ const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigat
     <div className="p-4 bg-gray-100 min-h-full">
       <h1 className="text-3xl font-bold text-gray-900 pt-4">Trouver une prestation</h1>
 
-      <div className="relative my-4 space-y-3">
-        <input
-          type="text"
-          placeholder="Ex: 'Tonte de pelouse'"
-          className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400 text-gray-900 placeholder-gray-500"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <SearchIcon className="absolute left-4 top-4 w-6 h-6 text-gray-400" />
+      <div className="my-4 space-y-3">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Ex: 'Tonte de pelouse'"
+            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400 text-gray-900 placeholder-gray-500"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
+        </div>
 
         {/* Location Filter */}
         <div className="relative z-20">
