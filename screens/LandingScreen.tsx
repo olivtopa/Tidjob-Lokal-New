@@ -37,7 +37,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigateTo }) => {
         </button>
 
         <div className="text-gray-400 text-sm">
-          Déjà membre ? <button onClick={() => navigateTo(Screen.Login)} className="text-teal-400 hover:underline font-bold">Se connecter</button> ou <button onClick={() => navigateTo(Screen.SignUp)} className="text-teal-400 hover:underline font-bold">S'inscrire</button>
+          Déjà membre ?{' '}<button onClick={() => navigateTo(Screen.Login)} className="text-teal-400 hover:underline font-bold">Se connecter</button>{' '}ou{' '}<button onClick={() => navigateTo(Screen.SignUp)} className="text-teal-400 hover:underline font-bold">S'inscrire</button>
         </div>
       </div>
       <div
