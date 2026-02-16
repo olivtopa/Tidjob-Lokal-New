@@ -33,7 +33,7 @@ const getServiceRequests = async (req, res) => {
     };
 
     // If user is a client, only show their own requests
-    if (req.user.role === 'client') {
+    if (req.user && req.user.role === 'client') {
       queryOptions.where = { clientId: req.user.id };
     }
 

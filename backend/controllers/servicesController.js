@@ -12,7 +12,8 @@ const getServices = async (req, res) => {
     }
     const services = await Service.findAll({
       where,
-      include: 'provider'
+      include: 'provider',
+      order: [['createdAt', 'DESC']]
     });
     res.json(services);
   } catch (error) {
