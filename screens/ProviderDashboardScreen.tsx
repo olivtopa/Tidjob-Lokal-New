@@ -10,31 +10,45 @@ interface ProviderDashboardScreenProps {
   initialCategory?: string;
 }
 
-const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: ServiceRequest, initialMessage: string) => void }> = ({ request, onRespond }) => (
-  <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-4 p-4">
-    <p className="text-sm font-semibold text-teal-600">{request.category}</p>
-    <h3 className="text-lg font-bold text-gray-900 mt-1">{request.title}</h3>
-    {(request.city || request.department) && (
-      <div className="flex items-center mt-1 text-xs text-teal-600 font-medium mb-1">
-        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-        {request.city ? `${request.city} (${request.zipCode})` : request.department}
+const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: ServiceRequest, initialMessage: string) => void }> = ({ request, onRespond }) => {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-4 p-4">
+      <p className="text-sm font-semibold text-teal-600">{request.category}</p>
+      <h3 className="text-lg font-bold text-gray-900 mt-1 break-words">{request.title}</h3>
+      {(request.city || request.department) && (
+        <div className="flex items-center mt-1 text-xs text-teal-600 font-medium mb-1">
+          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          {request.city ? `${request.city} (${request.zipCode})` : request.department}
+        </div>
+      )}
+      <div className="mt-2 text-gray-600 text-sm">
+        <p className={isExpanded ? "whitespace-pre-line" : "line-clamp-2 whitespace-pre-line"}>{request.description}</p>
+        {(request.description && request.description.length > 80) && (
+          <button
+            onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+            className="text-teal-600 font-medium text-xs mt-1 hover:underline focus:outline-none"
+          >
+            {isExpanded ? "Voir moins" : "Voir plus"}
+          </button>
+        )}
       </div>
-    )}
-    <p className="text-gray-600 text-sm mt-1 line-clamp-2">{request.description}</p>
-    <div className="flex items-center justify-between mt-4 border-t border-gray-100 pt-3">
-      <div className="flex items-center">
-        <img src={request.client.avatarUrl} alt={request.client.name} className="w-8 h-8 rounded-full object-cover" />
-        <span className="ml-2 text-sm font-medium text-gray-700">{request.client.name}</span>
+      <div className="flex items-center justify-between mt-4 border-t border-gray-100 pt-3">
+        <div className="flex items-center">
+          <img src={request.client.avatarUrl} alt={request.client.name} className="w-8 h-8 rounded-full object-cover" />
+          <span className="ml-2 text-sm font-medium text-gray-700">{request.client.name}</span>
+        </div>
+        <span className="text-xs text-gray-400">{request.createdAt}</span>
       </div>
-      <span className="text-xs text-gray-400">{request.createdAt}</span>
+      <button
+        onClick={() => onRespond(request, "Bonjour, je suis intéressé par votre demande.")}
+        className="w-full mt-3 bg-teal-500 text-white font-bold py-2 px-5 rounded-lg transition-colors hover:bg-teal-600 text-sm">
+        Répondre à la demande
+      </button>
     </div>
-    <button
-      onClick={() => onRespond(request, "Bonjour, je suis intéressé par votre demande.")}
-      className="w-full mt-3 bg-teal-500 text-white font-bold py-2 px-5 rounded-lg transition-colors hover:bg-teal-600 text-sm">
-      Répondre à la demande
-    </button>
-  </div>
-);
+  );
+};
 
 const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ serviceRequests, navigateTo, onRespond, initialCategory = 'Tous' }) => {
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);

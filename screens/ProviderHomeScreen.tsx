@@ -24,37 +24,53 @@ const CategoryCard: React.FC<{ category: ServiceCategory; onClick: () => void }>
     </div>
 );
 
-const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: ServiceRequest, initialMessage: string) => void }> = ({ request, onRespond }) => (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
-        <div className="p-4">
-            <p className="text-xs font-bold text-teal-600 uppercase tracking-wide">{request.category}</p>
-            <h3 className="text-base font-bold text-gray-900 mt-1 truncate">{request.title}</h3>
-            <p className="text-gray-500 text-sm mt-1 line-clamp-2">{request.description}</p>
+const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: ServiceRequest, initialMessage: string) => void }> = ({ request, onRespond }) => {
+    const [isExpanded, setIsExpanded] = React.useState(false);
+    return (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
+            <div className="p-4">
+                <p className="text-xs font-bold text-teal-600 uppercase tracking-wide">{request.category}</p>
+                <h3 className="text-base font-bold text-gray-900 mt-1 break-words">{request.title}</h3>
 
-            <div className="flex items-center mt-3 pt-3 border-t border-gray-50">
-                <img src={request.client.avatarUrl} alt={request.client.name} className="w-6 h-6 rounded-full object-cover" />
-                <span className="ml-2 text-xs font-medium text-gray-600 truncate">{request.client.name}</span>
-                {request.budget && (
-                    <span className="ml-auto text-xs font-bold text-gray-900">{request.budget} €</span>
+                <div className="mt-2 text-gray-600 text-sm">
+                    <p className={isExpanded ? "whitespace-pre-line" : "line-clamp-2 whitespace-pre-line"}>{request.description}</p>
+                    {(request.description && request.description.length > 80) && (
+                        <button
+                            onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+                            className="text-teal-600 font-medium text-xs mt-1 hover:underline focus:outline-none"
+                        >
+                            {isExpanded ? "Voir moins" : "Voir plus"}
+                        </button>
+                    )}
+                </div>
+
+                <div className="flex items-center mt-3 pt-3 border-t border-gray-50">
+                    <img src={request.client.avatarUrl} alt={request.client.name} className="w-6 h-6 rounded-full object-cover" />
+                    <span className="ml-2 text-xs font-medium text-gray-600 truncate">{request.client.name}</span>
+                    {request.budget && (
+                        <span className="ml-auto text-xs font-bold text-gray-900">{request.budget} €</span>
+                    )}
+                </div>
+                {/* Location Display */}
+                {(request.city || request.department) && (
+                    <div className="mt-2 flex items-center text-xs text-gray-500">
+                        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        {request.city ? `${request.city} (${request.zipCode})` : request.department}
+                    </div>
                 )}
             </div>
-            {/* Location Display */}
-            {(request.city || request.department) && (
-                <div className="mt-2 flex items-center text-xs text-gray-500">
-                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    {request.city ? `${request.city} (${request.zipCode})` : request.department}
-                </div>
-            )}
-        </div>
 
-        <button
-            onClick={() => onRespond(request, "Bonjour, je suis intéressé par votre demande.")}
-            className="w-full mt-3 bg-teal-50 text-teal-700 font-bold py-2 px-4 rounded-lg transition-colors hover:bg-teal-100 text-sm"
-        >
-            Répondre
-        </button>
-    </div>
-);
+            <div className="px-4 pb-4">
+                <button
+                    onClick={() => onRespond(request, "Bonjour, je suis intéressé par votre demande.")}
+                    className="w-full bg-teal-50 text-teal-700 font-bold py-2 px-4 rounded-lg transition-colors hover:bg-teal-100 text-sm"
+                >
+                    Répondre
+                </button>
+            </div>
+        </div>
+    );
+};
 
 const ProviderHomeScreen: React.FC<ProviderHomeScreenProps> = ({ user, serviceRequests, navigateTo, onSelectCategory, onRespond }) => {
     return (

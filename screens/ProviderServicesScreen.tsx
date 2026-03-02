@@ -9,6 +9,34 @@ interface ProviderServicesScreenProps {
     onSelectService: (service: Service) => void;
 }
 
+const MyServiceCard: React.FC<{ service: Service; onSelectService: (service: Service) => void }> = ({ service, onSelectService }) => {
+    const [isExpanded, setIsExpanded] = React.useState(false);
+    return (
+        <div
+            onClick={() => onSelectService(service)}
+            className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col cursor-pointer hover:shadow-md transition-shadow"
+        >
+            <div className="flex justify-between items-start mb-2">
+                <span className="bg-teal-50 text-teal-800 text-xs font-semibold px-2 py-0.5 rounded inline-block">{service.category}</span>
+            </div>
+            <h3 className="text-lg font-bold text-gray-800">{service.title}</h3>
+
+            <div className="mt-1 text-gray-500 text-sm">
+                <p className={isExpanded ? "whitespace-pre-line" : "line-clamp-2 whitespace-pre-line"}>{service.description}</p>
+                {(service.description && service.description.length > 80) && (
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+                        className="text-teal-600 font-medium text-xs mt-1 hover:underline focus:outline-none"
+                    >
+                        {isExpanded ? "Voir moins" : "Voir plus"}
+                    </button>
+                )}
+            </div>
+            {/* Future: Edit/Delete buttons could go here */}
+        </div>
+    );
+};
+
 const ProviderServicesScreen: React.FC<ProviderServicesScreenProps> = ({ user, navigateTo, onSelectService }) => {
     const [services, setServices] = useState<Service[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -67,18 +95,7 @@ const ProviderServicesScreen: React.FC<ProviderServicesScreenProps> = ({ user, n
                 ) : (
                     <div className="space-y-4">
                         {services.map((service) => (
-                            <div
-                                key={service.id}
-                                onClick={() => onSelectService(service)}
-                                className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center cursor-pointer hover:shadow-md transition-shadow"
-                            >
-                                <div>
-                                    <span className="bg-teal-50 text-teal-800 text-xs font-semibold px-2 py-0.5 rounded mb-2 inline-block">{service.category}</span>
-                                    <h3 className="text-lg font-bold text-gray-800">{service.title}</h3>
-                                    <p className="text-gray-500 text-sm line-clamp-1">{service.description}</p>
-                                </div>
-                                {/* Future: Edit/Delete buttons could go here */}
-                            </div>
+                            <MyServiceCard key={service.id} service={service} onSelectService={onSelectService} />
                         ))}
                     </div>
                 )}

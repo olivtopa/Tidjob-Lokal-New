@@ -25,36 +25,53 @@ const CategoryCard: React.FC<{ category: ServiceCategory; onClick: () => void }>
   </div>
 );
 
-const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => void; }> = ({ service, onSelect }) => (
-  <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-4">
+const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => void; }> = ({ service, onSelect }) => {
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
-    <div className="p-4">
-      <p className="text-sm font-semibold text-teal-600">{service.category}</p>
-      <h3 className="text-lg font-bold text-gray-900 mt-1">{service.title}</h3>
-      {(service.city || service.department) && (
-        <div className="flex items-center mt-1 text-xs text-teal-600 font-medium">
-          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-          {service.city ? `${service.city} (${service.zipCode})` : service.department}
-        </div>
-      )}
-      <div className="flex items-center justify-between mt-4">
-        <div className="flex items-center">
-          <img src={service.provider.avatarUrl} alt={service.provider.name} className="w-8 h-8 rounded-full object-cover" />
-          <span className="ml-2 text-sm font-medium text-gray-700">{service.provider.name}</span>
-        </div>
-        {service.price !== undefined && (
-          <span className="text-lg font-bold text-gray-900">{service.price} €</span>
+  return (
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-4">
+
+      <div className="p-4">
+        <p className="text-sm font-semibold text-teal-600">{service.category}</p>
+        <h3 className="text-lg font-bold text-gray-900 mt-1">{service.title}</h3>
+        {service.description && (
+          <div className="mt-2 text-gray-600 text-sm">
+            <p className={isExpanded ? "" : "line-clamp-2"}>{service.description}</p>
+            {(service.description.length > 80) && (
+              <button
+                onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+                className="text-teal-600 font-medium text-xs mt-1 hover:underline focus:outline-none"
+              >
+                {isExpanded ? "Voir moins" : "Voir plus"}
+              </button>
+            )}
+          </div>
         )}
-        <button
-          onClick={() => onSelect(service)}
-          className="bg-teal-500 text-white font-bold py-2 px-5 rounded-lg transition-colors hover:bg-teal-600 text-sm"
-        >
-          Voir
-        </button>
+        {(service.city || service.department) && (
+          <div className="flex items-center mt-2 text-xs text-teal-600 font-medium">
+            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            {service.city ? `${service.city} (${service.zipCode})` : service.department}
+          </div>
+        )}
+        <div className="flex items-center justify-between mt-4 border-t border-gray-50 pt-3">
+          <div className="flex items-center">
+            <img src={service.provider.avatarUrl} alt={service.provider.name} className="w-8 h-8 rounded-full object-cover" />
+            <span className="ml-2 text-sm font-medium text-gray-700">{service.provider.name}</span>
+          </div>
+          {service.price !== undefined && (
+            <span className="text-lg font-bold text-gray-900">{service.price} €</span>
+          )}
+          <button
+            onClick={() => onSelect(service)}
+            className="bg-teal-500 text-white font-bold py-2 px-5 rounded-lg transition-colors hover:bg-teal-600 text-sm ml-2"
+          >
+            Voir
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+}
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ user, services, navigateTo, onSelectService, onSelectCategory }) => {
   return (
