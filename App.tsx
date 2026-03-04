@@ -379,8 +379,18 @@ const App: React.FC = () => {
     if (!response.ok) {
       throw new Error(data.error || 'Failed to publish service request.');
     }
-    // Optionally, refresh the list of service requests or handle the new request data
     console.log('Service request created:', data);
+
+    // Refresh the list of service requests
+    try {
+      const serviceRequestsRes = await fetchWithAuth(`${API_BASE_URL}/servicerequests`);
+      if (serviceRequestsRes.ok) {
+        const requestsData = await serviceRequestsRes.json();
+        setServiceRequests(requestsData);
+      }
+    } catch (error) {
+      console.error("Failed to refresh service requests:", error);
+    }
   }, [fetchWithAuth]);
 
   const handlePublishService = useCallback(async (title: string, description: string, category: string, price: number, zipCode?: string, city?: string, department?: string) => {
@@ -392,8 +402,18 @@ const App: React.FC = () => {
     if (!response.ok) {
       throw new Error(data.error || 'Failed to publish service.');
     }
-    // Optionally, refresh the list of services or handle the new service data
     console.log('Service created:', data);
+
+    // Refresh the list of services
+    try {
+      const servicesRes = await fetchWithAuth(`${API_BASE_URL}/services`);
+      if (servicesRes.ok) {
+        const servicesData = await servicesRes.json();
+        setServices(servicesData);
+      }
+    } catch (error) {
+      console.error("Failed to refresh services:", error);
+    }
   }, [fetchWithAuth]);
 
 
