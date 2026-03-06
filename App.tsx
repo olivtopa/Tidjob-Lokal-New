@@ -417,10 +417,24 @@ const App: React.FC = () => {
   }, [fetchWithAuth]);
 
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = useCallback(async () => {
     setCurrentUser(null);
     setConversations([]);
-    setServiceRequests([]);
+
+    // Fetch public service requests for the landing/dashboard page instead of clearing it completely
+    try {
+      const requestsRes = await fetch(`${API_BASE_URL}/servicerequests`);
+      if (requestsRes.ok) {
+        const requestsData = await requestsRes.json();
+        setServiceRequests(requestsData);
+      } else {
+        setServiceRequests([]); // Fallback to empty if public fetch fails
+      }
+    } catch (error) {
+      console.error("Failed to fetch public requests on logout", error);
+      setServiceRequests([]); // Fallback to empty
+    }
+
     localStorage.removeItem('jwtToken'); // Remove token on logout
     navigateTo(Screen.Landing);
   }, [navigateTo]);
