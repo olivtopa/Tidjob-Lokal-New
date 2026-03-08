@@ -36,6 +36,9 @@ const ServiceRequestCard: React.FC<{ req: ServiceRequest }> = ({ req }) => {
 };
 
 const ServiceHistoryScreen: React.FC<ServiceHistoryScreenProps> = ({ user, serviceRequests, navigateTo }) => {
+    // Filter requests for the current user
+    const myRequests = serviceRequests.filter(req => req.client.id === user.id);
+
     return (
         <div className="bg-gray-100 min-h-full pb-20">
             <div className="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10">
@@ -44,14 +47,14 @@ const ServiceHistoryScreen: React.FC<ServiceHistoryScreenProps> = ({ user, servi
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
-                <h1 className="text-xl font-bold text-gray-800">Historique des services</h1>
+                <h1 className="text-xl font-bold text-gray-800">{user.role === 'client' ? 'Mes demandes' : 'Historique des services'}</h1>
             </div>
 
             <div className="p-4">
-                {serviceRequests.length === 0 ? (
+                {myRequests.length === 0 ? (
                     <div className="text-center py-10 bg-white rounded-xl shadow-sm">
-                        <span className="text-4xl block mb-2">📜</span>
-                        <p className="text-gray-500 text-lg">Aucun service dans l'historique.</p>
+                        <span className="text-4xl block mb-2">{user.role === 'client' ? '📋' : '📜'}</span>
+                        <p className="text-gray-500 text-lg">Aucune demande trouvée.</p>
                         {user.role === 'client' && (
                             <button
                                 onClick={() => navigateTo(Screen.RequestService)}
@@ -63,7 +66,7 @@ const ServiceHistoryScreen: React.FC<ServiceHistoryScreenProps> = ({ user, servi
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        {serviceRequests.map((req) => (
+                        {myRequests.map((req) => (
                             <ServiceRequestCard key={req.id} req={req} />
                         ))}
                     </div>

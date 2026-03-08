@@ -52,13 +52,16 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
       },
       icon: '⚙️' // Gear
     },
-    // Conditionally add "Mes Services" for providers
+    // Conditionally add "Mes Services" for providers, "Mes demandes" for clients
     ...(user.role === 'provider' ? [{
       label: 'Mes Services',
       action: () => navigateTo(Screen.ProviderServices),
       icon: '🛠️'
-    }] : []),
-    { label: 'Historique des services', action: () => navigateTo(Screen.ServiceHistory), icon: '📜' }, // History (Requests)
+    }] : [{
+      label: 'Mes demandes',
+      action: () => navigateTo(Screen.ServiceHistory),
+      icon: '📋'
+    }]),
     { label: 'Centre d\'aide', action: () => navigateTo(Screen.HelpCenter), icon: '❓' },
     { label: 'Mentions légales', action: () => navigateTo(Screen.Legal), icon: '⚖️' },
     ...(isInstallable ? [{
