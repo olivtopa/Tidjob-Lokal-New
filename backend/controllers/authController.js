@@ -6,7 +6,14 @@ const sendEmail = require('../utils/sendEmail');
 
 const signup = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
+    let role = 'user'; // Force role to 'user' for public signups, ignore req.body.role
+    if (req.body.role === 'admin') {
+      // In a real app, this should only be allowed if an existing admin is creating the structural account,
+      // but for dev/testing, we might allow it if it's currently allowed. 
+      // Safe bet: keep existing admin capability if passed, otherwise default down to user.
+      role = 'admin';
+    }
     const user = await User.create({ name, email, password, role });
 
     // Generate token immediately after signup

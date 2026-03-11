@@ -125,14 +125,9 @@ const App: React.FC = () => {
               setServiceRequests(requestsData);
             }
 
-            // Redirect logic (only if we are on Landing or Login/Signup, otherwise preserve state)
-            // We only redirect if we just logged in (which is handled in handleLogin/handleSignup). 
-            // Here, it's auto-login.
             // If we are on Landing, we might want to go to Dashboard/Home.
             if (currentScreen === Screen.Landing || currentScreen === Screen.Login || currentScreen === Screen.SignUp) {
-              if (user.role === 'provider') {
-                navigateTo(Screen.ProviderHome);
-              } else if (user.role === 'admin') {
+              if (user.role === 'admin') {
                 navigateTo(Screen.Dashboard);
               } else {
                 navigateTo(Screen.Home);
@@ -282,9 +277,7 @@ const App: React.FC = () => {
         console.warn(`Impossible de récupérer les demandes de service : ${serviceRequestsRes.statusText}`);
       }
 
-      if (user.role === 'provider') {
-        navigateTo(Screen.ProviderHome);
-      } else if (user.role === 'admin') {
+      if (user.role === 'admin') {
         navigateTo(Screen.Dashboard);
       } else {
         navigateTo(Screen.Home);
@@ -349,10 +342,8 @@ const App: React.FC = () => {
           console.warn("Could not fetch service requests on signup auto-login", reqError);
         }
 
-        // Navigate based on role
-        if (user.role === 'provider') {
-          navigateTo(Screen.ProviderHome);
-        } else if (user.role === 'admin') {
+        // Navigate based on role (everyone goes to Home except admin)
+        if (user.role === 'admin') {
           navigateTo(Screen.Dashboard);
         } else {
           navigateTo(Screen.Home);
@@ -603,7 +594,6 @@ const App: React.FC = () => {
         return <ResetPasswordScreen navigateTo={navigateTo} />;
       case Screen.Home:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
-        if (currentUser.role === 'provider') return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} />;
         return <HomeScreen navigateTo={navigateTo} user={currentUser} providers={providers} services={services} onSelectService={handleSelectService} onSelectCategory={handleCategorySelect} />;
       case Screen.Find:
         return <FindServiceScreen services={services} navigateTo={navigateTo} onSelectService={handleSelectService} initialCategory={selectedCategory} />;
@@ -625,11 +615,13 @@ const App: React.FC = () => {
         if (!selectedConversation || !currentUser) { navigateTo(Screen.Messages); return null; }
         return <ChatScreen conversation={selectedConversation} currentUser={currentUser} navigateTo={navigateTo} onSendMessage={handleSendMessage} />;
       case Screen.ProviderDashboard:
-        // Allow public access to view requests (ProviderDashboard is acting as "Requests View")
+        // Now unified as general "Requests View" for everyone
         return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} initialCategory={selectedCategory} />;
       case Screen.ProviderHome:
-        if (!currentUser || currentUser.role !== 'provider') { navigateTo(Screen.Login); return null; }
-        return <ProviderHomeScreen user={currentUser} serviceRequests={serviceRequests} navigateTo={navigateTo} onSelectCategory={handleCategorySelect} onRespond={handleRespondToRequest} />;
+        // No longer used, redirecting to Home if somehow reached
+        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        navigateTo(Screen.Home);
+        return null;
       case Screen.RequestService:
         if (!currentUser) { navigateTo(Screen.SignUp); return null; }
         return <RequestServiceScreen navigateTo={navigateTo} onPublish={handlePublishRequest} />;
@@ -672,22 +664,12 @@ const App: React.FC = () => {
 
   const hasUnreadMessages = conversations.some(c => c.unread);
 
-  const renderUserNav = () => (
+  const renderMainNav = () => (
     <div className="flex justify-around items-center h-16">
       <NavItem screen={Screen.Home} icon={<HomeIcon className="w-6 h-6" />} label="Accueil" />
       <NavItem screen={Screen.Find} icon={<SearchIcon className="w-6 h-6" />} label="Trouver" />
-      <NavItem screen={Screen.Messages} icon={<MessageSquareIcon className="w-6 h-6" />} label="Messages" hasNotification={hasUnreadMessages} />
-      <NavItem screen={Screen.RequestService} icon={<PlusCircleIcon className="w-6 h-6" />} label="Demander" />
-      <NavItem screen={Screen.Profile} icon={<UserIcon className="w-6 h-6" />} label="Profil" />
-    </div>
-  );
-
-  const renderProviderNav = () => (
-    <div className="flex justify-around items-center h-16">
-      <NavItem screen={Screen.ProviderHome} icon={<HomeIcon className="w-6 h-6" />} label="Accueil" />
-      <NavItem screen={Screen.ProviderDashboard} icon={<SearchIcon className="w-6 h-6" />} label="Demandes" />
+      <NavItem screen={Screen.ProviderDashboard} icon={<ClipboardListIcon className="w-6 h-6" />} label="Demandes" />
       <NavItem screen={Screen.Offer} icon={<PlusCircleIcon className="w-6 h-6" />} label="Proposer" />
-      <NavItem screen={Screen.Messages} icon={<MessageSquareIcon className="w-6 h-6" />} label="Messages" hasNotification={hasUnreadMessages} />
       <NavItem screen={Screen.Profile} icon={<UserIcon className="w-6 h-6" />} label="Profil" />
     </div>
   );
@@ -705,10 +687,9 @@ const App: React.FC = () => {
     <div className="max-w-md mx-auto bg-gray-100 shadow-lg h-screen flex flex-col font-sans">
       <main className="flex-1 overflow-y-auto pb-20">{renderScreen()}</main>
 
-      {/* Show footer if user is logged in (and not admin) OR if user is guest and not on auth/landing screens */}
       {((currentUser && currentUser.role !== 'admin') || (!currentUser && currentScreen !== Screen.Landing && currentScreen !== Screen.Login && currentScreen !== Screen.SignUp && currentScreen !== Screen.ForgotPassword && currentScreen !== Screen.ResetPassword)) && (
         <footer className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 shadow-t-strong">
-          {currentUser ? (currentUser.role === 'client' ? renderUserNav() : renderProviderNav()) : renderGuestNav()}
+          {currentUser ? renderMainNav() : renderGuestNav()}
         </footer>
       )}
     </div>

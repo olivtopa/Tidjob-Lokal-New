@@ -66,9 +66,7 @@ const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigat
   const [filterLocation, setFilterLocation] = useState<{ city: string, zipCode: string, department: string } | null>(null);
 
   useEffect(() => {
-    if (initialCategory) {
-      setSelectedCategory(initialCategory);
-    }
+    setSelectedCategory(initialCategory || 'Tous');
   }, [initialCategory]);
 
   const categories = ['Tous', ...SERVICE_CATEGORIES.map(c => c.name)];

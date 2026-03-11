@@ -11,7 +11,6 @@ interface SignUpScreenProps {
 }
 
 const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error, isLoading }) => {
-  const [role, setRole] = useState<'client' | 'provider'>('client');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,19 +37,9 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
             setLocalError("Les mots de passe ne correspondent pas.");
             return;
           }
-          onSignUp(name, email, password, role);
+          onSignUp(name, email, password, 'user');
         }}>
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">Je souhaite :</label>
-            <div className="flex rounded-lg shadow-sm border border-gray-200">
-              <button type="button" onClick={() => setRole('client')} className={`w-full px-4 py-3 text-sm font-semibold rounded-l-lg transition-colors ${role === 'client' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
-                Je cherche un service
-              </button>
-              <button type="button" onClick={() => setRole('provider')} className={`w-full px-4 py-3 text-sm font-semibold rounded-r-lg transition-colors ${role === 'provider' ? 'bg-teal-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
-                Je propose un service
-              </button>
-            </div>
-          </div>
+
           <div>
             <label htmlFor="name" className="text-sm font-medium text-gray-700">Nom complet</label>
             <input type="text" id="name" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Alex Doe" value={name} onChange={(e) => setName(e.target.value)} />

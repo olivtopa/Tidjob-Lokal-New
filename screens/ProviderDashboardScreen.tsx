@@ -50,13 +50,13 @@ const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: Serv
   );
 };
 
-const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ serviceRequests, navigateTo, onRespond, initialCategory = 'Tous' }) => {
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ serviceRequests, navigateTo, onRespond, initialCategory }) => {
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory || 'Tous');
   const [filterLocation, setFilterLocation] = useState<{ city: string, zipCode: string, department: string } | null>(null);
 
   // Update local state if prop changes (e.g. navigation from home)
   useEffect(() => {
-    setSelectedCategory(initialCategory);
+    setSelectedCategory(initialCategory || 'Tous');
   }, [initialCategory]);
 
   const filteredRequests = serviceRequests.filter(req => {
