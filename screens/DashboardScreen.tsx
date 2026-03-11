@@ -326,8 +326,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                     })}
                 </div>
                 <div className="mt-4 flex justify-between text-gray-400 text-sm font-medium border-t border-gray-100 pt-2">
-                    <span>Il y a 30 jours</span>
                     <span>Aujourd'hui</span>
+                    <span>Il y a 30 jours</span>
                 </div>
             </div>
         </div>
