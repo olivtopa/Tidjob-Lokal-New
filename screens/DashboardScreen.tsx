@@ -25,6 +25,14 @@ interface RequestData {
     createdAt: string;
 }
 
+interface ServiceData {
+    id: string;
+    title: string;
+    category: string;
+    price: number;
+    createdAt: string;
+}
+
 interface DashboardScreenProps {
     navigateTo: (screen: Screen) => void;
     onLogout: () => void;
@@ -242,7 +250,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                                     <tr key={r.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-8 py-5 font-semibold text-gray-900">{r.title}</td>
                                         <td className="px-8 py-5"><span className="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600 border border-gray-200">{r.category}</span></td>
-                                        <td className="px-8 py-5 font-bold text-teal-600 text-lg">{r.budget ? `${r.budget} €` : '-'}</td>
+                                        <td className="px-8 py-5 font-bold text-teal-600 text-lg whitespace-nowrap">{r.budget ? `${r.budget} €` : '-'}</td>
                                         <td className="px-8 py-5">{new Date(r.createdAt).toLocaleDateString()}</td>
                                     </tr>
                                 ))}
@@ -273,7 +281,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                                     <tr key={s.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-8 py-5 font-semibold text-gray-900">{s.title}</td>
                                         <td className="px-8 py-5"><span className="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600 border border-gray-200">{s.category}</span></td>
-                                        <td className="px-8 py-5 font-bold text-teal-600 text-lg">{s.price ? `${s.price} €` : '-'}</td>
+                                        <td className="px-8 py-5 font-bold text-teal-600 text-lg whitespace-nowrap">{s.price ? `${s.price} €` : '-'}</td>
                                         <td className="px-8 py-5">{new Date(s.createdAt).toLocaleDateString()}</td>
                                     </tr>
                                 ))}
