@@ -87,30 +87,32 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
     const [listLoading, setListLoading] = useState(false);
 
     // Fetch Initial Data
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                const token = localStorage.getItem('jwtToken');
-                const headers = { 'Authorization': `Bearer ${token}` };
+    const loadDashboardData = async (showLoading = true) => {
+        if (showLoading) setLoading(true);
+        try {
+            const token = localStorage.getItem('jwtToken');
+            const headers = { 'Authorization': `Bearer ${token}` };
 
-                const [statsRes, activityRes, advancedRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/admin/stats`, { headers }),
-                    fetch(`${API_BASE_URL}/admin/activity`, { headers }),
-                    fetch(`${API_BASE_URL}/admin/advanced-stats`, { headers })
-                ]);
+            const [statsRes, activityRes, advancedRes] = await Promise.all([
+                fetch(`${API_BASE_URL}/admin/stats`, { headers }),
+                fetch(`${API_BASE_URL}/admin/activity`, { headers }),
+                fetch(`${API_BASE_URL}/admin/advanced-stats`, { headers })
+            ]);
 
-                if (statsRes.ok && activityRes.ok && advancedRes.ok) {
-                    setStats(await statsRes.json());
-                    setRecentActivity(await activityRes.json());
-                    setAdvancedStats(await advancedRes.json());
-                }
-            } catch (error) {
-                console.error("Dashboard fetch error:", error);
-            } finally {
-                setLoading(false);
+            if (statsRes.ok && activityRes.ok && advancedRes.ok) {
+                setStats(await statsRes.json());
+                setRecentActivity(await activityRes.json());
+                setAdvancedStats(await advancedRes.json());
             }
-        };
-        fetchDashboardData();
+        } catch (error) {
+            console.error("Dashboard fetch error:", error);
+        } finally {
+            if (showLoading) setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadDashboardData(true);
     }, []);
 
     // Fetch Lists on demand
@@ -144,6 +146,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
             if (res.ok) {
                 // Refresh list
                 fetchList('users');
+                loadDashboardData(false);
             } else {
                 const data = await res.json();
                 alert(data.message || 'Erreur lors de la suppression');
@@ -166,6 +169,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
             if (res.ok) {
                 // Refresh list
                 fetchList('services');
+                loadDashboardData(false);
             } else {
                 const data = await res.json();
                 alert(data.message || 'Erreur lors de la suppression');
@@ -188,6 +192,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
             if (res.ok) {
                 // Refresh list
                 fetchList('requests');
+                loadDashboardData(false);
             } else {
                 const data = await res.json();
                 alert(data.message || 'Erreur lors de la suppression');
