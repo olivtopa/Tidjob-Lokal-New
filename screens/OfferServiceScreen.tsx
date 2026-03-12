@@ -5,7 +5,7 @@ import LocationAutocomplete from '../components/LocationAutocomplete';
 
 interface OfferServiceScreenProps {
   navigateTo: (screen: Screen) => void;
-  onPublishService: (title: string, description: string, category: string, price: number, zipCode?: string, city?: string, department?: string) => void;
+  onPublishService: (title: string, description: string, category: string, price: number, zipCode?: string, city?: string, department?: string) => Promise<void>;
 }
 
 const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onPublishService }) => {
@@ -17,7 +17,7 @@ const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onP
   // Location state
   const [location, setLocation] = useState<{ city: string, zipCode: string, department: string } | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!location) {
       alert("Veuillez sélectionner une localisation");
@@ -25,8 +25,13 @@ const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onP
     }
     // Convert price string to number
     const numericPrice = parseFloat(price);
-    onPublishService(title, description, category, numericPrice, location.zipCode, location.city, location.department);
-    navigateTo(Screen.ProviderServices);
+    
+    try {
+      await onPublishService(title, description, category, numericPrice, location.zipCode, location.city, location.department);
+      navigateTo(Screen.ProviderServices);
+    } catch (error: any) {
+      alert(error.message || "Une erreur est survenue lors de la publication.");
+    }
   };
 
   return (

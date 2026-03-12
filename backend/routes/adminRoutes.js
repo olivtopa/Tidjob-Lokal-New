@@ -13,4 +13,8 @@ router.get('/users', adminController.getAllUsers);
 router.get('/requests', adminController.getAllRequests);
 router.get('/services', adminController.getAllServices);
 
+router.delete('/users/:id', adminController.deleteUser);
+router.delete('/services/:id', adminController.deleteService);
+router.delete('/requests/:id', adminController.deleteRequest);
+
 module.exports = router;

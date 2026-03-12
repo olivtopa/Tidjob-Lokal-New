@@ -132,6 +132,72 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
         }
     }
 
+    const handleDeleteUser = async (userId: string) => {
+        if (!window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')) return;
+        
+        try {
+            const token = localStorage.getItem('jwtToken');
+            const res = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                // Refresh list
+                fetchList('users');
+            } else {
+                const data = await res.json();
+                alert(data.message || 'Erreur lors de la suppression');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Erreur réseau');
+        }
+    };
+
+    const handleDeleteService = async (serviceId: string) => {
+        if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')) return;
+        
+        try {
+            const token = localStorage.getItem('jwtToken');
+            const res = await fetch(`${API_BASE_URL}/admin/services/${serviceId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                // Refresh list
+                fetchList('services');
+            } else {
+                const data = await res.json();
+                alert(data.message || 'Erreur lors de la suppression');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Erreur réseau');
+        }
+    };
+
+    const handleDeleteRequest = async (requestId: string) => {
+        if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette demande ?')) return;
+        
+        try {
+            const token = localStorage.getItem('jwtToken');
+            const res = await fetch(`${API_BASE_URL}/admin/requests/${requestId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                // Refresh list
+                fetchList('requests');
+            } else {
+                const data = await res.json();
+                alert(data.message || 'Erreur lors de la suppression');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Erreur réseau');
+        }
+    };
+
     // Handlers
     const handleViewChange = (view: typeof currentView) => {
         setHistoryStack(prev => [...prev, view]);
@@ -207,10 +273,11 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                                 <th className="px-8 py-5 font-bold">Email</th>
                                 <th className="px-8 py-5 font-bold">Rôle</th>
                                 <th className="px-8 py-5 font-bold">Inscrit le</th>
+                                <th className="px-4 py-5 font-bold text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {listLoading ? <tr><td colSpan={4} className="p-10 text-center text-teal-600">Chargement...</td></tr> :
+                            {listLoading ? <tr><td colSpan={5} className="p-10 text-center text-teal-600">Chargement...</td></tr> :
                                 usersList.map((u) => (
                                     <tr key={u.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-8 py-5 font-semibold text-gray-900">{u.name}</td>
@@ -221,6 +288,13 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                                             </span>
                                         </td>
                                         <td className="px-8 py-5">{new Date(u.createdAt).toLocaleDateString()}</td>
+                                        <td className="px-4 py-5 font-semibold text-center">
+                                            {u.role !== 'admin' && (
+                                                <button onClick={() => handleDeleteUser(u.id)} className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors" title="Supprimer">
+                                                    <svg className="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                </button>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                         </tbody>
@@ -242,16 +316,22 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                                 <th className="px-8 py-5 font-bold">Catégorie</th>
                                 <th className="px-8 py-5 font-bold">Budget</th>
                                 <th className="px-8 py-5 font-bold">Date</th>
+                                <th className="px-4 py-5 font-bold text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {listLoading ? <tr><td colSpan={4} className="p-10 text-center text-teal-600">Chargement...</td></tr> :
+                            {listLoading ? <tr><td colSpan={5} className="p-10 text-center text-teal-600">Chargement...</td></tr> :
                                 requestsList.map((r) => (
                                     <tr key={r.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-8 py-5 font-semibold text-gray-900">{r.title}</td>
                                         <td className="px-8 py-5"><span className="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600 border border-gray-200">{r.category}</span></td>
                                         <td className="px-8 py-5 font-bold text-teal-600 text-lg whitespace-nowrap">{r.budget ? `${r.budget} €` : '-'}</td>
                                         <td className="px-8 py-5">{new Date(r.createdAt).toLocaleDateString()}</td>
+                                        <td className="px-4 py-5 font-semibold text-center">
+                                            <button onClick={() => handleDeleteRequest(r.id)} className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors" title="Supprimer">
+                                                <svg className="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                         </tbody>
@@ -273,16 +353,22 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ navigateTo, onLogout 
                                 <th className="px-8 py-5 font-bold">Catégorie</th>
                                 <th className="px-8 py-5 font-bold">Prix</th>
                                 <th className="px-8 py-5 font-bold">Date</th>
+                                <th className="px-4 py-5 font-bold text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {listLoading ? <tr><td colSpan={4} className="p-10 text-center text-teal-600">Chargement...</td></tr> :
+                            {listLoading ? <tr><td colSpan={5} className="p-10 text-center text-teal-600">Chargement...</td></tr> :
                                 servicesList.map((s) => (
                                     <tr key={s.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-8 py-5 font-semibold text-gray-900">{s.title}</td>
                                         <td className="px-8 py-5"><span className="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600 border border-gray-200">{s.category}</span></td>
                                         <td className="px-8 py-5 font-bold text-teal-600 text-lg whitespace-nowrap">{s.price ? `${s.price} €` : '-'}</td>
                                         <td className="px-8 py-5">{new Date(s.createdAt).toLocaleDateString()}</td>
+                                        <td className="px-4 py-5 font-semibold text-center">
+                                            <button onClick={() => handleDeleteService(s.id)} className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors" title="Supprimer">
+                                                <svg className="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                         </tbody>

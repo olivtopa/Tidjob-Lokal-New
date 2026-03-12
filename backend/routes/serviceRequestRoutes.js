@@ -6,26 +6,10 @@ const {
 } = require('../controllers/serviceRequestController');
 const { protect } = require('../middleware/authMiddleware');
 
-// Custom middleware to check for 'client' role
-const isClient = (req, res, next) => {
-  if (req.user && req.user.role === 'client') {
-    next();
-  } else {
-    res.status(403).json({ error: 'Not authorized as a client' });
-  }
-};
-
-// Custom middleware to check for 'provider' role
-const isProvider = (req, res, next) => {
-  if (req.user && req.user.role === 'provider') {
-    next();
-  } else {
-    res.status(403).json({ error: 'Not authorized as a provider' });
-  }
-};
+// Custom middleware removed as any authenticated user can create requests
 
 router.route('/')
-  .post(protect, isClient, createServiceRequest)
+  .post(protect, createServiceRequest)
   .get(getServiceRequests);
 
 module.exports = router;

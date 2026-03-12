@@ -8,15 +8,15 @@ const {
   updateService,
   deleteService
 } = require('../controllers/servicesController');
-const { protect, isProvider } = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');
 
 router.route('/')
   .get(getServices)
-  .post(protect, isProvider, createService);
+  .post(protect, createService);
 
 router.route('/:id')
   .get(getServiceById)
-  .put(protect, isProvider, updateService)
-  .delete(protect, isProvider, deleteService);
+  .put(protect, updateService)
+  .delete(protect, deleteService);
 
 module.exports = router;

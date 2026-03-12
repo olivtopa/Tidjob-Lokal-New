@@ -190,3 +190,52 @@ exports.getAllServices = async (req, res) => {
         res.status(500).json({ message: 'Error fetching services' });
     }
 };
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id);
+        if (user) {
+            // Un admin ne devrait pas pouvoir supprimer d'autres admins pour éviter les erreurs
+            if (user.role === 'admin') {
+                return res.status(403).json({ message: "Impossible de supprimer un administrateur." });
+            }
+            await user.destroy();
+            res.json({ message: 'User removed by admin' });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Error deleting user' });
+    }
+};
+
+exports.deleteService = async (req, res) => {
+    try {
+        const service = await Service.findByPk(req.params.id);
+        if (service) {
+            await service.destroy();
+            res.json({ message: 'Service removed by admin' });
+        } else {
+            res.status(404).json({ message: 'Service not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting service:', error);
+        res.status(500).json({ message: 'Error deleting service' });
+    }
+};
+
+exports.deleteRequest = async (req, res) => {
+    try {
+        const request = await ServiceRequest.findByPk(req.params.id);
+        if (request) {
+            await request.destroy();
+            res.json({ message: 'Request removed by admin' });
+        } else {
+            res.status(404).json({ message: 'Request not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting request:', error);
+        res.status(500).json({ message: 'Error deleting request' });
+    }
+};
