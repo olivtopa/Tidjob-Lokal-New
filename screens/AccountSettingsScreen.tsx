@@ -3,16 +3,22 @@ import React, { useState } from 'react';
 import { Screen, User } from '../types';
 import { API_BASE_URL } from '../constants';
 
+import LocationAutocomplete from '../components/LocationAutocomplete';
+
 interface AccountSettingsScreenProps {
     user: User;
     navigateTo: (screen: Screen) => void;
     onLogout: () => void;
+    onUpdateUser: (user: User) => void;
 }
 
-const AccountSettingsScreen: React.FC<AccountSettingsScreenProps> = ({ user: initialUser, navigateTo, onLogout }) => {
+const AccountSettingsScreen: React.FC<AccountSettingsScreenProps> = ({ user: initialUser, navigateTo, onLogout, onUpdateUser }) => {
     const [user, setUser] = useState(initialUser);
     const [name, setName] = useState(user.name);
     const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl || '');
+    const [city, setCity] = useState(user.city || '');
+    const [zipCode, setZipCode] = useState(user.zipCode || '');
+    const [department, setDepartment] = useState(user.department || '');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
 
@@ -41,13 +47,14 @@ const AccountSettingsScreen: React.FC<AccountSettingsScreenProps> = ({ user: ini
         try {
             const response = await fetchWithAuth(`${API_BASE_URL}/auth/profile`, {
                 method: 'PUT',
-                body: JSON.stringify({ name, avatarUrl }),
+                body: JSON.stringify({ name, avatarUrl, city, zipCode, department }),
             });
             const data = await response.json();
 
             if (!response.ok) throw new Error(data.error || 'Erreur lors de la mise à jour');
 
             setUser(prev => ({ ...prev, ...data }));
+            onUpdateUser(data);
             setMessage({ text: 'Profil mis à jour avec succès', type: 'success' });
         } catch (error: any) {
             setMessage({ text: error.message, type: 'error' });
@@ -144,6 +151,23 @@ const AccountSettingsScreen: React.FC<AccountSettingsScreenProps> = ({ user: ini
                                 onChange={(e) => setName(e.target.value)}
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
                             />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Localisation (Ville)</label>
+                            <LocationAutocomplete
+                                onSelect={(loc) => {
+                                    setCity(loc.city);
+                                    setZipCode(loc.zipCode);
+                                    setDepartment(loc.department);
+                                }}
+                                initialValue={city ? `${city} (${zipCode})` : ''}
+                                placeholder="Rechercher votre ville..."
+                            />
+                            {city && (
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Enregistré : {city} ({zipCode}) - {department}
+                                </p>
+                            )}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Photo de profil</label>

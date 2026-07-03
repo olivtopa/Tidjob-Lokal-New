@@ -596,7 +596,7 @@ const App: React.FC = () => {
         if (!currentUser) { navigateTo(Screen.Login); return null; }
         return <HomeScreen navigateTo={navigateTo} user={currentUser} providers={providers} services={services} onSelectService={handleSelectService} onSelectCategory={handleCategorySelect} />;
       case Screen.Find:
-        return <FindServiceScreen services={services} navigateTo={navigateTo} onSelectService={handleSelectService} initialCategory={selectedCategory} />;
+        return <FindServiceScreen services={services} navigateTo={navigateTo} onSelectService={handleSelectService} initialCategory={selectedCategory} user={currentUser} />;
       case Screen.Offer:
         if (!currentUser) { navigateTo(Screen.SignUp); return null; }
         return <OfferServiceScreen navigateTo={navigateTo} onPublishService={handlePublishService} />;
@@ -616,7 +616,7 @@ const App: React.FC = () => {
         return <ChatScreen conversation={selectedConversation} currentUser={currentUser} navigateTo={navigateTo} onSendMessage={handleSendMessage} />;
       case Screen.ProviderDashboard:
         // Now unified as general "Requests View" for everyone
-        return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} initialCategory={selectedCategory} />;
+        return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} initialCategory={selectedCategory} user={currentUser} />;
       case Screen.ProviderHome:
         // No longer used, redirecting to Home if somehow reached
         if (!currentUser) { navigateTo(Screen.Login); return null; }
@@ -628,7 +628,7 @@ const App: React.FC = () => {
       case Screen.AccountSettings:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
         console.log('App: Rendering AccountSettingsScreen');
-        return <AccountSettingsScreen user={currentUser} navigateTo={navigateTo} onLogout={handleLogout} />;
+        return <AccountSettingsScreen user={currentUser} navigateTo={navigateTo} onLogout={handleLogout} onUpdateUser={setCurrentUser} />;
       case Screen.ServiceHistory:
         if (!currentUser) { navigateTo(Screen.Login); return null; }
         return <ServiceHistoryScreen user={currentUser} serviceRequests={serviceRequests} navigateTo={navigateTo} />;

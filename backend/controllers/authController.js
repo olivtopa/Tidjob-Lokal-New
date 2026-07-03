@@ -88,9 +88,12 @@ const updateProfile = async (req, res) => {
     const user = req.user; // Set by protect middleware
 
     if (user) {
-      user.name = req.body.name || user.name;
-      user.email = req.body.email || user.email;
-      user.avatarUrl = req.body.avatarUrl || user.avatarUrl;
+      if (req.body.name !== undefined) user.name = req.body.name;
+      if (req.body.email !== undefined) user.email = req.body.email;
+      if (req.body.avatarUrl !== undefined) user.avatarUrl = req.body.avatarUrl;
+      if (req.body.city !== undefined) user.city = req.body.city;
+      if (req.body.zipCode !== undefined) user.zipCode = req.body.zipCode;
+      if (req.body.department !== undefined) user.department = req.body.department;
 
       // Check if password is intended to be updated here, though we recommend a separate route for safety
       if (req.body.password) {
@@ -105,6 +108,9 @@ const updateProfile = async (req, res) => {
         email: updatedUser.email,
         role: updatedUser.role,
         avatarUrl: updatedUser.avatarUrl,
+        city: updatedUser.city,
+        zipCode: updatedUser.zipCode,
+        department: updatedUser.department,
         // Don't send password
       });
     } else {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Screen, ServiceRequest } from '../types';
+import { Screen, ServiceRequest, User } from '../types';
 import { SERVICE_CATEGORIES } from '../constants';
 import LocationAutocomplete from '../components/LocationAutocomplete';
 
@@ -8,6 +8,7 @@ interface ProviderDashboardScreenProps {
   navigateTo: (screen: Screen) => void;
   onRespond: (request: ServiceRequest, initialMessage: string) => void;
   initialCategory?: string;
+  user?: User | null;
 }
 
 const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: ServiceRequest, initialMessage: string) => void }> = ({ request, onRespond }) => {
@@ -50,9 +51,14 @@ const RequestCard: React.FC<{ request: ServiceRequest; onRespond: (request: Serv
   );
 };
 
-const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ serviceRequests, navigateTo, onRespond, initialCategory }) => {
+const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ serviceRequests, navigateTo, onRespond, initialCategory, user }) => {
   const [selectedCategory, setSelectedCategory] = useState(initialCategory || 'Tous');
-  const [filterLocation, setFilterLocation] = useState<{ city: string, zipCode: string, department: string } | null>(null);
+  const [filterLocation, setFilterLocation] = useState<{ city: string, zipCode: string, department: string } | null>(() => {
+    if (user?.city && user?.zipCode && user?.department) {
+      return { city: user.city, zipCode: user.zipCode, department: user.department };
+    }
+    return null;
+  });
 
   // Update local state if prop changes (e.g. navigation from home)
   useEffect(() => {

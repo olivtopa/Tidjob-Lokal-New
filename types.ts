@@ -31,6 +31,9 @@ export interface User {
   email: string;
   role: 'user' | 'admin';
   avatarUrl?: string;
+  city?: string;
+  zipCode?: string;
+  department?: string;
 }
 
 export interface ServiceCategory {

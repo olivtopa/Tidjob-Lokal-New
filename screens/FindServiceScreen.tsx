@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Screen, Service } from '../types';
+import { Screen, Service, User } from '../types';
 import { SERVICE_CATEGORIES } from '../constants';
 import SearchIcon from '../components/icons/SearchIcon';
 import LocationAutocomplete from '../components/LocationAutocomplete';
@@ -9,6 +9,7 @@ interface FindServiceScreenProps {
   navigateTo: (screen: Screen) => void;
   onSelectService: (service: Service) => void;
   initialCategory?: string;
+  user?: User | null;
 }
 
 const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => void; }> = ({ service, onSelect }) => {
@@ -58,12 +59,17 @@ const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => 
 };
 
 
-const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigateTo, onSelectService, initialCategory }) => {
+const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigateTo, onSelectService, initialCategory, user }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'Tous');
 
   // Location Filter State
-  const [filterLocation, setFilterLocation] = useState<{ city: string, zipCode: string, department: string } | null>(null);
+  const [filterLocation, setFilterLocation] = useState<{ city: string, zipCode: string, department: string } | null>(() => {
+    if (user?.city && user?.zipCode && user?.department) {
+      return { city: user.city, zipCode: user.zipCode, department: user.department };
+    }
+    return null;
+  });
 
   useEffect(() => {
     setSelectedCategory(initialCategory || 'Tous');

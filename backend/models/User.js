@@ -30,6 +30,18 @@ const User = sequelize.define('User', {
     allowNull: true,
     defaultValue: 'https://picsum.photos/seed/person/200' // Default placeholder
   },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  zipCode: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  department: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   resetPasswordToken: {
     type: DataTypes.STRING,
     allowNull: true
