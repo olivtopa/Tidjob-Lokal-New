@@ -25,6 +25,7 @@ import ProviderHomeScreen from './screens/ProviderHomeScreen';
 import DashboardScreen from './screens/DashboardScreen';
 
 import { API_BASE_URL } from './constants';
+import AuthModal from './components/AuthModal';
 
 import HomeIcon from './components/icons/HomeIcon';
 import SearchIcon from './components/icons/SearchIcon';
@@ -41,6 +42,7 @@ const App: React.FC = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>([]);
+  const [authModal, setAuthModal] = useState<'login' | 'signup' | null>(null);
 
   const [services, setServices] = useState<Service[]>([]);
   const [providers, setProviders] = useState<Provider[]>([]);
@@ -52,6 +54,14 @@ const App: React.FC = () => {
   const navigateTo = useCallback((screen: Screen, addToHistory = true) => {
     console.log('App: navigateTo called with screen:', screen);
     setError(null);
+    if (screen === Screen.Login) {
+      setAuthModal('login');
+      return;
+    }
+    if (screen === Screen.SignUp) {
+      setAuthModal('signup');
+      return;
+    }
     setCurrentScreen(screen);
     if (addToHistory) {
       window.history.pushState({ screen }, '', '');
@@ -267,6 +277,7 @@ const App: React.FC = () => {
 
       // Step 3: Set the user and navigate
       setCurrentUser(user);
+      setAuthModal(null); // Fermer la modal après connexion réussie
 
       // Fetch service requests based on role (refresh)
       const serviceRequestsRes = await fetchWithAuth(`${API_BASE_URL}/servicerequests`);
@@ -325,6 +336,7 @@ const App: React.FC = () => {
         }
 
         setCurrentUser(user);
+        setAuthModal(null); // Fermer la modal après inscription réussie
 
         // Fetch service requests
         try {
@@ -593,15 +605,15 @@ const App: React.FC = () => {
       case Screen.ResetPassword:
         return <ResetPasswordScreen navigateTo={navigateTo} />;
       case Screen.Home:
-        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        if (!currentUser) { navigateTo(Screen.Find); setAuthModal('login'); return null; }
         return <HomeScreen navigateTo={navigateTo} user={currentUser} providers={providers} services={services} onSelectService={handleSelectService} onSelectCategory={handleCategorySelect} />;
       case Screen.Find:
         return <FindServiceScreen services={services} navigateTo={navigateTo} onSelectService={handleSelectService} initialCategory={selectedCategory} user={currentUser} />;
       case Screen.Offer:
-        if (!currentUser) { navigateTo(Screen.SignUp); return null; }
+        if (!currentUser) { navigateTo(Screen.Find); setAuthModal('signup'); return null; }
         return <OfferServiceScreen navigateTo={navigateTo} onPublishService={handlePublishService} />;
       case Screen.Profile:
-        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        if (!currentUser) { navigateTo(Screen.Find); setAuthModal('login'); return null; }
         return <ProfileScreen user={currentUser} onLogout={handleLogout} navigateTo={navigateTo} />;
       case Screen.Legal:
         return <LegalScreen navigateTo={navigateTo} />;
@@ -609,7 +621,7 @@ const App: React.FC = () => {
         if (!selectedService) { navigateTo(Screen.Find); return null; }
         return <ServiceDetailScreen service={selectedService} navigateTo={navigateTo} onStartConversation={handleStartConversation} user={currentUser} />;
       case Screen.Messages:
-        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        if (!currentUser) { navigateTo(Screen.Find); setAuthModal('login'); return null; }
         return <MessagesScreen conversations={conversations} onSelectConversation={handleSelectConversation} currentUser={currentUser} />;
       case Screen.Chat:
         if (!selectedConversation || !currentUser) { navigateTo(Screen.Messages); return null; }
@@ -619,23 +631,23 @@ const App: React.FC = () => {
         return <ProviderDashboardScreen serviceRequests={serviceRequests} navigateTo={navigateTo} onRespond={handleRespondToRequest} initialCategory={selectedCategory} user={currentUser} />;
       case Screen.ProviderHome:
         // No longer used, redirecting to Home if somehow reached
-        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        if (!currentUser) { navigateTo(Screen.Find); setAuthModal('login'); return null; }
         navigateTo(Screen.Home);
         return null;
       case Screen.RequestService:
-        if (!currentUser) { navigateTo(Screen.SignUp); return null; }
+        if (!currentUser) { navigateTo(Screen.Find); setAuthModal('signup'); return null; }
         return <RequestServiceScreen navigateTo={navigateTo} onPublish={handlePublishRequest} />;
       case Screen.AccountSettings:
-        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        if (!currentUser) { navigateTo(Screen.Find); setAuthModal('login'); return null; }
         console.log('App: Rendering AccountSettingsScreen');
         return <AccountSettingsScreen user={currentUser} navigateTo={navigateTo} onLogout={handleLogout} onUpdateUser={setCurrentUser} />;
       case Screen.ServiceHistory:
-        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        if (!currentUser) { navigateTo(Screen.Find); setAuthModal('login'); return null; }
         return <ServiceHistoryScreen user={currentUser} serviceRequests={serviceRequests} navigateTo={navigateTo} />;
       case Screen.HelpCenter:
         return <HelpCenterScreen navigateTo={navigateTo} user={currentUser} />;
       case Screen.ProviderServices:
-        if (!currentUser) { navigateTo(Screen.Login); return null; }
+        if (!currentUser) { navigateTo(Screen.Find); setAuthModal('login'); return null; }
         return <ProviderServicesScreen user={currentUser} navigateTo={navigateTo} onSelectService={handleSelectService} />;
       case Screen.Dashboard:
         return <DashboardScreen navigateTo={navigateTo} onLogout={handleLogout} />;
@@ -676,7 +688,6 @@ const App: React.FC = () => {
 
   const renderGuestNav = () => (
     <div className="flex justify-around items-center h-16">
-      <NavItem screen={Screen.Landing} icon={<HomeIcon className="w-6 h-6" />} label="Accueil" />
       <NavItem screen={Screen.Find} icon={<SearchIcon className="w-6 h-6" />} label="Offres" />
       <NavItem screen={Screen.ProviderDashboard} icon={<ClipboardListIcon className="w-6 h-6" />} label="Demandes" />
       <NavItem screen={Screen.Login} icon={<UserIcon className="w-6 h-6" />} label="Connexion" />
@@ -684,7 +695,7 @@ const App: React.FC = () => {
   );
 
   return (
-    <div className="max-w-md mx-auto bg-gray-100 shadow-lg h-screen flex flex-col font-sans">
+    <div className="max-w-md mx-auto bg-gray-100 shadow-lg h-screen flex flex-col font-sans relative">
       <main className="flex-1 overflow-y-auto pb-20">{renderScreen()}</main>
 
       {((currentUser && currentUser.role !== 'admin') || (!currentUser && currentScreen !== Screen.Landing && currentScreen !== Screen.Login && currentScreen !== Screen.SignUp && currentScreen !== Screen.ForgotPassword && currentScreen !== Screen.ResetPassword)) && (
@@ -692,6 +703,18 @@ const App: React.FC = () => {
           {currentUser ? renderMainNav() : renderGuestNav()}
         </footer>
       )}
+
+      <AuthModal
+        isOpen={authModal !== null}
+        type={authModal || 'login'}
+        onClose={() => setAuthModal(null)}
+        setType={setAuthModal}
+        onLogin={handleLogin}
+        onSignUp={handleSignUp}
+        error={error}
+        isLoading={isLoading}
+        appNavigateTo={navigateTo}
+      />
     </div>
   );
 };
