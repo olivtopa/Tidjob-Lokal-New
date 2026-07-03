@@ -7,6 +7,11 @@ const sendEmail = require('../utils/sendEmail');
 const signup = async (req, res) => {
   try {
     const { name, email, password, city, zipCode, department } = req.body;
+
+    // Validate password strength
+    if (!password || password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      return res.status(400).json({ error: "Le mot de passe doit faire au moins 8 caractères, contenir une majuscule, un chiffre et un caractère spécial." });
+    }
     let role = 'user'; // Force role to 'user' for public signups, ignore req.body.role
     if (req.body.role === 'admin') {
       // In a real app, this should only be allowed if an existing admin is creating the structural account,

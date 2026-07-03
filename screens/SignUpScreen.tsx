@@ -41,6 +41,22 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
             setLocalError("Les mots de passe ne correspondent pas.");
             return;
           }
+          if (password.length < 8) {
+            setLocalError("Le mot de passe doit faire au moins 8 caractères.");
+            return;
+          }
+          if (!/[A-Z]/.test(password)) {
+            setLocalError("Le mot de passe doit contenir au moins une lettre majuscule.");
+            return;
+          }
+          if (!/[0-9]/.test(password)) {
+            setLocalError("Le mot de passe doit contenir au moins un chiffre.");
+            return;
+          }
+          if (!/[!@#$%^&*(),.?\":{}|<>]/.test(password)) {
+            setLocalError("Le mot de passe doit contenir au moins un caractère spécial (ex: @, !, #, $, %).");
+            return;
+          }
           onSignUp(name, email, password, 'user', city, zipCode, department);
         }}>
 
@@ -89,6 +105,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
                 )}
               </button>
             </div>
+            <p className="text-xs text-gray-500 mt-1">Au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.</p>
           </div>
           <div>
             <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">Confirmer le mot de passe</label>

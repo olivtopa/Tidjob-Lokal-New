@@ -11,6 +11,7 @@ interface OfferServiceScreenProps {
 const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onPublishService }) => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState(SERVICE_CATEGORIES[0].name);
+  const [customCategory, setCustomCategory] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('0');
 
@@ -23,11 +24,16 @@ const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onP
       alert("Veuillez sélectionner une localisation");
       return;
     }
+    const finalCategory = category === 'Autre' ? customCategory.trim() : category;
+    if (category === 'Autre' && !customCategory.trim()) {
+      alert("Veuillez saisir le nom de la nouvelle catégorie");
+      return;
+    }
     // Convert price string to number
     const numericPrice = parseFloat(price);
     
     try {
-      await onPublishService(title, description, category, numericPrice, location.zipCode, location.city, location.department);
+      await onPublishService(title, description, finalCategory, numericPrice, location.zipCode, location.city, location.department);
       navigateTo(Screen.ProviderServices);
     } catch (error: any) {
       alert(error.message || "Une erreur est survenue lors de la publication.");
@@ -66,7 +72,22 @@ const OfferServiceScreen: React.FC<OfferServiceScreenProps> = ({ navigateTo, onP
             {SERVICE_CATEGORIES.map(cat => (
               <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
+            <option value="Autre">Autre (Ajouter une catégorie)...</option>
           </select>
+
+          {category === 'Autre' && (
+            <div className="mt-3">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nom de la nouvelle catégorie</label>
+              <input
+                type="text"
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400"
+                placeholder="Ex: Déménagement"
+                value={customCategory}
+                onChange={(e) => setCustomCategory(e.target.value)}
+                required
+              />
+            </div>
+          )}
         </div>
 
         {/* Location Field */}

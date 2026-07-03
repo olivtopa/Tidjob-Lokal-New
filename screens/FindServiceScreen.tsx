@@ -75,7 +75,11 @@ const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigat
     setSelectedCategory(initialCategory || 'Tous');
   }, [initialCategory]);
 
-  const categories = ['Tous', ...SERVICE_CATEGORIES.map(c => c.name)];
+  const categories = useMemo(() => {
+    const existing = services.map(s => s.category);
+    const all = new Set(['Tous', ...SERVICE_CATEGORIES.map(c => c.name), ...existing]);
+    return Array.from(all);
+  }, [services]);
 
   const filteredServices = useMemo(() => {
     return services.filter(service => {

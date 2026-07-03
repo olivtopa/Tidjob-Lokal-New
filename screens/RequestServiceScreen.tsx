@@ -11,6 +11,7 @@ interface RequestServiceScreenProps {
 const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo, onPublish }) => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState(SERVICE_CATEGORIES[0].name);
+  const [customCategory, setCustomCategory] = useState('');
   const [description, setDescription] = useState('');
   const [budget, setBudget] = useState('');
 
@@ -23,8 +24,13 @@ const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo,
       alert("Veuillez sélectionner une localisation");
       return;
     }
+    const finalCategory = category === 'Autre' ? customCategory.trim() : category;
+    if (finalCategory === 'Autre' && !customCategory.trim()) {
+      alert("Veuillez saisir le nom de la nouvelle catégorie");
+      return;
+    }
     const numericBudget = budget ? parseFloat(budget) : undefined;
-    onPublish(title, category, description, numericBudget, location.zipCode, location.city, location.department);
+    onPublish(title, finalCategory, description, numericBudget, location.zipCode, location.city, location.department);
     navigateTo(Screen.Home); // Go back to home after publishing
   };
 
@@ -60,7 +66,22 @@ const RequestServiceScreen: React.FC<RequestServiceScreenProps> = ({ navigateTo,
             {SERVICE_CATEGORIES.map(cat => (
               <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
+            <option value="Autre">Autre (Ajouter une catégorie)...</option>
           </select>
+
+          {category === 'Autre' && (
+            <div className="mt-3">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nom de la nouvelle catégorie</label>
+              <input
+                type="text"
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400"
+                placeholder="Ex: Plomberie"
+                value={customCategory}
+                onChange={(e) => setCustomCategory(e.target.value)}
+                required
+              />
+            </div>
+          )}
         </div>
 
         {/* Location Field */}

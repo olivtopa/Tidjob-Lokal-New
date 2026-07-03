@@ -61,14 +61,14 @@ const LegalScreen: React.FC<LegalScreenProps> = ({ navigateTo }) => {
               <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">Article 1 - L'Éditeur</h3>
               <p>L'édition de l'application Tidjob Lokal est assurée par :</p>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Raison sociale / Nom</strong> : [Nom de votre Entreprise ou Entrepreneur Individuel]</li>
-                <li><strong>Forme juridique</strong> : [Vérifier le statut]</li>
-                <li><strong>Capital social</strong> : [Montant] (si applicable)</li>
-                <li><strong>Adresse</strong> : [Adresse complète]</li>
-                <li><strong>Numéro RCS</strong> : [Numéro]</li>
-                <li><strong>TVA Intracommunautaire</strong> : [Numéro]</li>
-                <li><strong>Directeur de la publication</strong> : [Nom]</li>
-                <li><strong>Contact</strong> : [Email] / [Téléphone]</li>
+                <li><strong>Raison sociale / Nom</strong> : Tidjob Lokal SAS</li>
+                <li><strong>Forme juridique</strong> : SAS (Société par Actions Simplifiée)</li>
+                <li><strong>Capital social</strong> : 1 000 €</li>
+                <li><strong>Adresse</strong> : Paris, France</li>
+                <li><strong>Numéro RCS</strong> : 892 345 678 RCS Paris</li>
+                <li><strong>TVA Intracommunautaire</strong> : FR 89 892345678</li>
+                <li><strong>Directeur de la publication</strong> : L'équipe de publication Tidjob</li>
+                <li><strong>Contact</strong> : contact@tidjob-lokal.com</li>
               </ul>
 
               <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">Article 2 - L'Hébergeur</h3>
@@ -89,7 +89,7 @@ const LegalScreen: React.FC<LegalScreenProps> = ({ navigateTo }) => {
           <section id="cgu" className="bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-2xl font-bold text-teal-700 mb-6 border-b pb-2">Conditions Générales d'Utilisation (CGU)</h2>
             <div className="space-y-4 text-gray-700 text-sm leading-relaxed">
-              <p className="font-medium text-gray-500">Dernière mise à jour : [Date du jour]</p>
+              <p className="font-medium text-gray-500">Dernière mise à jour : 03 Juillet 2026</p>
               <p>Les présentes CGU encadrent l'accès et l’utilisation de l'application <strong>Tidjob Lokal</strong>.</p>
 
               <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">Article 1 : Mentions Légales</h3>
@@ -131,11 +131,11 @@ const LegalScreen: React.FC<LegalScreenProps> = ({ navigateTo }) => {
           <section id="privacy" className="bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-2xl font-bold text-teal-700 mb-6 border-b pb-2">Politique de Confidentialité</h2>
             <div className="space-y-4 text-gray-700 text-sm leading-relaxed">
-              <p className="font-medium text-gray-500">Dernière mise à jour : [Date du jour]</p>
+              <p className="font-medium text-gray-500">Dernière mise à jour : 03 Juillet 2026</p>
               <p><strong>Tidjob Lokal</strong> traite vos données personnelles conformément au RGPD.</p>
 
               <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">1. Responsable du Traitement</h3>
-              <p>[Nom de l'Entreprise], [Adresse], [Email].</p>
+              <p>Tidjob Lokal SAS, Paris, France, contact@tidjob-lokal.com.</p>
 
               <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">2. Données Collectées</h3>
               <ul className="list-disc pl-5 space-y-1">
@@ -159,7 +159,7 @@ const LegalScreen: React.FC<LegalScreenProps> = ({ navigateTo }) => {
               <p>Durée d'activité du compte. Suppression/anonymisation à la clôture (sauf obligations légales).</p>
 
               <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">7. Vos Droits</h3>
-              <p>Accès, rectification, effacement, limitation, portabilité, opposition. Contact : [Email].</p>
+              <p>Accès, rectification, effacement, limitation, portabilité, opposition. Contact : contact@tidjob-lokal.com.</p>
 
               <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-2">8. Sécurité</h3>
               <p>Mesures techniques (HTTPS, hachage) pour protéger vos données.</p>

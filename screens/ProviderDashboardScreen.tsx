@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Screen, ServiceRequest, User } from '../types';
 import { SERVICE_CATEGORIES } from '../constants';
 import LocationAutocomplete from '../components/LocationAutocomplete';
@@ -80,7 +80,20 @@ const ProviderDashboardScreen: React.FC<ProviderDashboardScreenProps> = ({ servi
     return matchesCategory && matchesLocation;
   });
 
-  const categories = [{ id: 'all', name: 'Tous', icon: () => null }, ...SERVICE_CATEGORIES];
+  const categories = useMemo(() => {
+    const existing = serviceRequests.map(r => r.category);
+    const staticNames = SERVICE_CATEGORIES.map(c => c.name);
+    const allNames = Array.from(new Set(['Tous', ...staticNames, ...existing]));
+    
+    return allNames.map((name, index) => {
+      const staticCat = SERVICE_CATEGORIES.find(c => c.name === name);
+      return {
+        id: staticCat ? staticCat.id : `custom-${index}`,
+        name: name,
+        icon: staticCat ? staticCat.icon : () => null
+      };
+    });
+  }, [serviceRequests]);
 
   return (
     <div className="p-4 bg-gray-100 min-h-full pb-24">
