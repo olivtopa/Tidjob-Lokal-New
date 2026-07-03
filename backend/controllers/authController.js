@@ -6,7 +6,7 @@ const sendEmail = require('../utils/sendEmail');
 
 const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, city, zipCode, department } = req.body;
     let role = 'user'; // Force role to 'user' for public signups, ignore req.body.role
     if (req.body.role === 'admin') {
       // In a real app, this should only be allowed if an existing admin is creating the structural account,
@@ -14,7 +14,7 @@ const signup = async (req, res) => {
       // Safe bet: keep existing admin capability if passed, otherwise default down to user.
       role = 'admin';
     }
-    const user = await User.create({ name, email, password, role });
+    const user = await User.create({ name, email, password, role, city, zipCode, department });
 
     // Generate token immediately after signup
     const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
@@ -28,7 +28,10 @@ const signup = async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        city: user.city,
+        zipCode: user.zipCode,
+        department: user.department
       }
     });
   } catch (error) {

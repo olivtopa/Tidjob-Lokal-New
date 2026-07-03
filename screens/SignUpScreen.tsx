@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Screen } from '../types';
 import EyeIcon from '../components/icons/EyeIcon';
 import EyeOffIcon from '../components/icons/EyeOffIcon';
+import LocationAutocomplete from '../components/LocationAutocomplete';
 
 interface SignUpScreenProps {
   navigateTo: (screen: Screen) => void;
-  onSignUp: (name: string, email: string, password: string, role: 'user' | 'provider') => void;
+  onSignUp: (name: string, email: string, password: string, role: 'user' | 'provider', city?: string, zipCode?: string, department?: string) => void;
   error?: string | null;
   isLoading?: boolean;
 }
@@ -15,6 +16,9 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [city, setCity] = useState('');
+  const [zipCode, setZipCode] = useState('');
+  const [department, setDepartment] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -37,7 +41,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
             setLocalError("Les mots de passe ne correspondent pas.");
             return;
           }
-          onSignUp(name, email, password, 'user');
+          onSignUp(name, email, password, 'user', city, zipCode, department);
         }}>
 
           <div>
@@ -47,6 +51,19 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigateTo, onSignUp, error
           <div>
             <label htmlFor="email" className="text-sm font-medium text-gray-700">Adresse e-mail</label>
             <input type="email" id="email" required className="mt-1 w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500" placeholder="vous@exemple.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700">Votre Ville / Localisation (Optionnel)</label>
+            <div className="mt-1">
+              <LocationAutocomplete
+                onSelect={(loc) => {
+                  setCity(loc.city);
+                  setZipCode(loc.zipCode);
+                  setDepartment(loc.department);
+                }}
+                placeholder="Rechercher votre ville..."
+              />
+            </div>
           </div>
           <div>
             <label htmlFor="password" className="text-sm font-medium text-gray-700">Mot de passe</label>

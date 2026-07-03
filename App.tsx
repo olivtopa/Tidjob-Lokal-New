@@ -290,14 +290,14 @@ const App: React.FC = () => {
     }
   }, [navigateTo]);
 
-  const handleSignUp = useCallback(async (name: string, email: string, password: string, role: 'client' | 'provider') => {
+  const handleSignUp = useCallback(async (name: string, email: string, password: string, role: 'client' | 'provider', city?: string, zipCode?: string, department?: string) => {
     setError(null);
     setIsLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ name, email, password, role, city, zipCode, department }),
       });
 
       const data = await response.json();
