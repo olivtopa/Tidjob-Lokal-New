@@ -26,7 +26,7 @@ const User = sequelize.define('User', {
     allowNull: false
   },
   avatarUrl: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true,
     defaultValue: 'https://picsum.photos/seed/person/200' // Default placeholder
   },
