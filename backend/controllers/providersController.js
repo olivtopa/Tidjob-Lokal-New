@@ -6,8 +6,8 @@ const { User } = require('../models');
 const getProviders = async (req, res) => {
   try {
     const providers = await User.findAll({ 
-      where: { role: 'provider' },
-      attributes: { exclude: ['password'] } // Exclude password from the result
+      where: { role: 'user' },
+      attributes: ['id', 'name', 'avatarUrl', 'city', 'zipCode', 'department']
     });
     res.json(providers);
   } catch (error) {

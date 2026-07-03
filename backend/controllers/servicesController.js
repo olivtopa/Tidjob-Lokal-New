@@ -12,7 +12,12 @@ const getServices = async (req, res) => {
     }
     const services = await Service.findAll({
       where,
-      include: 'provider',
+      include: [
+        {
+          association: 'provider',
+          attributes: ['id', 'name', 'avatarUrl', 'city', 'zipCode', 'department']
+        }
+      ],
       order: [['createdAt', 'DESC']]
     });
     res.json(services);
@@ -26,7 +31,14 @@ const getServices = async (req, res) => {
 // @access  Public
 const getServiceById = async (req, res) => {
   try {
-    const service = await Service.findByPk(req.params.id, { include: 'provider' });
+    const service = await Service.findByPk(req.params.id, {
+      include: [
+        {
+          association: 'provider',
+          attributes: ['id', 'name', 'avatarUrl', 'city', 'zipCode', 'department']
+        }
+      ]
+    });
     if (service) {
       res.json(service);
     } else {

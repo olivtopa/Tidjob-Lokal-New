@@ -28,7 +28,12 @@ const createServiceRequest = async (req, res) => {
 const getServiceRequests = async (req, res) => {
   try {
     let queryOptions = {
-      include: 'client',
+      include: [
+        {
+          association: 'client',
+          attributes: ['id', 'name', 'avatarUrl', 'city', 'zipCode', 'department']
+        }
+      ],
       order: [['createdAt', 'DESC']]
     };
 
