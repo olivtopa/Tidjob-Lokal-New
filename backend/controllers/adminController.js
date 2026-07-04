@@ -4,16 +4,35 @@ const sequelize = require('../config/database');
 
 exports.getStatsData = async (req, res) => {
     try {
-        // 1. Daily Connections (LoginLog grouped by day)
-        // Group by date(loginAt)
-        // Note: SQLite syntax for date is different from Postgres/MySQL. Assuming SQLite or standard SQL.
-        // For compatibility, we might fetch all and process in JS if dataset is small, or use raw query.
-        // Let's use a raw query for aggregation which is often easier than Sequelize for this.
-        // SQLite: strftime('%Y-%m-%d', loginAt)
-        const dailyConnections = await sequelize.query(
-            `SELECT date("loginAt") as date, COUNT(*) as count FROM "LoginLogs" GROUP BY date("loginAt") ORDER BY date("loginAt") DESC LIMIT 30`,
+        const dailyConnectionsRaw = await sequelize.query(
+            `SELECT date(l."loginAt") as date, COUNT(l.id) as count 
+             FROM "LoginLogs" l 
+             JOIN "Users" u ON l."UserId" = u.id 
+             WHERE u.role != 'admin' 
+             GROUP BY date(l."loginAt") 
+             ORDER BY date(l."loginAt") DESC 
+             LIMIT 30`,
             { type: sequelize.QueryTypes.SELECT }
         );
+        const dailyConnections = dailyConnectionsRaw.map(d => ({
+            date: d.date,
+            count: parseInt(d.count, 10) || 0
+        }));
+
+        const dailySignupsRaw = await sequelize.query(
+            `SELECT date("createdAt") as date, COUNT(id) as count 
+             FROM "Users" 
+             WHERE role != 'admin' 
+             GROUP BY date("createdAt") 
+             ORDER BY date("createdAt") DESC 
+             LIMIT 30`,
+            { type: sequelize.QueryTypes.SELECT }
+        );
+        const dailySignups = dailySignupsRaw.map(d => ({
+            date: d.date,
+            count: parseInt(d.count, 10) || 0
+        }));
+
 
         // 2. Top Categories (Services & Requests)
         const servicesByCategory = await Service.findAll({
@@ -89,6 +108,7 @@ exports.getStatsData = async (req, res) => {
 
         res.json({
             dailyConnections,
+            dailySignups,
             topCategories: {
                 services: servicesByCategory,
                 requests: requestsByCategory
