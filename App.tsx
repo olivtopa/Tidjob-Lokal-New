@@ -614,7 +614,8 @@ const App: React.FC = () => {
         return <OfferServiceScreen navigateTo={navigateTo} onPublishService={handlePublishService} />;
       case Screen.Profile:
         if (!currentUser) { navigateTo(Screen.Find); setAuthModal('login'); return null; }
-        return <ProfileScreen user={currentUser} onLogout={handleLogout} navigateTo={navigateTo} />;
+        const profileUnreadCount = conversations.filter(c => c.unread).length;
+        return <ProfileScreen user={currentUser} onLogout={handleLogout} navigateTo={navigateTo} unreadCount={profileUnreadCount} />;
       case Screen.Legal:
         return <LegalScreen navigateTo={navigateTo} />;
       case Screen.ServiceDetail:
@@ -681,6 +682,7 @@ const App: React.FC = () => {
       <NavItem screen={Screen.Home} icon={<HomeIcon className="w-6 h-6" />} label="Accueil" />
       <NavItem screen={Screen.Find} icon={<SearchIcon className="w-6 h-6" />} label="Trouver" />
       <NavItem screen={Screen.ProviderDashboard} icon={<ClipboardListIcon className="w-6 h-6" />} label="Demandes" />
+      <NavItem screen={Screen.Messages} icon={<MessageSquareIcon className="w-6 h-6" />} label="Messages" hasNotification={hasUnreadMessages} />
       <NavItem screen={Screen.Offer} icon={<PlusCircleIcon className="w-6 h-6" />} label="Proposer" />
       <NavItem screen={Screen.Profile} icon={<UserIcon className="w-6 h-6" />} label="Profil" />
     </div>

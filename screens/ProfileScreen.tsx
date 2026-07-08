@@ -8,9 +8,10 @@ interface ProfileScreenProps {
   user: User;
   onLogout: () => void;
   navigateTo: (screen: Screen) => void;
+  unreadCount?: number;
 }
 
-const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateTo }) => {
+const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateTo, unreadCount = 0 }) => {
   const [showQRCode, setShowQRCode] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState(false);
@@ -53,6 +54,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
       icon: '⚙️' // Gear
     },
     {
+      label: 'Messagerie',
+      action: () => navigateTo(Screen.Messages),
+      icon: '💬',
+      badge: unreadCount > 0 ? unreadCount : undefined
+    },
+    {
       label: 'Mes Services pro',
       action: () => navigateTo(Screen.ProviderServices),
       icon: '🛠️'
@@ -91,7 +98,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onLogout, navigateT
               onClick={item.action}
               className={`w-full flex items-center p-4 text-left ${index !== menuItems.length - 1 ? 'border-b border-gray-100' : ''} hover:bg-gray-50 transition-colors`}>
               <span className="text-xl mr-4">{item.icon}</span>
-              <span className="flex-1 text-gray-700 font-medium">{item.label}</span>
+              <span className="flex-1 text-gray-700 font-medium flex items-center justify-between">
+                <span>{item.label}</span>
+                {item.badge !== undefined && (
+                  <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full mr-2">
+                    {item.badge}
+                  </span>
+                )}
+              </span>
               <span className="text-gray-400">&gt;</span>
             </button>
           ))}
