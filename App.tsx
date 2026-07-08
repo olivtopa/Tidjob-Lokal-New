@@ -456,6 +456,8 @@ const App: React.FC = () => {
         throw new Error(`Failed to fetch messages: ${messagesRes.statusText}`);
       }
       const messagesData = await messagesRes.json();
+      // Sort messages chronologically by timestamp
+      messagesData.sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
       const updatedConversation = { ...conversation, messages: messagesData, unread: false };
       setConversations(prev => prev.map(c => c.id === conversation.id ? updatedConversation : c));
       setSelectedConversation(updatedConversation);
