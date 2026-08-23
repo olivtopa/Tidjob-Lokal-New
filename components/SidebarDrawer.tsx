@@ -214,19 +214,9 @@ const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
           </nav>
         </div>
 
-        {/* Bottom Actions (WhatsApp & Logout) */}
-        <div className="p-4 border-t border-gray-100 bg-gray-50 space-y-2">
-          <a
-            href="https://wa.me/596696000000"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm transition-colors"
-          >
-            <span>💬</span>
-            <span>Contacter sur WhatsApp</span>
-          </a>
-
-          {user && (
+        {/* Bottom Actions (Logout) */}
+        {user && (
+          <div className="p-4 border-t border-gray-100 bg-gray-50 space-y-2">
             <button
               onClick={() => {
                 onLogout();
@@ -237,8 +227,8 @@ const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
               <span>🚪</span>
               <span>Se déconnecter</span>
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

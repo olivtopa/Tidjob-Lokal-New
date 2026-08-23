@@ -7,7 +7,9 @@ interface AppHeaderProps {
   currentLocation?: { city: string; zipCode: string; department: string } | null;
   onLocationChange: (loc: { city: string; zipCode: string; department: string } | null) => void;
   onOpenMenu: () => void;
-  onSearchClick: () => void;
+  searchTerm?: string;
+  onSearchChange?: (value: string) => void;
+  onSearchFocus?: () => void;
 }
 
 const AppHeader: React.FC<AppHeaderProps> = ({
@@ -15,7 +17,9 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   currentLocation,
   onLocationChange,
   onOpenMenu,
-  onSearchClick
+  searchTerm = '',
+  onSearchChange,
+  onSearchFocus
 }) => {
   const [showLocationModal, setShowLocationModal] = useState(false);
 
@@ -40,16 +44,38 @@ const AppHeader: React.FC<AppHeaderProps> = ({
             </span>
           </div>
 
-          {/* Central Search Pill */}
-          <div
-            onClick={onSearchClick}
-            className="flex-1 flex items-center justify-between bg-gray-50 hover:bg-gray-100 text-gray-500 px-3.5 py-2 rounded-full border border-gray-200 cursor-pointer shadow-inner transition-all duration-200 mx-1"
-          >
-            <span className="text-xs font-medium text-gray-500 truncate">Rechercher...</span>
-            <svg className="w-4 h-4 text-gray-400 shrink-0 ml-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="8" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35" />
-            </svg>
+          {/* Central Search Input */}
+          <div className="flex-1 relative flex items-center bg-gray-50 focus-within:bg-white text-gray-900 px-3 py-1.5 rounded-full border border-gray-200 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-200/50 shadow-inner transition-all duration-200 mx-1">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => {
+                if (onSearchChange) onSearchChange(e.target.value);
+                if (onSearchFocus) onSearchFocus();
+              }}
+              onFocus={() => {
+                if (onSearchFocus) onSearchFocus();
+              }}
+              placeholder="Rechercher..."
+              className="w-full bg-transparent text-xs text-gray-800 placeholder-gray-400 focus:outline-none pr-5 font-medium"
+            />
+            {searchTerm ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onSearchChange) onSearchChange('');
+                }}
+                className="absolute right-2.5 text-gray-400 hover:text-gray-600 text-xs flex items-center justify-center"
+              >
+                ✕
+              </button>
+            ) : (
+              <svg className="w-4 h-4 text-gray-400 shrink-0 absolute right-2.5 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35" />
+              </svg>
+            )}
           </div>
 
           {/* Menu Hamburger Button */}

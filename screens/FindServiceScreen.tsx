@@ -10,6 +10,8 @@ interface FindServiceScreenProps {
   onSelectService: (service: Service) => void;
   initialCategory?: string;
   user?: User | null;
+  searchTerm?: string;
+  onSearchChange?: (val: string) => void;
 }
 
 const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => void; }> = ({ service, onSelect }) => {
@@ -59,8 +61,24 @@ const ServiceCard: React.FC<{ service: Service; onSelect: (service: Service) => 
 };
 
 
-const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigateTo, onSelectService, initialCategory, user }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const FindServiceScreen: React.FC<FindServiceScreenProps> = ({
+  services,
+  navigateTo,
+  onSelectService,
+  initialCategory,
+  user,
+  searchTerm: propSearchTerm,
+  onSearchChange
+}) => {
+  const [internalSearchTerm, setInternalSearchTerm] = useState('');
+  const searchTerm = propSearchTerm !== undefined ? propSearchTerm : internalSearchTerm;
+  const handleSearchChange = (val: string) => {
+    if (onSearchChange) {
+      onSearchChange(val);
+    } else {
+      setInternalSearchTerm(val);
+    }
+  };
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'Tous');
 
   // Location Filter State
@@ -123,7 +141,7 @@ const FindServiceScreen: React.FC<FindServiceScreenProps> = ({ services, navigat
             placeholder="Ex: 'Tonte de pelouse'"
             className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400 text-gray-900 placeholder-gray-500"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
           />
           <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
         </div>

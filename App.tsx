@@ -37,7 +37,7 @@ import BellIcon from './components/icons/BellIcon';
 
 import AppHeader from './components/AppHeader';
 import SidebarDrawer from './components/SidebarDrawer';
-import FloatingWhatsApp from './components/FloatingWhatsApp';
+// import FloatingWhatsApp from './components/FloatingWhatsApp'; // Disabled for now, to be implemented later
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>(Screen.Landing);
@@ -57,6 +57,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [selectedCategory, setSelectedCategory] = useState<string>('Tous');
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const navigateTo = useCallback((screen: Screen, addToHistory = true) => {
     console.log('App: navigateTo called with screen:', screen);
@@ -617,7 +618,7 @@ const App: React.FC = () => {
         if (!currentUser) { navigateTo(Screen.Find); setAuthModal('login'); return null; }
         return <HomeScreen navigateTo={navigateTo} user={currentUser} providers={providers} services={services} onSelectService={handleSelectService} onSelectCategory={handleCategorySelect} filterLocation={filterLocation} />;
       case Screen.Find:
-        return <FindServiceScreen services={services} navigateTo={navigateTo} onSelectService={handleSelectService} initialCategory={selectedCategory} user={currentUser} />;
+        return <FindServiceScreen services={services} navigateTo={navigateTo} onSelectService={handleSelectService} initialCategory={selectedCategory} user={currentUser} searchTerm={searchTerm} onSearchChange={setSearchTerm} />;
       case Screen.Offer:
         if (!currentUser) { navigateTo(Screen.Find); setAuthModal('signup'); return null; }
         return <OfferServiceScreen navigateTo={navigateTo} onPublishService={handlePublishService} />;
@@ -721,15 +722,18 @@ const App: React.FC = () => {
           currentLocation={filterLocation}
           onLocationChange={setFilterLocation}
           onOpenMenu={() => setIsDrawerOpen(true)}
-          onSearchClick={() => navigateTo(Screen.Find)}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          onSearchFocus={() => {
+            if (currentScreen !== Screen.Find) {
+              navigateTo(Screen.Find);
+            }
+          }}
         />
       )}
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto pb-20">{renderScreen()}</main>
-
-      {/* Floating WhatsApp Action Button */}
-      {showHeader && <FloatingWhatsApp />}
 
       {/* Sidebar Drawer Menu */}
       <SidebarDrawer
