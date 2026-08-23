@@ -1,4 +1,5 @@
 const { ServiceRequest } = require('../models');
+const { publishToFacebook } = require('../utils/facebookPublisher');
 
 // @desc    Create a service request
 // @route   POST /api/servicerequests
@@ -16,7 +17,23 @@ const createServiceRequest = async (req, res) => {
       department,
       clientId: req.user.id // req.user is set by the 'protect' middleware
     });
+
+    // Send response to client first
     res.status(201).json(serviceRequest);
+
+    // Auto-publish to Facebook asynchronously in background
+    publishToFacebook({
+      type: 'request',
+      title: serviceRequest.title,
+      description: serviceRequest.description,
+      category: serviceRequest.category,
+      budget: serviceRequest.budget,
+      zipCode: serviceRequest.zipCode,
+      city: serviceRequest.city,
+      department: serviceRequest.department,
+      id: serviceRequest.id,
+      userName: req.user ? req.user.name : null
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

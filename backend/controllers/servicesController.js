@@ -49,6 +49,8 @@ const getServiceById = async (req, res) => {
   }
 };
 
+const { publishToFacebook } = require('../utils/facebookPublisher');
+
 // @desc    Create a service
 // @route   POST /api/services
 // @access  Private/Provider
@@ -65,7 +67,23 @@ const createService = async (req, res) => {
       department,
       providerId: req.user.id
     });
+
+    // Send response to client first
     res.status(201).json(service);
+
+    // Auto-publish to Facebook asynchronously in background
+    publishToFacebook({
+      type: 'service',
+      title: service.title,
+      description: service.description,
+      category: service.category,
+      price: service.price,
+      zipCode: service.zipCode,
+      city: service.city,
+      department: service.department,
+      id: service.id,
+      userName: req.user ? req.user.name : null
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

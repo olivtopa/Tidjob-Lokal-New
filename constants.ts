@@ -22,12 +22,13 @@ if (!baseUrl.startsWith('http')) {
 export const API_BASE_URL = `${baseUrl}/api`;
 
 export const SERVICE_CATEGORIES: ServiceCategory[] = [
-  { id: 'cat-1', name: 'Jardinage', icon: PrunerIcon, imageUrl: '/images/categories/jardinage.png' },
-  { id: 'cat-2', name: 'Ménage', icon: CleaningBucketIcon, imageUrl: '/images/categories/menage.png' },
-  { id: 'cat-3', name: 'Cours', icon: TutoringIcon, imageUrl: '/images/categories/cours.png' },
-  { id: 'cat-4', name: 'Bricolage', icon: BricolageIcon, imageUrl: '/images/categories/bricolage.png' },
-  { id: 'cat-5', name: 'Garde d\'enfant', icon: GardeEnfantIcon, imageUrl: '/images/categories/garde-enfant.png' },
-  { id: 'cat-6', name: 'Covoiturage', icon: CovoiturageIcon, imageUrl: '/images/categories/covoiturage.png' },
-  { id: 'cat-7', name: 'Beauté & Bien-être', icon: ShearsIcon, imageUrl: '/images/categories/beaute.png' },
-  { id: 'cat-8', name: 'Cuisine & Traiteur', icon: ChefIcon, imageUrl: '/images/categories/cuisine.png' },
+  { id: 'cat-1', name: 'Jardinage', icon: PrunerIcon, imageUrl: '/images/categories/jardinage.jpg' },
+  { id: 'cat-2', name: 'Ménage', icon: CleaningBucketIcon, imageUrl: '/images/categories/menage.jpg' },
+  { id: 'cat-3', name: 'Bricolage', icon: BricolageIcon, imageUrl: '/images/categories/bricolage.jpg' },
+  { id: 'cat-4', name: 'Dépannage & Auto', icon: BricolageIcon, imageUrl: '/images/categories/depannage.jpg' },
+  { id: 'cat-5', name: 'Cours', icon: TutoringIcon, imageUrl: '/images/categories/cours.jpg' },
+  { id: 'cat-6', name: 'Garde d\'enfant', icon: GardeEnfantIcon, imageUrl: '/images/categories/garde-enfant.jpg' },
+  { id: 'cat-7', name: 'Beauté & Bien-être', icon: ShearsIcon, imageUrl: '/images/categories/beaute.jpg' },
+  { id: 'cat-8', name: 'Cuisine & Traiteur', icon: ChefIcon, imageUrl: '/images/categories/cuisine.jpg' },
+  { id: 'cat-9', name: 'Covoiturage', icon: CovoiturageIcon, imageUrl: '/images/categories/covoiturage.jpg' },
 ];
